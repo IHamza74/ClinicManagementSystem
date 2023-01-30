@@ -52,7 +52,7 @@ server.use(prescriptionRouter);
 
 //Not Found MW
 server.use((request, response, next) => {
-  response.status(404).json({ data: "Not Fount" });
+  response.status(404).json({ data: "Page not found" });
 });
 
 //Error MW
