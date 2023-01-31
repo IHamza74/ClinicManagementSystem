@@ -9,4 +9,5 @@ router
   .patch(controller.editPrescription)
   .delete(controller.deletePrescription);
 
+router.route("/prescription/:id").get(controller.getPrescriptionsById);
 module.exports = router;

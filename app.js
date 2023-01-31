@@ -18,10 +18,8 @@ server.use(morgan("combined"));
 
 /* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
-const DB = process.env.DATABASE.replace(
-  "<password>",
-  process.env.DATABASE_PASSWORD
-);
+const DB = process.env.DATABASE.replace("<password>", process.env.DATABASE_PASSWORD);
+
 mongoose.set("strictQuery", true);
 mongoose
   .connect(DB)
