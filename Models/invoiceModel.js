@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
-  medicine: [medicineSchema],
+  medicine: { type: mongoose.Schema.Types.ObjectId, ref: "Medicine" },
   money: { type: Number, required: true },
   appointmentID: { type: Number, ref: "appointments" },
   paymentMethod: {

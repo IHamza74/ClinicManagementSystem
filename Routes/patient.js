@@ -8,5 +8,6 @@ router
   .post(controller.addPatient)
   .patch(controller.editPatient)
   .delete(controller.deletePatient);
+  
 
 module.exports = router;
