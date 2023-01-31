@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const appointmentRouter = require("./Routes/appointmentScheduler");
+const authenticationMW = require("./Middlewares/AuthenticationMW");
+const loginRouter = require("./Routes/login");
 const clinicRouter = require("./Routes/clinic");
 const doctorRouter = require("./Routes/doctor");
 const employeeRouter = require("./Routes/employee");
@@ -45,6 +47,9 @@ server.use((req, res, next) => {
 server.use(express.json());
 
 /******ROUTES******/
+//0)Login
+server.use(loginRouter);
+server.use(authenticationMW);
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic
