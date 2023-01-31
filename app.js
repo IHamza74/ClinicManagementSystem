@@ -30,13 +30,13 @@ mongoose
     console.log("DB Connected...");
     server.listen(port, () => {
       console.log("i'm listenning....");
-    
+
     });
   })
   .catch((error) => {
     console.log("DB Problem " + error);
   });
-  server.use(morgan("combined"));
+server.use(morgan("combined"));
 
 
 /******First MW******/
@@ -51,7 +51,7 @@ server.use(express.json());
 /******ROUTES******/
 //0)Login
 server.use(loginRouter);
-server.use(authenticationMW);
+//server.use(authenticationMW);
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic
