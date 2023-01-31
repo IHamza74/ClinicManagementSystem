@@ -9,27 +9,39 @@ const medicineRouter = require("./Routes/medicine");
 const patientRouter = require("./Routes/patient");
 const prescriptionRouter = require("./Routes/prescription");
 const dotenv = require("dotenv");
-
+const mongoose = require("mongoose");
 const server = express();
 dotenv.config({ path: "./config.env" });
 
 //Morgan MW
 server.use(morgan("combined"));
 
+/* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
+mongoose.set("strictQuery", true);
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("DB Connected...");
+    server.listen(port, () => {
+      console.log("i'm listenning....");
+    });
+  })
+  .catch((error) => {
+    console.log("DB Problem " + error);
+  });
 
-//Server listen
-server.listen(port, () => {
-  console.log("i'm listenning....");
-});
-
-//First MW
+/******First MW******/
 server.use((req, res, next) => {
   console.log("hellow from First MW");
   next();
 });
 
-//Settings
+/******Settings ******/
 server.use(express.json());
 
 /******ROUTES******/
@@ -60,5 +72,3 @@ server.use((error, request, response, next) => {
   const status = error.status || 500;
   response.status(status).json({ message: "Error " + error });
 });
-
-// module.exports = server;
