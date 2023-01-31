@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 
-let medicineSchema = new mongoose.Schema(
-  {
-    medicineID: { type: Number, ref: "medicines" },
-    quantity: { type: Number },
-  },
-  {
-    _id: false,
-  }
-);
+// let medicineSchema = new mongoose.Schema(
+//   {
+//     medicineID: { type: Number, ref: "medicines" },
+//     quantity: { type: Number },
+//   },
+//   {
+//     _id: false,
+//   }
+// );
 
 const schema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
