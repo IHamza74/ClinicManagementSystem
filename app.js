@@ -14,7 +14,6 @@ const server = express();
 dotenv.config({ path: "./config.env" });
 
 //Morgan MW
-server.use(morgan("combined"));
 
 /* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
@@ -29,11 +28,14 @@ mongoose
     console.log("DB Connected...");
     server.listen(port, () => {
       console.log("i'm listenning....");
+    
     });
   })
   .catch((error) => {
     console.log("DB Problem " + error);
   });
+  server.use(morgan("combined"));
+
 
 /******First MW******/
 server.use((req, res, next) => {
@@ -72,3 +74,5 @@ server.use((error, request, response, next) => {
   const status = error.status || 500;
   response.status(status).json({ message: "Error " + error });
 });
+
+// module.exports = server;
