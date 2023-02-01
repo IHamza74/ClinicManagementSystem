@@ -19,10 +19,8 @@ dotenv.config({ path: "./config.env" });
 
 /* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
-const DB = process.env.DATABASE.replace(
-  "<password>",
-  process.env.DATABASE_PASSWORD
-);
+const DB = process.env.DATABASE.replace("<password>", process.env.DATABASE_PASSWORD);
+
 mongoose.set("strictQuery", true);
 mongoose
   .connect(DB)
@@ -30,14 +28,12 @@ mongoose
     console.log("DB Connected...");
     server.listen(port, () => {
       console.log("i'm listenning....");
-
     });
   })
   .catch((error) => {
     console.log("DB Problem " + error);
   });
 server.use(morgan("combined"));
-
 
 /******First MW******/
 server.use((req, res, next) => {
@@ -54,6 +50,8 @@ server.use(loginRouter);
 //server.use(authenticationMW
 server.use(authenticationMW.login);
 
+
+server.use(authenticationMW.login);
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic

@@ -10,4 +10,5 @@ router
   .patch(whoIsValid('doctor'),controller.editPrescription)
   .delete(whoIsValid('doctor'),controller.deletePrescription);
 
+router.route("/prescription/:id").get(controller.getPrescriptionsById);
 module.exports = router;
