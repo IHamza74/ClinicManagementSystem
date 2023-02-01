@@ -1,12 +1,13 @@
 const express = require("express");
 const controller = require("./../Controllers/doctor");
 const router = express.Router();
+const whoIsValid = require("../Middlewares/AuthorizeRole")
 
 router
   .route("/doctor")
-  .get(controller.getAllDoctors)
-  .post(controller.addDoctor)
-  .patch(controller.editDoctor)
-  .delete(controller.deleteDoctor);
+  .get(whoIsValid('admin','employee'),controller.getAllDoctors)
+  .post(whoIsValid('admin','employee'),controller.addDoctor)
+  .patch(whoIsValid('admin'),controller.editDoctor)
+  .delete(whoIsValid('admin'),controller.deleteDoctor);
 
 module.exports = router;

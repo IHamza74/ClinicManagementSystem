@@ -5,8 +5,9 @@ const mongoose = require("mongoose");
 
 const patinetSchmea = mongoose.model("Patients")
 
-exports.getAllPatients = (request, response, next) => {
 
+exports.getAllPatients = (request, response, next) => {
+ console.log(request.role);
   patinetSchmea.find().then((res) => {
     response.status(201).json(res)
   }).catch((error) => {
@@ -36,7 +37,7 @@ exports.addPatient = (request, response, next) => {
 };
 
 exports.editPatient = (request, res, next) => {
-
+ 
   patinetSchmea.updateOne({ Email: request.body.Email },
     {
       $set: {
