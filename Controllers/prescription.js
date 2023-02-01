@@ -5,11 +5,11 @@ const PrescriptionSchema = mongoose.model("Prescriptions");
 //get All Prescription
 exports.getAllPrescriptions = (request, response, next) => {
   PrescriptionSchema.find()
-    .populate({
+    /* .populate({
       path: "appointmentId",
       select: { _id: 1, doctorID: 1, patientID: 1, clinicID: 1, employeeID: 1, date: 1 },
-    })
-    .populate({ path: "medicineID", select: { _id: 0, Name: 1, Dose: 1 } })
+    }) */
+    /* .populate({ path: "medicineID", select: { _id: 0, Name: 1, Dose: 1 } }) */
     .then((data) => {
       response.status(200).json({ data });
     })
@@ -19,11 +19,11 @@ exports.getAllPrescriptions = (request, response, next) => {
 //get Prescription By Id
 exports.getPrescriptionsById = (request, response, next) => {
   PrescriptionSchema.find({ _id: request.params.id })
-    .populate({
+    /* .populate({
       path: "appointmentId",
       select: { _id: 1, doctorID: 1, patientID: 1, clinicID: 1, employeeID: 1, date: 1 },
-    })
-    .populate({ path: "medicineID", select: { _id: 0, Name: 1, Dose: 1 } })
+    }) */
+    /* .populate({ path: "medicineID", select: { _id: 0, Name: 1, Dose: 1 } }) */
     .then((data) => {
       response.status(200).json({ data });
     })
