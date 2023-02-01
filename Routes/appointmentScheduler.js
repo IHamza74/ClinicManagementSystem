@@ -9,11 +9,7 @@ router
   .get(whoIsValid('employee'),controller.getAllAppointments)
   .post(whoIsValid('employee'),controller.addAppointment)
   .patch(whoIsValid('employee'),controller.editAppointment)
-  .delete(whoIsValid('employee'),controller.deleteAppointment);
 
-  .get(controller.getAllAppointments)
-  .post(controller.addAppointment)
-  .patch(controller.editAppointment);
 
 router
   .route("/appointmentScheduler/:id")
