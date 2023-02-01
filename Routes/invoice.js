@@ -14,4 +14,5 @@ router.route("/invoice/:id").delete(
   // param("id").isInt().withMessage("ID should be an Int"),
   controller.deleteInvoice
 );
+
 module.exports = router;
