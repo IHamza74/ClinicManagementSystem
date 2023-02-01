@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
-
-let schema = new mongoose.Schema(
+const schema = mongoose.Schema;
+let employeeSchema = new schema(
     {
-        _id: {
-            type: Number,
-            required: [true, "You must enter an id for employee"]
-        },
+        _id: schema.Types.ObjectId,
         name: {
             type: String,
             required: [true, "You must enter employee name"]
@@ -26,4 +23,4 @@ let schema = new mongoose.Schema(
         }
     }
 )
-mongoose.model("employees", schema)
+mongoose.model("employees", employeeSchema)
