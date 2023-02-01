@@ -51,7 +51,11 @@ server.use(express.json());
 /******ROUTES******/
 //0)Login
 server.use(loginRouter);
+<<<<<<< HEAD
 //server.use(authenticationMW);
+=======
+server.use(authenticationMW.login);
+>>>>>>> b95e6ed0d41508eb8b9d2d142e14f7c546e91169
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic
