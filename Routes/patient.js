@@ -1,12 +1,15 @@
 const express = require("express");
+
 const controller = require("./../Controllers/patient");
 const router = express.Router();
+const whoIsValid = require("../Middlewares/AuthorizeRole")
 
 router
   .route("/patient")
-  .get(controller.getAllPatients)
-  .post(controller.addPatient)
-  .patch(controller.editPatient)
-  .delete(controller.deletePatient);
+  .get(whoIsValid('employee','doctor'),controller.getAllPatients)
+  .post(whoIsValid('employee','doctor'),controller.addPatient)
+  .patch(whoIsValid('employee','doctor','patient'),controller.editPatient)
+  .delete(whoIsValid('employee','admin','doctor'),controller.deletePatient);
+  
 
 module.exports = router;

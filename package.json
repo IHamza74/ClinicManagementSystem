@@ -1,7 +1,7 @@
 {
   "name": "clinicmanagementsystem",
   "version": "1.0.0",
-  "description": "",
+  "description": "\"# ClinicManagementSystem\"",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app",
@@ -15,8 +15,16 @@
   "dependencies": {
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "express-validator": "^6.14.3",
     "mongoose": "^6.9.0",
     "morgan": "^1.10.0"
-  }
-}
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IHamza74/ClinicManagementSystem.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IHamza74/ClinicManagementSystem/issues"
+  },
+  "homepage": "https://github.com/IHamza74/ClinicManagementSystem#readme"

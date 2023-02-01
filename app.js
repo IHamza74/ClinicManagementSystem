@@ -1,6 +1,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const appointmentRouter = require("./Routes/appointmentScheduler");
+const authenticationMW = require("./Middlewares/AuthenticationMW");
+const loginRouter = require("./Routes/login");
 const clinicRouter = require("./Routes/clinic");
 const doctorRouter = require("./Routes/doctor");
 const employeeRouter = require("./Routes/employee");
@@ -14,14 +16,11 @@ const server = express();
 dotenv.config({ path: "./config.env" });
 
 //Morgan MW
-server.use(morgan("combined"));
 
 /* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
-const DB = process.env.DATABASE.replace(
-  "<password>",
-  process.env.DATABASE_PASSWORD
-);
+const DB = process.env.DATABASE.replace("<password>", process.env.DATABASE_PASSWORD);
+
 mongoose.set("strictQuery", true);
 mongoose
   .connect(DB)
@@ -34,6 +33,7 @@ mongoose
   .catch((error) => {
     console.log("DB Problem " + error);
   });
+server.use(morgan("combined"));
 
 /******First MW******/
 server.use((req, res, next) => {
@@ -45,6 +45,13 @@ server.use((req, res, next) => {
 server.use(express.json());
 
 /******ROUTES******/
+//0)Login
+server.use(loginRouter);
+//server.use(authenticationMW
+server.use(authenticationMW.login);
+
+
+server.use(authenticationMW.login);
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic
@@ -72,3 +79,5 @@ server.use((error, request, response, next) => {
   const status = error.status || 500;
   response.status(status).json({ message: "Error " + error });
 });
+
+// module.exports = server;
