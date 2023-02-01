@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require("./../Model/appointmentModel");
+require("./../Models/appointmentModel");
 
 const AppointmentSchema = mongoose.model("appointmentScheduler");
 
@@ -27,7 +27,7 @@ exports.getOneAppointment = (req, res, next) => {
 /****POST DATA****/
 exports.addAppointment = (req, res, next) => {
   let newAppointment = new AppointmentSchema({
-    _id: req.body.id,
+    _id: mongoose.Types.ObjectId(),
     patientID: req.body.patientID,
     doctorID: req.body.doctorID,
     clinicID: req.body.clinicID,
