@@ -21,10 +21,30 @@ exports.getAllPrescriptions = (request, response, next) => {
       path: "appointmentId",
       populate: { path: "employeeID", select: { name: 1, _id: 0 } },
     })
+    .populate({
+      path: "medicine.medicineID",
+      select: { _id: 0, Name: 1, Dose: 1 },
+    });
+  //FILTERING DATA
+  const Obj = { ...request.query };
+  delete Obj["sort"]; //if user enter sort in query string
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
 
-    .populate({ path: "medicine.medicineID", select: { _id: 0, Name: 1, Dose: 1 } })
+  //OBJECT RESULTED FROM QUERY
+  let resultedObj = PrescriptionSchema.find(ObjStr);
+
+  //IF SORTING DATA
+  if (request.query.sort) {
+    let sortBy = request.query.sort.split(",").join(" ");
+    resultedObj = resultedObj.sort(sortBy);
+  }
+
+  //TO RETRIEVE DATA
+  resultedObj
     .then((data) => {
-      response.status(200).json({ data });
+      response.status(200).json(data);
     })
     .catch((error) => next(error));
 };
@@ -94,4 +114,21 @@ exports.deletePrescription = (req, res, next) => {
       res.status(201).json({ status: "deleted", data });
     })
     .catch((error) => next(error));
+};
+
+/****DELETE DATA USING FILTER****/
+exports.deleteFilteredPrescription = (req, res, next) => {
+  const Obj = { ...req.query };
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  PrescriptionSchema.deleteMany(ObjStr)
+    .then((result) => {
+      if (result != null) res.status(200).json(result);
+      else next(new Error("Data is not found!"));
+    })
+    .catch((error) => {
+      next(error);
+    });
 };

@@ -4,7 +4,7 @@ require("./../Models/doctor");
 
 const DoctorSchema = mongoose.model("doctor");
 
-const sendEmail = (to) => {
+const sendEmail = () => {
   return async (req, res, next) => {
     // 1) Create a transporter
     const transporter = nodemailer.createTransport({

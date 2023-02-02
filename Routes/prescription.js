@@ -8,7 +8,7 @@ router
   .get(whoIsValid("admin"), controller.getAllPrescriptions)
   .post(whoIsValid("admin"), controller.addPrescription)
   .patch(whoIsValid("doctor"), controller.editPrescription)
-  .delete(whoIsValid("doctor"), controller.deletePrescription);
+  .delete(whoIsValid("doctor"), controller.deleteFilteredPrescription);
 
-router.route("/prescription/:id").get(whoIsValid("admin"), controller.getPrescriptionsById);
+router.route("/prescription/:id").get(whoIsValid("doctor"), controller.getPrescriptionsById);
 module.exports = router;
