@@ -1,11 +1,29 @@
+const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/doctor");
 
 const DoctorSchema = mongoose.model("doctor");
 
-/****GET ALL DATA****/
+/****GET ALL DATA AS FILTERED****/
 exports.getAllDoctors = (request, response, next) => {
-  DoctorSchema.find()
+  //FILTERING DATA
+  const Obj = { ...request.query };
+  delete Obj["sort"]; //if user enter sort in query string
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  //OBJECT RESULTED FROM QUERY
+  let resultedObj = DoctorSchema.find(ObjStr);
+
+  //IF SORTING DATA
+  if (request.query.sort) {
+    let sortBy = request.query.sort.split(",").join(" ");
+    resultedObj = resultedObj.sort(sortBy);
+  }
+
+  //TO RETRIEVE DATA
+  resultedObj
     .then((data) => {
       response.status(200).json(data);
     })
@@ -71,12 +89,29 @@ exports.editDoctor = (req, res, next) => {
     });
 };
 
-/****DELETE DATA****/
+/****DELETE DATA BY ID****/
 exports.deleteDoctor = (req, res, next) => {
   DoctorSchema.deleteOne({ _id: req.params.id })
     .then((result) => {
       if (result != null) res.status(200).json(result);
       else next(new Error("Doctor is not found!"));
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+/****DELETE DATA USING FILTER****/
+exports.deleteFilteredDoctor = (req, res, next) => {
+  const Obj = { ...req.query };
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  DoctorSchema.deleteMany(ObjStr)
+    .then((result) => {
+      if (result != null) res.status(200).json(result);
+      else next(new Error("Data is not found!"));
     })
     .catch((error) => {
       next(error);

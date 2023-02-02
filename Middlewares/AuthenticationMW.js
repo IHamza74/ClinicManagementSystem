@@ -4,7 +4,7 @@ exports.login = (req, res, next) => {
   try {
     let token = req.get("authorization").split(" ")[1];
     let decodedToken = jwt.verify(token, "AhmedTurky");
-    console.log(decodedToken);
+    // console.log(decodedToken);
     // req.id = decodedToken.id;
     req.role = decodedToken.role;
   } catch (error) {
