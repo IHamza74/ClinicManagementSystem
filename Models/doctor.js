@@ -31,7 +31,7 @@ const doctorSchema = new Schema({
     select: false,
   },
   workingHours: { type: Number, default: 6 },
-  appointmentNo: [{ type: Number, ref: "appointmentScheduler" }],
+  appointmentNo: [{ type: Schema.Types.ObjectId, ref: "appointmentScheduler" }],
 });
 
 doctorSchema.pre("save", async function (next) {
