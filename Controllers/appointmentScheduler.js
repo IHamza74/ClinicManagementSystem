@@ -12,6 +12,10 @@ exports.getAllAppointments = (request, response, next) => {
     .catch((error) => next(error));
 };
 
+
+
+
+
 /****GET ONE DATA****/
 exports.getOneAppointment = (req, res, next) => {
   AppointmentSchema.findOne({ _id: req.params.id })
@@ -78,3 +82,4 @@ exports.deleteAppointment = (req, res, next) => {
       next(error);
     });
 };
+

@@ -52,7 +52,7 @@ server.use(loginRouter);
 //server.use(authenticationMW
 server.use(authenticationMW.login);
 
-server.use(authenticationMW.login);
+// server.use(authenticationMW.login);
 //1)Appointment Scheduler
 server.use(appointmentRouter);
 //2)Clinic
