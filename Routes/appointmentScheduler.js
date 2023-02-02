@@ -3,11 +3,15 @@ const controller = require("./../Controllers/appointmentScheduler");
 const teacherValidationArray = require("./../validation/appointmentScheduler");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
-
+const sendEmail = require("./../utils/email");
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
-  .post(whoIsValid("admin", "employee"), controller.addAppointment)
+  .post(
+    whoIsValid("admin", "employee"),
+    sendEmail("example@example.com"),
+    controller.addAppointment
+  )
   .patch(whoIsValid("admin", "employee"), controller.editAppointment);
 
 router
