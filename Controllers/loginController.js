@@ -6,7 +6,7 @@ const EmployeeSchema = mongoose.model("employees");
 
 exports.login = (req, res, next) => {
   if (req.body.email == "turky@gmail.com" && req.body.password == "123") {
-    let token = jwt.sign({ role: "admin" }, "AhmedTurky", { expiresIn: "1h" });
+    let token = jwt.sign({ role: "admin" }, "AhmedTurky");
     res.status(200).json({ data: "Authorized Admin", token });
   } else {
     EmployeeSchema.findOne({
