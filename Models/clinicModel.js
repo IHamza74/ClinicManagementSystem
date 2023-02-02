@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
-
-let schema = new mongoose.Schema(
+const schema = mongoose.Schema;
+let clinicSchema = new schema(
     {
         _id: {
-            type: Number,
-            required: [true, 'You must enter an id for clinic']
+            type: schema.Types.ObjectId,
         },
         clinicName: {
             type: String,
@@ -16,4 +15,4 @@ let schema = new mongoose.Schema(
     }
 )
 
-mongoose.model("clinic", schema);
+mongoose.model("clinic", clinicSchema);

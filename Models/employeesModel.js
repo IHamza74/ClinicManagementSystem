@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-
-let schema = new mongoose.Schema({
-  _id: {
-    type: Number,
-    required: [true, "You must enter an id for employee"],
-  },
+const schema = mongoose.Schema;
+let employeeSchema = new schema({
+  _id: schema.Types.ObjectId,
   name: {
     type: String,
     required: [true, "You must enter employee name"],
@@ -26,11 +23,11 @@ let schema = new mongoose.Schema({
   },
 });
 
-schema.pre("save", async function (next) {
+employeeSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-mongoose.model("employees", schema);
+mongoose.model("employees", employeeSchema);

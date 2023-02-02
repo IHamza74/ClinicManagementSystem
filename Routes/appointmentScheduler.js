@@ -19,3 +19,21 @@ router
   .get(controller.getOneAppointment)
   .delete(controller.deleteAppointment);
 module.exports = router;
+
+router 
+.route("/appointmentScheduler//allreports")
+.get(whoIsValid('admin','employee'),controller.AllAppointmentsReports)
+
+router 
+.route("/appointmentScheduler//dailyreports")
+.get(whoIsValid('admin','employee'),controller.DailyAppointmentsReports)
+
+router 
+.route("/appointmentScheduler//doctorreports")
+.get(whoIsValid('admin','employee'),controller.DoctorAppointmentsReports)
+
+
+router 
+.route("/appointmentScheduler//patientreports")
+.get(whoIsValid('admin','employee'),controller.PatientAppointmentsReports)
+
