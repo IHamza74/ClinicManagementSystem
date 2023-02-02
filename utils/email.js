@@ -24,13 +24,13 @@ const sendEmail = () => {
       from: "clinicSystem@clinic.com",
       to: d.email,
       subject: "notification for new appointment",
-      text: `you have appointment at ${req.body.date}`,
+      text: `you have an appointment at ${req.body.date}`,
     };
 
     // 3) Send the email
     transporter
       .sendMail(mailData)
-      .then(() => /* console.log("email send") */ next())
+      .then(() => next())
       .catch((error) => next(error));
   };
 };
