@@ -5,7 +5,24 @@ const AppointmentSchema = mongoose.model("appointmentScheduler");
 
 /****GET ALL DATA****/
 exports.getAllAppointments = (request, response, next) => {
-  AppointmentSchema.find()
+  //FILTERING DATA
+  const Obj = { ...request.query };
+  delete Obj["sort"]; //if user enter sort in query string
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  //OBJECT RESULTED FROM QUERY
+  let resultedObj = AppointmentSchema.find(ObjStr);
+
+  //IF SORTING DATA
+  if (request.query.sort) {
+    let sortBy = request.query.sort.split(",").join(" ");
+    resultedObj = resultedObj.sort(sortBy);
+  }
+
+  //TO RETRIEVE DATA
+  resultedObj
     .then((data) => {
       response.status(200).json(data);
     })
@@ -73,6 +90,23 @@ exports.deleteAppointment = (req, res, next) => {
     .then((result) => {
       if (result != null) res.status(200).json(result);
       else next(new Error("Appointment is not found!"));
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+/****DELETE DATA USING FILTER****/
+exports.deleteFilteredAppointment = (req, res, next) => {
+  const Obj = { ...req.query };
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  AppointmentSchema.deleteMany(ObjStr)
+    .then((result) => {
+      if (result != null) res.status(200).json(result);
+      else next(new Error("Data is not found!"));
     })
     .catch((error) => {
       next(error);
