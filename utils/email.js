@@ -17,12 +17,12 @@ const sendEmail = () => {
     });
 
     const doctor = DoctorSchema.findOne({ _id: req.body.doctorID }, { _id: 0, email: 1 });
-    const d = await doctor.exec();
+    const email = await doctor.exec();
 
     // 2) Define the email Data
     const mailData = {
       from: "clinicSystem@clinic.com",
-      to: d.email,
+      to: email.email,
       subject: "notification for new appointment",
       text: `you have an appointment at ${req.body.date}`,
     };

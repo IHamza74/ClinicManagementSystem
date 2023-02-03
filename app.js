@@ -10,6 +10,7 @@ const invoiceRouter = require("./Routes/invoice");
 const medicineRouter = require("./Routes/medicine");
 const patientRouter = require("./Routes/patient");
 const prescriptionRouter = require("./Routes/prescription");
+const payment = require("./Routes/payment");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const server = express();
@@ -66,6 +67,8 @@ server.use(medicineRouter);
 server.use(patientRouter);
 //8)prescription
 server.use(prescriptionRouter);
+//9)payment
+server.use(payment);
 
 //Not Found MW
 server.use((request, response, next) => {
