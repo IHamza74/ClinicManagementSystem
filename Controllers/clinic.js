@@ -29,7 +29,7 @@ exports.getAllClinics = (request, response, next) => {
 
 exports.addClinic = (req, res, next) => {
   let newClinic = new clinicSchema({
-    _id: req.body.id,
+    // _id: req.body.id,
     clinicName: req.body.name,
     clinicAddress: req.body.address,
   })
@@ -46,7 +46,7 @@ exports.editClinic = (req, res, next) => {
       { _id: req.body.id },
       {
         $set: {
-          _id: req.body.id,
+          // _id: req.body.id,
           clinicName: req.body.name,
           clinicAddress: req.body.address,
         },
