@@ -130,7 +130,6 @@ exports.AllAppointmentsReports = (req, res, next) => {
       select: { _id: 0, appointmentNo: 0, workingHours: 0 },
     })
     .populate({ path: "clinicID", select: { _id: 0 } })
-    //.populate({path:"employeeID",select:{_id:0}})
     .then((data) => {
       res.status(200).json(data);
     })
@@ -140,33 +139,34 @@ exports.AllAppointmentsReports = (req, res, next) => {
 /* Dialy apointments reports  */
 
 exports.DailyAppointmentsReports = (req, res, next) => {
-  console.log(Date.now());
-  AppointmentSchema.find()
+ let date =new Date();
+ date.setHours(0,0,0)
+let day = 60 * 60 * 24 * 1000;
+let nextday = new Date(date.getTime()+day)
 
-    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+  AppointmentSchema.find().where("date").gt(date).lt(nextday)
+  .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
       select: { _id: 0, appointmentNo: 0, workingHours: 0 },
     })
     .populate({ path: "clinicID", select: { _id: 0 } })
-    .populate({ path: "employeeID", select: { _id: 0 } })
+   
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((error) => next(error));
 };
-
 /* doctors appointments */
 
 exports.DoctorAppointmentsReports = (req, res, next) => {
-  AppointmentSchema.find({ doctorID: req.body.id })
+  AppointmentSchema.find({ doctorID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
       select: { _id: 0, appointmentNo: 0, workingHours: 0 },
     })
     .populate({ path: "clinicID", select: { _id: 0 } })
-    //.populate({path:"employeeID",select:{_id:0}})
     .then((data) => {
       res.status(200).json(data);
     })
@@ -176,14 +176,13 @@ exports.DoctorAppointmentsReports = (req, res, next) => {
 /*  patient appointments */
 
 exports.PatientAppointmentsReports = (req, res, next) => {
-  AppointmentSchema.find({ patientID: req.body.id })
+  AppointmentSchema.find({ patientID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
       select: { _id: 0, appointmentNo: 0, workingHours: 0 },
     })
     .populate({ path: "clinicID", select: { _id: 0 } })
-    //.populate({path:"employeeID",select:{_id:0}})
     .then((data) => {
       res.status(200).json(data);
     })

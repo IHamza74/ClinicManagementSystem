@@ -35,6 +35,7 @@ exports.addInvoice = (req, res, next) => {
     money: req.body.money,
     appointmentID: req.body.appointmentID,
     paymentMethod: req.body.paymentMethod,
+    patientID: req.body.patientID,
   });
   newInvoice
     .save()
@@ -86,4 +87,68 @@ exports.deleteFilteredInvoice = (req, res, next) => {
     .catch((error) => {
       next(error);
     });
+};
+
+exports.getInvoicebyID = (req, res, next) => {
+  InvoiceSchema.findOne({ _id: req.params.id })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
+};
+
+exports.AllInvoicesReports = (req, res, next) => {
+  InvoiceSchema.find()
+    .populate({
+      path: "appointmentID",
+      select: { _id: 0, patientID: 0, employeeID: 0 },
+      populate: [
+        { path: "doctorID", select: { _id: 0, Password: 0 } },
+        { path: "clinicID", select: { _id: 0 } },
+      ],
+    })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
+};
+
+exports.DailyInvoicesReports = (req, res, next) => {
+  let date = new Date();
+  date.setHours(0, 0, 0, 0);
+  InvoiceSchema.find()
+    .where("date")
+    .gt(date)
+    .populate({
+      path: "appointmentID",
+      select: { _id: 0, patientID: 0, employeeID: 0 },
+      populate: [
+        { path: "doctorID", select: { _id: 0, Password: 0 } },
+        { path: "clinicID", select: { _id: 0 } },
+      ],
+    })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
+};
+
+exports.PatientInvoicesReports = (req, res, next) => {
+  InvoiceSchema.find({ patientID: req.params.id })
+    .populate({
+      path: "appointmentID",
+      select: { _id: 0, patientID: 0, employeeID: 0 },
+      populate: [
+        { path: "doctorID", select: { _id: 0, Password: 0 } },
+        { path: "clinicID", select: { _id: 0 } },
+      ],
+    })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
 };

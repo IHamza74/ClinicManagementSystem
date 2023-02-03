@@ -1,7 +1,8 @@
 const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/doctor");
-
+require ("./../Models/sharedData")
+const mailschema = mongoose.model("SharedData")
 const DoctorSchema = mongoose.model("doctor");
 
 /****GET ALL DATA AS FILTERED****/
@@ -44,25 +45,35 @@ exports.getOneDoctor = (req, res, next) => {
 
 /****POST DATA****/
 exports.addDoctor = (req, res, next) => {
-  let newAppointment = new DoctorSchema({
-    _id: mongoose.Types.ObjectId(),
-    name: req.body.name,
-    age: req.body.age,
-    speciality: req.body.speciality,
-    email: req.body.email,
-    workingHours: req.body.workingHours,
-    appointmentNo: req.body.appointmentNo,
-    password: req.body.password,
-  });
 
-  newAppointment
+   let addmail =  new mailschema({
+    email:req.body.email
+   })
+   addmail
+   .save().then((result)=>{
+
+    let newAppointment = new DoctorSchema({
+      _id: mongoose.Types.ObjectId(),
+      name: req.body.name,
+      age: req.body.age,
+      speciality: req.body.speciality,
+      email: req.body.email,
+      workingHours: req.body.workingHours,
+      appointmentNo: req.body.appointmentNo,
+      password: req.body.password,
+    })
+   
     .save()
     .then((result) => {
       res.status(201).json(result);
     })
     .catch((error) => {
       next(error);
-    });
+    })
+   })
+   .catch(error =>res.status(201).json({message:"this email exists"}))
+  
+  
 };
 
 /****PATCH DATA****/

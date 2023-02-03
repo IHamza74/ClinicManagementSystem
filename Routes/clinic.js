@@ -3,11 +3,26 @@ const controller = require("./../Controllers/clinic");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
 
+const { body, param } = require("express-validator");
+const validator = require("./../Middlewares/errorValidation");
+
+let validationArray = [
+  // id , name , address
+  body("id").isMongoId().withMessage("id should be Mongo Id"),
+  body("name").isString().withMessage("name should be string"),
+  body("address").isString().withMessage("address should be string"),
+];
+
 router
   .route("/clinic")
   .get(whoIsValid("admin"), controller.getAllClinics)
-  .post(whoIsValid("admin"), controller.addClinic)
-  .patch(whoIsValid("admin"), controller.editClinic)
+  .post(
+    whoIsValid("admin"),
+    validationArray.slice(1),
+    validator,
+    controller.addClinic
+  )
+  .patch(whoIsValid("admin"), validationArray, validator, controller.editClinic)
   .delete(whoIsValid("admin"), controller.deleteFilteredClinic);
 
 module.exports = router;
