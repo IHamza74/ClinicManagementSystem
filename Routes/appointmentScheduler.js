@@ -38,9 +38,9 @@ router
   .get(whoIsValid("admin", "employee"), controller.DailyAppointmentsReports);
 
 router
-  .route("/appointmentScheduler//doctorreports")
+  .route("/appointmentScheduler//doctorreports/:id")
   .get(whoIsValid("admin", "employee"), controller.DoctorAppointmentsReports);
 
 router
-  .route("/appointmentScheduler//patientreports")
+  .route("/appointmentScheduler//patientreports/:id")
   .get(whoIsValid("admin", "employee"), controller.PatientAppointmentsReports);

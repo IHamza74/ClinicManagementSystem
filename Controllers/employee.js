@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 require("../Models/employeesModel");
+
 const employeesSchema = mongoose.model("employees");
+
+require("../Models/sharedData")
+
+const mailschema = mongoose.model("SharedData")
 
 exports.getAllEmployees = (request, response, next) => {
   //FILTERING DATA
@@ -28,19 +33,29 @@ exports.getAllEmployees = (request, response, next) => {
 };
 
 exports.addEmployee = (req, res, next) => {
-  let newEmp = new employeesSchema({
-    _id: req.body.id,
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    age: req.body.age,
-    address: req.body.address,
-  })
-    .save()
-    .then((data) => {
-      res.status(201).json({ status: "employee added successfully" });
+ 
+  let addData =  new mailschema({
+    email:req.body.email
+   })
+   addData.save().then((data)=>{
+    let newEmp = new employeesSchema({
+      _id: req.body.id,
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      age: req.body.age,
+      address: req.body.address,
     })
-    .catch((error) => next(error));
+      .save()
+      .then((data) => {
+        res.status(201).json({ status: "employee added successfully" });
+      })
+      .catch((error) => next(error));
+   })
+   .catch(error =>res.status(201).json({message:"this email exists"}))
+   
+
+ 
 };
 
 exports.editEmployee = (req, res, next) => {
