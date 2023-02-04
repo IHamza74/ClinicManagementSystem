@@ -29,7 +29,7 @@ exports.getAllEmployees = (request, response, next) => {
 
 exports.addEmployee = (req, res, next) => {
   let newEmp = new employeesSchema({
-    _id: req.body.id,
+    _id: mongoose.Types.ObjectId(),
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
@@ -49,7 +49,6 @@ exports.editEmployee = (req, res, next) => {
       { _id: req.body.id },
       {
         $set: {
-          _id: req.body.id,
           name: req.body.name,
           email: req.body.email,
           password: req.body.password,

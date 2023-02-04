@@ -5,9 +5,9 @@ const whoIsValid = require("../Middlewares/AuthorizeRole");
 
 router
   .route("/medicine")
-  .get(whoIsValid("employee", "doctor"), controller.getAllMedicines)
-  .post(whoIsValid("employee", "doctor"), controller.addMedicine)
-  .patch(whoIsValid("employee", "doctor"), controller.editMedicine)
-  .delete(whoIsValid("employee", "doctor"), controller.deleteFilteredMedicine);
+  .get(whoIsValid("employee", "doctor", "admin"), controller.getAllMedicines)
+  .post(whoIsValid("employee", "doctor", "admin"), controller.addMedicine)
+  .patch(whoIsValid("employee", "doctor", "admin"), controller.editMedicine)
+  .delete(whoIsValid("employee", "doctor", "admin"), controller.deleteFilteredMedicine);
 
 module.exports = router;
