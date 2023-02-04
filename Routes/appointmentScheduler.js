@@ -63,16 +63,18 @@ module.exports = router;
 
 router
   .route("/appointmentScheduler//allreports")
-  .get(whoIsValid("admin", "employee"), controller.AllAppointmentsReports);
+  .get(whoIsValid('admin', 'employee'), controller.AllAppointmentsReports)
 
 router
   .route("/appointmentScheduler//dailyreports")
-  .get(whoIsValid("admin", "employee"), controller.DailyAppointmentsReports);
+  .get(whoIsValid('admin', 'employee'), controller.DailyAppointmentsReports)
 
 router
-  .route("/appointmentScheduler//doctorreports/:id")
-  .get(whoIsValid("admin", "employee"), controller.DoctorAppointmentsReports);
+  .route("/appointmentScheduler//doctorreports")
+  .get(whoIsValid('admin', 'employee'), controller.DoctorAppointmentsReports)
+
 
 router
-  .route("/appointmentScheduler//patientreports/:id")
-  .get(whoIsValid("admin", "employee"), controller.PatientAppointmentsReports);
+  .route("/appointmentScheduler//patientreports")
+  .get(whoIsValid('admin', 'employee'), controller.PatientAppointmentsReports)
+

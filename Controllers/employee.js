@@ -33,13 +33,13 @@ exports.getAllEmployees = (request, response, next) => {
 };
 
 exports.addEmployee = (req, res, next) => {
- 
-  let addData =  new mailschema({
-    email:req.body.email
-   })
-   addData.save().then((data)=>{
+
+  let addData = new mailschema({
+    email: req.body.email
+  })
+  addData.save().then((data) => {
     let newEmp = new employeesSchema({
-      _id: req.body.id,
+      _id: mongoose.Types.ObjectId(),
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
@@ -51,11 +51,11 @@ exports.addEmployee = (req, res, next) => {
         res.status(201).json({ status: "employee added successfully" });
       })
       .catch((error) => next(error));
-   })
-   .catch(error =>res.status(201).json({message:"this email exists"}))
-   
+  })
+    .catch(error => res.status(201).json({ message: "this email exists" }))
 
- 
+
+
 };
 
 exports.editEmployee = (req, res, next) => {
@@ -64,7 +64,6 @@ exports.editEmployee = (req, res, next) => {
       { _id: req.body.id },
       {
         $set: {
-          _id: req.body.id,
           name: req.body.name,
           email: req.body.email,
           password: req.body.password,

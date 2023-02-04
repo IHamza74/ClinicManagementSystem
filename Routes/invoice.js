@@ -5,6 +5,7 @@ const authenticationMW = require("./../Middlewares/AuthenticationMW");
 const whoIsValid = require("../Middlewares/AuthorizeRole");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
+const customeMW = require("../Middlewares/customeFunctionalities")
 
 let validationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
@@ -28,17 +29,21 @@ let validationArray = [
 ];
 router
   .route("/invoice")
-  .get(whoIsValid("employee"), controller.getAllInvoices)
+  .get(whoIsValid("employee", "admin"), controller.getAllInvoices)
   .post(
-    whoIsValid("employee"),
+    whoIsValid("employee", "admin"),
     validationArray.slice(1),
     validator,
+    customeMW.DoMedicineExist,
+    customeMW.doesAppointmentExist,
     controller.addInvoice
   )
   .patch(
-    whoIsValid("employee"),
+    whoIsValid("employee", "admin"),
     validationArray,
     validator,
+    customeMW.DoMedicineExist,
+    customeMW.doesAppointmentExist,
     controller.editInvoice
   )
   .delete(whoIsValid("admin"), controller.deleteFilteredInvoice);

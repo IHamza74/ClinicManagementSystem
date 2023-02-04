@@ -16,6 +16,7 @@ const schema = new mongoose.Schema({
   money: { type: Number, required: true },
   appointmentID: {
     type: mongoose.Schema.Types.ObjectId,
+    unique: true,
     ref: "appointmentScheduler",
   },
   paymentMethod: {
@@ -28,5 +29,4 @@ const schema = new mongoose.Schema({
     default: Date.now(),
   },
 });
-
 mongoose.model("invoices", schema);

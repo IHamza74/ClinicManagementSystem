@@ -87,7 +87,7 @@ exports.addPrescription = (req, res, next) => {
   newPrescription
     .save()
     .then((data) => {
-      res.status(201).json({ data });
+      res.status(201).json({ message: "prescription has been recieved" });
     })
     .catch((error) => next(error));
 };
