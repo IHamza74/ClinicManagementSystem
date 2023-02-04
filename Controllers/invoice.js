@@ -53,7 +53,7 @@ exports.editInvoice = (req, res, next) => {
       $set: {
         medicine: req.body.medicine,
         money: req.body.money,
-        appointmentID: req.body.appointmentID,
+        appointmentID: req.body.appointmentId,
         paymentMethod: req.body.paymentMethod,
       },
     }

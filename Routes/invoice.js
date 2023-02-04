@@ -15,8 +15,8 @@ let validationArray = [
     .withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
   body("money").isInt().withMessage("Money should be Integer"),
-  body("appointmentID")
-    .isMongoId("AppointmentID should be Mongo ID")
+  body("appointmentId")
+    .isMongoId()
     .withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
     .isAlpha()
