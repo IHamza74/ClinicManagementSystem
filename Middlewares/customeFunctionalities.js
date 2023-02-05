@@ -8,8 +8,9 @@ const appointmentScheduler = require("../Controllers/appointmentScheduler");
 //preventing conflicts of appointments for one doctor
 module.exports.isDoctorAvailable = async (request, response, next) => {
     try {
-        let appointmentDate = new Date(request.body.Date).getTime();
+        let appointmentDate = new Date(request.body.date).getTime();
         let currentDate = new Date().getTime();
+        // console.log(appointmentDate)
         if (currentDate > appointmentDate) {
             return response.status(406).json({ message: "You can not make an appointment in the past" });
         } else {
@@ -19,12 +20,15 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
             })
 
             let DrAppointments = await appointsRes.json();
+            let flag = 0;
             DrAppointments.forEach(appointment => {
                 if (Math.abs(new Date(appointment.date) - new Date(request.body.date)) < 30 * 60000) {
+                    flag = 1;
                     return response.status(406).json({ message: "the doctor is busy at this time" })
                 }
             });
-            next();
+            if (flag == 0)
+                next();
         }
     }
     catch (error) {
