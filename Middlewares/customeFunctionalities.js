@@ -3,15 +3,20 @@ let jwt = require("jsonwebtoken");
 const appointmentScheduler = require("../Controllers/appointmentScheduler");
 const mongoose = require("mongoose");
 const { Result } = require("express-validator");
+const colors = require("colors")
 require("../Models/doctor");
 require("../Models/PatientModel")
 require("../Models/clinicModel")
 require("../Models/employeesModel")
+require("../Models/medecineModel")
 
+const medicineSchema = mongoose.model("Medicine")
 const employeeSchema = mongoose.model("employees")
 const clinicSchema = mongoose.model("clinic")
 const patientSchema = mongoose.model("Patients")
 const doctorSchema = mongoose.model("doctor")
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +155,9 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 
         //defining path to check existance of previous invoice or prescription
         let fullPath = request.url.substring(1);
-        let path = fullPath.substring(0, fullPath.indexOf);
+
+        let path = fullPath.split("/")[0]
+        // let path = fullPath.substring(0, fullPath.indexOf("/"));
         // console.log(path)
 
 
@@ -167,7 +174,7 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
             if (prescORinvoice.length == 0)
                 next();
             else {
-                console.log(path)
+                // console.log(`path is ${path}`)
                 return response.status(406).json({ message: `this appointment id has a previous ${path},Process was cancelled` })
             }
         }
@@ -202,4 +209,26 @@ module.exports.addAppointmentToPatientOrDoctor = async (request, response, next)
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////
+//medicine Checking MWs//
+////////////////////////////////////////////////////////////////////////////////////////////////
 
+module.exports.medicineStockMangement = async (request, response, next) => {
+    try {
+        let medicine_array = request.body.medicine;
+        for (let medicine of medicine_array) {
+            let quantity = medicine.quantity;
+            let med = await medicineSchema.findOneAndUpdate({ _id: medicine.medicineID }, { $inc: { Stock: -quantity } })
+                .then()
+                .catch(error => {
+                    next(error)
+                })
+            if (med.Stock < 1000) { console.log(`low stock of medicine ${med.Name}`.bgRed) }
+        }
+        next();
+    }
+    catch (error) {
+        next(error)
+    }
+
+}

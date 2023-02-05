@@ -36,10 +36,10 @@ mongoose
   });
 
 /******First MW******/
-server.use((req, res, next) => {
-  console.log("hellow from First MW");
-  next();
-});
+// server.use((req, res, next) => {
+//   console.log("hellow from First MW");
+//   next();
+// });
 
 /******Settings ******/
 server.use(express.json());

@@ -37,6 +37,7 @@ router
     customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
+    customeMW.medicineStockMangement,
     controller.addInvoice
   )
   .patch(

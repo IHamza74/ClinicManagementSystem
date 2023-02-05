@@ -34,7 +34,7 @@ exports.addMedicine = (req, res, next) => {
     Name: req.body.Name,
     Dose: req.body.Dose,
     Price: req.body.Price,
-    Strock: req.body.Stock,
+    Stock: req.body.Stock,
   });
   addmedicine
     .save()
@@ -55,7 +55,7 @@ exports.editMedicine = (req, res, next) => {
           Name: req.body.Name,
           Dose: req.body.Dose,
           Price: req.body.Price,
-          Strock: req.body.Stock,
+          Stock: req.body.Stock,
         },
       }
     )

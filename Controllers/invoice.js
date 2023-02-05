@@ -28,7 +28,6 @@ exports.getAllInvoices = (request, response, next) => {
 };
 
 exports.addInvoice = (req, res, next) => {
-  console.log(req.body.medicine, req.body.medicine);
   let newInvoice = new InvoiceSchema({
     // _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     medicine: req.body.medicine,
@@ -46,7 +45,6 @@ exports.addInvoice = (req, res, next) => {
 };
 
 exports.editInvoice = (req, res, next) => {
-  console.log(req.body);
   InvoiceSchema.updateOne(
     { _id: req.body.id },
     {
