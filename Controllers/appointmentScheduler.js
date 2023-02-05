@@ -62,7 +62,8 @@ exports.addAppointment = (req, res, next) => {
   newAppointment
     .save()
     .then((result) => {
-      res.status(201).json(result);
+      req.body.appID = newAppointment._id;
+      next();
     })
     .catch((error) => {
       next(error);
@@ -139,19 +140,19 @@ exports.AllAppointmentsReports = (req, res, next) => {
 /* Dialy apointments reports  */
 
 exports.DailyAppointmentsReports = (req, res, next) => {
- let date =new Date();
- date.setHours(0,0,0)
-let day = 60 * 60 * 24 * 1000;
-let nextday = new Date(date.getTime()+day)
+  let date = new Date();
+  date.setHours(0, 0, 0)
+  let day = 60 * 60 * 24 * 1000;
+  let nextday = new Date(date.getTime() + day)
 
   AppointmentSchema.find().where("date").gt(date).lt(nextday)
-  .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
       select: { _id: 0, appointmentNo: 0, workingHours: 0 },
     })
     .populate({ path: "clinicID", select: { _id: 0 } })
-   
+
     .then((data) => {
       res.status(200).json(data);
     })

@@ -18,20 +18,24 @@ let validationArray = [
   body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id"),
   body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id"),
   body("employeeID").isMongoId().withMessage("employeeID should be Mongo Id"),
-  body("date").isDate().withMessage("date should be date"),
+  body("date").isISO8601().toDate().withMessage("date should be date"),
 ];
 
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
-
   .post(
     whoIsValid("admin", "employee"),
     validationArray.slice(1),
     validator,
+    customeMiddlewares.doesPatientExist,
+    customeMiddlewares.doesDoctorExist,
     customeMiddlewares.isDoctorAvailable,
+    customeMiddlewares.doesClinicExist,
+    customeMiddlewares.doesEmployeeExist,
     sendEmail(),
-    controller.addAppointment
+    controller.addAppointment,
+    customeMiddlewares.addAppointmentToPatientOrDoctor,
   )
 
   .patch(

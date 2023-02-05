@@ -1,6 +1,17 @@
 const { request, response, json } = require("express");
 let jwt = require("jsonwebtoken");
 const appointmentScheduler = require("../Controllers/appointmentScheduler");
+const mongoose = require("mongoose");
+const { Result } = require("express-validator");
+require("../Models/doctor");
+require("../Models/PatientModel")
+require("../Models/clinicModel")
+require("../Models/employeesModel")
+
+const employeeSchema = mongoose.model("employees")
+const clinicSchema = mongoose.model("clinic")
+const patientSchema = mongoose.model("Patients")
+const doctorSchema = mongoose.model("doctor")
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//
 ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +93,49 @@ module.exports.DoMedicineExist = async (request, response, next) => {
     }
 }
 
+//checking existance of doctor
+module.exports.doesDoctorExist = async (request, response, next) => {
+    let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
+    if (doctor == null)
+        response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" })
+    else {
+        next();
+    }
+}
+
+
+//checking existance of clinic
+module.exports.doesClinicExist = async (request, response, next) => {
+    let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
+    if (clinic == null)
+        response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" })
+    else {
+        next();
+    }
+}
+
+
+//checking existance of employee ID
+module.exports.doesEmployeeExist = async (request, response, next) => {
+    let employee = await employeeSchema.findOne({ _id: request.body.employeeID });
+    if (employee == null)
+        response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" })
+    else {
+        next();
+    }
+}
+
+//checking existance of patient ID
+module.exports.doesPatientExist = async (request, response, next) => {
+    let patient = await patientSchema.findOne({ _id: request.body.patientID });
+    if (patient == null)
+        response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" })
+    else {
+        next();
+    }
+}
+
+
 //checking of prescription appointment wheather if it exists or not
 module.exports.doesAppointmentExist = async (request, response, next) => {
     try {
@@ -122,4 +176,30 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
         next(error)
     }
 }
+
+module.exports.addAppointmentToPatientOrDoctor = async (request, response, next) => {
+    try {
+        await doctorSchema.findOneAndUpdate({ _id: request.body.doctorID }, { $push: { appointmentNo: request.body.appID } })
+            .then(result => {
+                console.log("appointment ID was added to Doctor successfully");
+            })
+            .catch(err => {
+                next(err)
+            })
+        await patientSchema.findOneAndUpdate({ _id: request.body.patientID }, { $push: { Apointments: request.body.appID } })
+            .then(result => {
+                console.log("appointment ID was added to patient successfully");
+            })
+            .catch(error => {
+                next(error)
+            })
+        return response.status(201).json({ message: "Appointment was Added successfully " })
+    }
+    catch (error) {
+        console.log("Error Adding appointments to doctor or patient, process was cancelled");
+        next(error)
+    }
+}
+
+
 

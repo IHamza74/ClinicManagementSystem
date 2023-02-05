@@ -34,6 +34,7 @@ router
     whoIsValid("employee", "admin"),
     validationArray.slice(1),
     validator,
+    customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
     controller.addInvoice
