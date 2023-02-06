@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 
 require("./../Models/sharedData");
 
-const mailschema = mongoose.model("SharedData");
 
 const patinetSchmea = mongoose.model("Patients");
 
@@ -35,13 +34,7 @@ exports.getAllPatients = (request, response, next) => {
 };
 
 exports.addPatient = (request, response, next) => {
-  let addData = new mailschema({
-    email: request.body.Email,
-  });
-
-  addData
-    .save()
-    .then((data) => {
+ 
       let addPatient = new patinetSchmea({
         Name: request.body.Name,
         Age: request.body.Age,
@@ -50,7 +43,7 @@ exports.addPatient = (request, response, next) => {
         Section: request.body.Section,
         Disease: request.body.Disease,
         Password: request.body.Password,
-        Email: request.body.Email,
+        Email: request.body.email,
       })
 
         .save()
@@ -60,10 +53,8 @@ exports.addPatient = (request, response, next) => {
         .catch((error) => {
           next(error);
         });
-    })
-    .catch((error) =>
-      response.status(200).json({ message: "this email exists" })
-    );
+    
+   
 };
 
 exports.editPatient = (request, res, next) => {
@@ -118,4 +109,18 @@ exports.deleteFilteredPatient = (req, res, next) => {
     .catch((error) => {
       next(error);
     });
+
+   
+   
 };
+
+ /* get patient profile  */
+exports.getpatientProfile = (req,res,next)=>{
+  patinetSchmea.findById(req.params.id).populate({path:"Apointments"})
+  .then((result)=>{
+    if(result!=null)
+    res.status(201).json(result);
+    else
+     next(new Error("this patient doesnt exists"));
+  }).catch(error =>next(error))
+}

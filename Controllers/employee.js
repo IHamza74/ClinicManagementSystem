@@ -34,10 +34,6 @@ exports.getAllEmployees = (request, response, next) => {
 
 exports.addEmployee = (req, res, next) => {
 
-  let addData = new mailschema({
-    email: req.body.email
-  })
-  addData.save().then((data) => {
     let newEmp = new employeesSchema({
       _id: mongoose.Types.ObjectId(),
       name: req.body.name,
@@ -51,8 +47,7 @@ exports.addEmployee = (req, res, next) => {
         res.status(201).json({ status: "employee added successfully" });
       })
       .catch((error) => next(error));
-  })
-    .catch(error => res.status(201).json({ message: "this email exists" }))
+ 
 
 
 

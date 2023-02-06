@@ -6,6 +6,8 @@ const whoIsValid = require("../Middlewares/AuthorizeRole");
 
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
+const checkmail = require("../Middlewares/checkMailExisits")
+
 
 /*      Name: request.body.Name,
         Age: request.body.Age,
@@ -62,6 +64,7 @@ router
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)
   .post(
     whoIsValid("employee", "admin", "doctor"),
+    checkmail,
     validationArray.slice(1),
     validator,
     controller.addPatient
@@ -75,6 +78,14 @@ router
   .delete(
     whoIsValid("employee", "admin", "doctor"),
     controller.deleteFilteredPatient
+  );
+router
+  .route("/patient/:id")
+     .get(
+          param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+      validator,
+      controller.getpatientProfile,
+      
   );
 
 module.exports = router;

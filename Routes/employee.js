@@ -2,6 +2,7 @@ const express = require("express");
 const controller = require("./../Controllers/employee");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
+const checkmail = require("../Middlewares/checkMailExisits")
 
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
@@ -32,6 +33,7 @@ router
   .get(whoIsValid("admin"), controller.getAllEmployees)
   .post(
     whoIsValid("admin"),
+    checkmail,
     validationArray.slice(1),
     validator,
     controller.addEmployee

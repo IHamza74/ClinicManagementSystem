@@ -9,6 +9,7 @@ const employeeRouter = require("./Routes/employee");
 const invoiceRouter = require("./Routes/invoice");
 const medicineRouter = require("./Routes/medicine");
 const patientRouter = require("./Routes/patient");
+const signupRouter =require("./Routes/signup")
 const prescriptionRouter = require("./Routes/prescription");
 const payment = require("./Routes/payment");
 const dotenv = require("dotenv");
@@ -45,8 +46,10 @@ mongoose
 server.use(express.json());
 
 /******ROUTES******/
+
 //0)Login
 server.use(loginRouter);
+server.use(signupRouter);
 //server.use(authenticationMW
 server.use(authenticationMW.login);
 
