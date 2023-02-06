@@ -3,19 +3,18 @@ let jwt = require("jsonwebtoken");
 const appointmentScheduler = require("../Controllers/appointmentScheduler");
 const mongoose = require("mongoose");
 const { Result } = require("express-validator");
-const colors = require("colors")
+const colors = require("colors");
 require("../Models/doctor");
-require("../Models/PatientModel")
-require("../Models/clinicModel")
-require("../Models/employeesModel")
-require("../Models/medecineModel")
+require("../Models/PatientModel");
+require("../Models/clinicModel");
+require("../Models/employeesModel");
+require("../Models/medecineModel");
 
-const medicineSchema = mongoose.model("Medicine")
-const employeeSchema = mongoose.model("employees")
-const clinicSchema = mongoose.model("clinic")
-const patientSchema = mongoose.model("Patients")
-const doctorSchema = mongoose.model("doctor")
-
+const medicineSchema = mongoose.model("Medicine");
+const employeeSchema = mongoose.model("employees");
+const clinicSchema = mongoose.model("clinic");
+const patientSchema = mongoose.model("Patients");
+const doctorSchema = mongoose.model("doctor");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//
@@ -30,7 +29,7 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
         if (currentDate > appointmentDate) {
             return response.status(406).json({ message: "You can not make an appointment in the past" });
         } else {
-            let token = jwt.sign({ role: "admin" }, "AhmedTurky", { expiresIn: "1h" });
+            let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, { expiresIn: "1h" });
             let appointsRes = await fetch(`http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
@@ -155,10 +154,12 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 
         //defining path to check existance of previous invoice or prescription
         let fullPath = request.url.substring(1);
+        console.log(`${fullPath}`.bgCyan)
 
         let path = fullPath.split("/")[0]
         // let path = fullPath.substring(0, fullPath.indexOf("/"));
-        // console.log(path)
+        console.log(`${path}`.bgCyan)
+        console.log(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue)
 
 
         // checking appointment if exist

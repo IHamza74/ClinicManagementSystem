@@ -42,6 +42,11 @@ router
     whoIsValid("admin", "employee"),
     validationArray,
     validator,
+    customeMiddlewares.doesPatientExist,
+    customeMiddlewares.doesDoctorExist,
+    customeMiddlewares.isDoctorAvailable,
+    customeMiddlewares.doesClinicExist,
+    customeMiddlewares.doesEmployeeExist,
     controller.editAppointment
   )
 
