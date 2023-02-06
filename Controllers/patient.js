@@ -3,9 +3,9 @@ const { response } = require("express");
 
 const mongoose = require("mongoose");
 
-require ("./../Models/sharedData")
+require("./../Models/sharedData");
 
-const mailschema = mongoose.model("SharedData")
+const mailschema = mongoose.model("SharedData");
 
 const patinetSchmea = mongoose.model("Patients");
 
@@ -35,14 +35,14 @@ exports.getAllPatients = (request, response, next) => {
 };
 
 exports.addPatient = (request, response, next) => {
-  
-  let addData =  new mailschema({
-    email:request.body.Email
-   })
-   
-   addData.save().then((data)=>{
-    
-    let addPatient = new patinetSchmea({
+  let addData = new mailschema({
+    email: request.body.Email,
+  });
+
+  addData
+    .save()
+    .then((data) => {
+      let addPatient = new patinetSchmea({
         Name: request.body.Name,
         Age: request.body.Age,
         Address: request.body.Address,
@@ -51,26 +51,28 @@ exports.addPatient = (request, response, next) => {
         Disease: request.body.Disease,
         Password: request.body.Password,
         Email: request.body.Email,
-   })
-  
-   .save()
-    .then((result) => {
-      response.status(201).json(result);
-    })
-    .catch((error) => {
-      next(error);
-    });
-  
-  })
+      })
 
-     .catch(error =>response.status(200).json({message:"this email exists"}))
- 
+        .save()
+        .then((result) => {
+          response.status(201).json(result);
+        })
+        .catch((error) => {
+          next(error);
+        });
+    })
+    .catch((error) =>
+      response.status(200).json({ message: "this email exists" })
+    );
 };
 
 exports.editPatient = (request, res, next) => {
   patinetSchmea
     .updateOne(
-      { Email: request.body.Email },
+      {
+        _id: request.body.id,
+        //  Email: request.body.Email
+      },
       {
         $set: {
           Name: request.body.Name,
@@ -116,4 +118,4 @@ exports.deleteFilteredPatient = (req, res, next) => {
     .catch((error) => {
       next(error);
     });
-}
+};

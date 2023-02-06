@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
+const medicineSchema = require("./medicineSchema");
 
-let medicineSchema = new mongoose.Schema(
-  {
-    medicineID: { type: mongoose.Schema.Types.ObjectId, ref: "Medicine" },
-    quantity: { type: Number },
-  },
-  {
-    _id: false,
-  }
-);
+// let medicineSchema = new mongoose.Schema(
+//   {
+//     medicineID: { type: mongoose.Schema.Types.ObjectId, ref: "Medicine" },
+//     quantity: { type: Number },
+//   },
+//   {
+//     _id: false,
+//   }
+// );
 
 const schema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },

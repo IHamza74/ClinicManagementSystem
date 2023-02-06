@@ -5,7 +5,7 @@ const authenticationMW = require("./../Middlewares/AuthenticationMW");
 const whoIsValid = require("../Middlewares/AuthorizeRole");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
-const customeMW = require("../Middlewares/customeFunctionalities")
+const customeMW = require("../Middlewares/customeFunctionalities");
 
 let validationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
