@@ -10,7 +10,7 @@ const validator = require("./../Middlewares/errorValidation");
 let validationArray = [
   //id  ,doctorId ,medicine ,appointmentId , , ,
   body("id").isMongoId().withMessage("id should be Mongo Id"),
-  body("doctorId").isMongoId().withMessage("doctorId should be Mongo Id"),
+  // body("doctorId").isMongoId().withMessage("doctorId should be Mongo Id"),
 
   body("medicine").isArray().withMessage("Medicine should be Array"),
   body("medicine.*.medicineID")

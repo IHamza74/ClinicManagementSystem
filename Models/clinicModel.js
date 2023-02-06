@@ -10,9 +10,7 @@ let clinicSchema = new schema(
       type: String,
       required: [true, 'You must enter a clinic name']
     },
-    clinicAddress: {
-      type: String
-    }
+    clinicAddress: { type: String, required: [true, "Please enter Clinic address!"] }
   }
 )
 

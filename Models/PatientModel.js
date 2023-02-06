@@ -5,7 +5,6 @@ const addressSchema = require("../Models/addressSchemaModel")
 const schema = new mongoose.Schema({
   _id: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     auto: true,
   },
   Name: { type: String, required: [true, "enter valid name"] },
