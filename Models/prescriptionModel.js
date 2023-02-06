@@ -9,7 +9,7 @@ const prescriptionSchema = new mongoose.Schema({
   //   required: [true, "You must enter an doctor id for prescription"],
   // },
   medicine: [medicineSchema],
-  appointmentId: {
+  appointmentID: {
     type: mongoose.Schema.ObjectId,
     required: [true, "You must enter an appointment id for prescription"],
     unique: true,

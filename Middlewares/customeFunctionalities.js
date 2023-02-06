@@ -29,7 +29,7 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
         if (currentDate > appointmentDate) {
             return response.status(406).json({ message: "You can not make an appointment in the past" });
         } else {
-            let token = jwt.sign({ role: "admin" }, "AhmedTurky", { expiresIn: "1h" });
+            let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, { expiresIn: "1h" });
             let appointsRes = await fetch(`http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             })
@@ -154,10 +154,12 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 
         //defining path to check existance of previous invoice or prescription
         let fullPath = request.url.substring(1);
+        console.log(`${fullPath}`.bgCyan)
 
         let path = fullPath.split("/")[0]
         // let path = fullPath.substring(0, fullPath.indexOf("/"));
-        // console.log(path)
+        console.log(`${path}`.bgCyan)
+        console.log(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue)
 
 
         // checking appointment if exist

@@ -11,10 +11,10 @@ const schema = new mongoose.Schema(
          required: true,
          auto: true,
       },
-      Name: { type: String, required: true },
-      Dose: { type: Number },
-      Price: { type: Number },
-      Stock: { type: Number }
+      Name: { type: String, required: [true, "Please enter the medicine Name!"] },
+      Dose: { type: Number, required: [true, "Please enter medicine dose!"] },
+      Price: { type: Number, required: [true, "Please enter medicine price!"] },
+      Stock: { type: Number, default: 1000 }
 
    }
 
