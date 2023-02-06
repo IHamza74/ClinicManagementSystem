@@ -3,19 +3,18 @@ let jwt = require("jsonwebtoken");
 const appointmentScheduler = require("../Controllers/appointmentScheduler");
 const mongoose = require("mongoose");
 const { Result } = require("express-validator");
-const colors = require("colors")
+const colors = require("colors");
 require("../Models/doctor");
-require("../Models/PatientModel")
-require("../Models/clinicModel")
-require("../Models/employeesModel")
-require("../Models/medecineModel")
+require("../Models/PatientModel");
+require("../Models/clinicModel");
+require("../Models/employeesModel");
+require("../Models/medecineModel");
 
-const medicineSchema = mongoose.model("Medicine")
-const employeeSchema = mongoose.model("employees")
-const clinicSchema = mongoose.model("clinic")
-const patientSchema = mongoose.model("Patients")
-const doctorSchema = mongoose.model("doctor")
-
+const medicineSchema = mongoose.model("Medicine");
+const employeeSchema = mongoose.model("employees");
+const clinicSchema = mongoose.model("clinic");
+const patientSchema = mongoose.model("Patients");
+const doctorSchema = mongoose.model("doctor");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//

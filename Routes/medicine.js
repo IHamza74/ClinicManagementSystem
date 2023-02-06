@@ -10,9 +10,9 @@ let validationArray = [
   //Name , Dose , Price ,Stock
   body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("Name").isString().withMessage("Name should be String"),
-  body("Dose").isFloat().withMessage("Name should be float"),
-  body("Price").isFloat().withMessage("Name should be float"),
-  body("Stock").isInt().withMessage("Name should be Integer"),
+  body("Dose").isFloat().withMessage("Dose should be float"),
+  body("Price").isFloat().withMessage("Price should be float"),
+  body("Stock").isInt().withMessage("Stock should be Integer"),
 ];
 
 router
