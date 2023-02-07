@@ -2,7 +2,7 @@ const express = require("express");
 const controller = require("./../Controllers/doctor");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
-const checkmail = require("../Middlewares/checkMailExisits")
+const checkmail = require("../Middlewares/checkMailExisits");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
@@ -48,7 +48,13 @@ router
     validator,
     controller.addDoctor
   )
-  .patch(whoIsValid("admin"), validationArray, validator, controller.editDoctor)
+  .patch(
+    whoIsValid("admin"),
+    // validationArray,
+    controller.uploadDoctorImg,
+    validator,
+    controller.editDoctor
+  )
   .delete(whoIsValid("admin"), controller.deleteFilteredDoctor);
 
 router

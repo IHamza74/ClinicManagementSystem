@@ -6,11 +6,9 @@ const whoIsValid = require("../Middlewares/AuthorizeRole");
 
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
-const checkmail = require("../Middlewares/checkMailExisits")
+const checkmail = require("../Middlewares/checkMailExisits");
 
 const customeMiddlewares = require("../Middlewares/customeFunctionalities");
-
-
 
 /*      Name: request.body.Name,
         Age: request.body.Age,
@@ -73,8 +71,9 @@ router
     controller.addPatient
   )
   .patch(
-    whoIsValid("employee", "doctor", "patient"),
-    validationArray,
+    whoIsValid("employee", "doctor", "patient", "admin"),
+    // validationArray,
+    controller.uploadPatientImg,
     validator,
     controller.editPatient
   )
@@ -82,19 +81,21 @@ router
     whoIsValid("employee", "admin", "doctor"),
     controller.deleteFilteredPatient
   );
-/*  reserve an appointment by patient */ 
-  router 
+/*  reserve an appointment by patient */
+router
   .route("/patient/reserveappointment/:id")
-  .post(whoIsValid("patient"),customeMiddlewares.doesClinicExist,
-        controller.reserveAppointment)
+  .post(
+    whoIsValid("patient"),
+    customeMiddlewares.doesClinicExist,
+    controller.reserveAppointment
+  );
 
 router
   .route("/patient/:id")
-     .get(
-          param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-      validator,
-      controller.getpatientProfile,
-      
+  .get(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getpatientProfile
   );
 
 module.exports = router;

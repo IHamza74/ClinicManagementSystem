@@ -12,7 +12,9 @@ const PatientSchmea = mongoose.model("Patients");
 
 exports.login = (req, res, next) => {
   if (req.body.email == "turky@gmail.com" && req.body.password == "123") {
-    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY);
+    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+      expiresIn: process.env.TOKEN_DURAITION,
+    });
     res.status(200).json({ data: "Authorized Admin", token });
   } else {
     //nested one
@@ -23,7 +25,7 @@ exports.login = (req, res, next) => {
       if (employee != null) {
         console.log("i'm employee");
         let token = jwt.sign({ role: "employee" }, process.env.SECRET_KEY, {
-          expiresIn: "90d",
+          expiresIn: process.env.TOKEN_DURAITION,
         });
         checkAuthintication(employee, req, res, token);
       } //end of employee check
@@ -34,7 +36,7 @@ exports.login = (req, res, next) => {
           if (doctor != null) {
             console.log("i'm doctor");
             let token = jwt.sign({ role: "doctor" }, process.env.SECRET_KEY, {
-              expiresIn: "90d",
+              expiresIn: process.env.TOKEN_DURAITION,
             });
 
             checkAuthintication(doctor, req, res, token);
@@ -49,7 +51,7 @@ exports.login = (req, res, next) => {
                   { role: "patient" },
                   process.env.SECRET_KEY,
                   {
-                    expiresIn: "90d",
+                    expiresIn: process.env.TOKEN_DURAITION,
                   }
                 );
                 bcrypt

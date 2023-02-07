@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const addressSchema = require("../Models/addressSchemaModel")
+const addressSchema = require("../Models/addressSchemaModel");
 
 const schema = new mongoose.Schema({
   _id: {
@@ -9,6 +9,10 @@ const schema = new mongoose.Schema({
   },
   Name: { type: String, required: [true, "enter valid name"] },
   Age: { type: Number, required: [true, "enter valid age"] },
+  photo: {
+    type: String,
+    default: "default.jpg",
+  },
   Address: { type: addressSchema, required: [true, "enter valid address"] },
   Apointments: {
     type: [

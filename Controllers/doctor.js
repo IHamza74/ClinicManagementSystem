@@ -2,8 +2,33 @@ const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/doctorModel");
 require("./../Models/sharedData");
+const multer = require("multer");
+
 const DoctorSchema = mongoose.model("doctor");
 
+//creating img file
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "img");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `doctor-${req.body.id}-${Date.now()}.${ext}`);
+  },
+});
+
+//checking the uploaded file
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image!"), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+/**** UPLOAD IMAGE ****/
+exports.uploadDoctorImg = upload.single("photo");
 /****GET ALL DATA AS FILTERED****/
 exports.getAllDoctors = (request, response, next) => {
   //FILTERING DATA
@@ -76,6 +101,7 @@ exports.editDoctor = (req, res, next) => {
         workingHours: req.body.workingHours,
         appointmentNo: req.body.appointmentNo,
         password: req.body.password,
+        photo: req.file.filename,
       },
     }
   )
