@@ -78,7 +78,6 @@ exports.getPrescriptionsById = (request, response, next) => {
     })
     .catch((error) => next(error));
 };
-
 //post Prescription
 exports.addPrescription = (req, res, next) => {
   let newPrescription = new PrescriptionSchema({

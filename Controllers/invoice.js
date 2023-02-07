@@ -11,7 +11,20 @@ exports.getAllInvoices = (request, response, next) => {
   ObjStr = JSON.parse(ObjStr);
 
   //OBJECT RESULTED FROM QUERY
-  let resultedObj = InvoiceSchema.find(ObjStr);
+  let resultedObj = InvoiceSchema.find(ObjStr)
+    .populate({
+      path: "appointmentID",
+      select: { _id: 0, patientID: 0, employeeID: 0 },
+      populate: [
+        { path: "doctorID", select: { _id: 0, Password: 0 } },
+        { path: "clinicID", select: { _id: 0 } },
+      ],
+    })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+    .populate({
+      path: "medicine",
+      populate: { path: "medicineID", select: { _id: 0 } },
+    });
 
   //IF SORTING DATA
   if (request.query.sort) {
@@ -57,7 +70,7 @@ exports.editInvoice = (req, res, next) => {
     }
   )
     .then((data) => {
-      res.status(201).json({ message: "Update invoice" });
+      res.status(201).json({ data });
     })
     .catch((error) => next(error));
 };
@@ -65,7 +78,7 @@ exports.editInvoice = (req, res, next) => {
 exports.deleteInvoice = (req, res, next) => {
   InvoiceSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(201).json({ message: "Delete child" });
+      res.status(201).json({ message: "Delete invoice" });
     })
     .catch((error) => next(error));
 };
