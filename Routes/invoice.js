@@ -63,7 +63,6 @@ router
 
 router
   .route("/invoice/:id")
-<<<<<<< HEAD
   .delete(whoIsValid("admin"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
@@ -81,15 +80,14 @@ router
 
 router
   .route("/invoice//dailyreports")
-  .get(whoIsValid("admin"), controller.DailyInvoicesReports);
-=======
+  .get(whoIsValid("admin"), controller.DailyInvoicesReports)
+
   .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteInvoice)
   .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getInvoicebyID);
 
 router.route("/invoice//allreports").get(whoIsValid("admin", "employee"), controller.AllInvoicesReports);
 
 router.route("/invoice//dailyreports").get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
->>>>>>> f065face7b7c7bb82e48d871d89b4a5cf8f64133
 
 router
   .route("/invoice//patientreports/:id")
