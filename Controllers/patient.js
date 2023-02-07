@@ -1,10 +1,12 @@
 require("../Models/PatientModel");
+require("../Models/pendingAppointment")
 const { response } = require("express");
 
 const mongoose = require("mongoose");
 
 require("./../Models/sharedData");
 
+const pendingSchema = mongoose.model("PendingAppointment")
 
 const patinetSchmea = mongoose.model("Patients");
 
@@ -110,17 +112,32 @@ exports.deleteFilteredPatient = (req, res, next) => {
       next(error);
     });
 
-   
-   
 };
 
  /* get patient profile  */
 exports.getpatientProfile = (req,res,next)=>{
-  patinetSchmea.findById(req.params.id).populate({path:"Apointments"})
+  patinetSchmea.findById(req.params.id).populate({path:"Apointments",
+populate:{path:"patientID",select:{_id: 0, Password: 0 }},
+populate:{path:"doctorID",select:{ _id: 0, appointmentNo: 0, workingHours: 0}},
+populate:{path:"clinicID",select:{_id: 0}}
+})
   .then((result)=>{
     if(result!=null)
     res.status(201).json(result);
     else
      next(new Error("this patient doesnt exists"));
   }).catch(error =>next(error))
+}
+
+/**  request an appointment  */
+exports.reserveAppointment= (req,res,next)=>{
+  console.log(req.params.id)
+ let addpending = new  pendingSchema({
+  patientID:req.params.id,
+  clinicID:req.body.clinicID,
+  date:req.body.date,
+  painDescription:req.body.painDescription
+ }).save().then((data)=>{
+  res.status(201).json({message:"Reservation done successfuly "});
+ }).catch(error=>next(error))
 }

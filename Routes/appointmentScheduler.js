@@ -54,6 +54,43 @@ router
     whoIsValid("admin", "employee"),
     controller.deleteFilteredAppointment
   );
+/** appontments reports  */
+  router
+  .route("/appointmentScheduler/allreports")
+  .get(whoIsValid('admin', 'employee'), controller.AllAppointmentsReports);
+
+  router
+  .route("/appointmentScheduler/dailyreports")
+  .get(whoIsValid('admin', 'employee'), controller.DailyAppointmentsReports);
+
+router
+  .route("/appointmentScheduler/doctorreports")
+  .get(whoIsValid('admin', 'employee'), controller.DoctorAppointmentsReports);
+
+
+router
+  .route("/appointmentScheduler/patientreports")
+  .get(whoIsValid('admin', 'employee'), controller.PatientAppointmentsReports);
+
+  /**   pending appointments  */
+
+router 
+.route("/appointmentScheduler/pending")
+.post(
+  // whoIsValid("admin", "employee"),
+  //  validator,
+  // customeMiddlewares.isDoctorAvailable,
+  // sendEmail(),
+  // controller.addPendingToAppointment,
+  // customeMiddlewares.addAppointmentToPatientOrDoctor,
+
+)
+.get(
+  whoIsValid("admin", "employee"),
+  controller.getAllPending
+)
+
+
 
 router
   .route("/appointmentScheduler/:id")
@@ -68,22 +105,11 @@ router
     validator,
     controller.deleteAppointment
   );
+
+
+  
 module.exports = router;
 
-router
-  .route("/appointmentScheduler//allreports")
-  .get(whoIsValid('admin', 'employee'), controller.AllAppointmentsReports)
-
-router
-  .route("/appointmentScheduler//dailyreports")
-  .get(whoIsValid('admin', 'employee'), controller.DailyAppointmentsReports)
-
-router
-  .route("/appointmentScheduler//doctorreports")
-  .get(whoIsValid('admin', 'employee'), controller.DoctorAppointmentsReports)
 
 
-router
-  .route("/appointmentScheduler//patientreports")
-  .get(whoIsValid('admin', 'employee'), controller.PatientAppointmentsReports)
 

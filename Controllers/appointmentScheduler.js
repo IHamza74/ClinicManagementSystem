@@ -1,6 +1,8 @@
 const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/appointmentModel");
+require("../Models/pendingAppointment")
+const pendingSchema = mongoose.model("PendingAppointment")
 
 const AppointmentSchema = mongoose.model("appointmentScheduler");
 
@@ -189,3 +191,38 @@ exports.PatientAppointmentsReports = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+/** add pending appointment to appointment scheduler */
+// exports.addPendingToAppointment = (req, res, next) => {
+//   let newAppointment = new AppointmentSchema({
+//     _id: mongoose.Types.ObjectId(),
+//     patientID: req.body.patientID,
+//     doctorID: req.body.doctorID,
+//     clinicID: req.body.clinicID,
+//     employeeID: req.params.id,
+//     date: req.body.date,
+   
+//   });
+
+//   newAppointment
+//     .save()
+//     .then((result) => {
+
+//       req.body.appID = newAppointment._id;
+//       next();
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// };
+
+exports.getAllPending=(req, res, next) => { 
+   pendingSchema.find()
+   .populate({path:"patientID"})
+   .then((data)=>{
+    res.status(200).json(data);
+   }).catch(error=>next(error))
+
+}
+
+

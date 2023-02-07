@@ -8,6 +8,9 @@ const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 const checkmail = require("../Middlewares/checkMailExisits")
 
+const customeMiddlewares = require("../Middlewares/customeFunctionalities");
+
+
 
 /*      Name: request.body.Name,
         Age: request.body.Age,
@@ -79,6 +82,12 @@ router
     whoIsValid("employee", "admin", "doctor"),
     controller.deleteFilteredPatient
   );
+/*  reserve an appointment by patient */ 
+  router 
+  .route("/patient/reserveappointment/:id")
+  .post(whoIsValid("patient"),customeMiddlewares.doesClinicExist,
+        controller.reserveAppointment)
+
 router
   .route("/patient/:id")
      .get(
