@@ -32,6 +32,7 @@ exports.addClinic = (req, res, next) => {
     // _id: req.body.id,
     clinicName: req.body.name,
     clinicAddress: req.body.address,
+    doctorsID:req.body.doctors
   })
     .save()
     .then((result) => {
@@ -49,6 +50,7 @@ exports.editClinic = (req, res, next) => {
           // _id: req.body.id,
           clinicName: req.body.name,
           clinicAddress: req.body.address,
+          doctorsID:req.body.doctors
         },
       }
     )

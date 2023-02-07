@@ -40,9 +40,9 @@ let validationArray = [
 
 router
   .route("/doctor")
-  .get(whoIsValid("admin", "employee"), controller.getAllDoctors)
+  .get(whoIsValid("admin"), controller.getAllDoctors)
   .post(
-    whoIsValid("admin", "employee"),
+    whoIsValid("admin"),
     checkmail,
     validationArray.slice(1),
     validator,

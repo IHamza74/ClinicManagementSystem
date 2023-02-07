@@ -73,13 +73,13 @@ router
     controller.addPatient
   )
   .patch(
-    whoIsValid("employee", "doctor", "patient"),
+    whoIsValid("employee", "doctor"),
     validationArray,
     validator,
     controller.editPatient
   )
   .delete(
-    whoIsValid("employee", "admin", "doctor"),
+    whoIsValid("employee", "admin"),
     controller.deleteFilteredPatient
   );
 /*  reserve an appointment by patient */ 
@@ -96,5 +96,6 @@ router
       controller.getpatientProfile,
       
   );
+  
 
 module.exports = router;
