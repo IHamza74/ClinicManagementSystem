@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
-require("./../Models/doctor");
+require("./../Models/doctorModel");
 
 const DoctorSchema = mongoose.model("doctor");
 
@@ -16,7 +16,10 @@ const sendEmail = () => {
       },
     });
 
-    const doctor = DoctorSchema.findOne({ _id: req.body.doctorID }, { _id: 0, email: 1 });
+    const doctor = DoctorSchema.findOne(
+      { _id: req.body.doctorID },
+      { _id: 0, email: 1 }
+    );
     const email = await doctor.exec();
 
     // 2) Define the email Data

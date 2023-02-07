@@ -4,7 +4,7 @@ const appointmentScheduler = require("../Controllers/appointmentScheduler");
 const mongoose = require("mongoose");
 const { Result } = require("express-validator");
 const colors = require("colors");
-require("../Models/doctor");
+require("../Models/doctorModel");
 require("../Models/PatientModel");
 require("../Models/clinicModel");
 require("../Models/employeesModel");

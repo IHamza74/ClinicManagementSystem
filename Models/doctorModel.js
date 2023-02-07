@@ -28,7 +28,6 @@ const doctorSchema = new Schema({
     type: String,
     required: [true, "Please provide a password"],
     minlength: 8,
-    select: false,
   },
   workingHours: { type: Number, default: 6 },
   appointmentNo: [{ type: Schema.Types.ObjectId, ref: "appointmentScheduler" }],
