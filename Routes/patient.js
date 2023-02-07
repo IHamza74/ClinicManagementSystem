@@ -71,14 +71,13 @@ router
     controller.addPatient
   )
   .patch(
-<<<<<<< HEAD
+
     whoIsValid("employee", "doctor"),
     validationArray,
-=======
     whoIsValid("employee", "doctor", "patient", "admin"),
     // validationArray,
     controller.uploadPatientImg,
->>>>>>> f065face7b7c7bb82e48d871d89b4a5cf8f64133
+
     validator,
     controller.editPatient
   )

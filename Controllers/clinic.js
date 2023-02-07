@@ -86,3 +86,17 @@ exports.deleteFilteredClinic = (req, res, next) => {
       next(error);
     });
 };
+
+/**  add doctor to  work at clinic */
+exports.addDoctor =(req,res,next)=>{
+
+  clinicSchema.updateOne({_id:req.params.id},{$addToSet:{"doctorsID":req.body.id}}).then((result)=>{
+    res.status(200).json(result);
+  }).catch(error=>next(error))
+}
+/** delete doctor from clinic */
+exports.deleteDoctor=(req,res,next)=>{
+  clinicSchema.updateOne({_id:req.params.id},{$pull:{"doctorsID":req.body.id}}).then((result)=>{
+    res.status(200).json(result);
+  }).catch(error=>next(error))
+}
