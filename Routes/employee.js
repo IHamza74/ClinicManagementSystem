@@ -2,7 +2,7 @@ const express = require("express");
 const controller = require("./../Controllers/employee");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
-const checkmail = require("../Middlewares/checkMailExisits")
+const checkmail = require("../Middlewares/checkMailExisits");
 
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
@@ -40,7 +40,8 @@ router
   )
   .patch(
     whoIsValid("admin"),
-    validationArray,
+    // validationArray,
+    controller.uploadEmployeeImg,
     validator,
     controller.editEmployee
   )

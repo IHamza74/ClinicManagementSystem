@@ -23,6 +23,7 @@
     "mongoose": "^6.9.0",
     "mongoose-deep-populate": "^3.2.0",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1",
     "stri": "^1.0.293",
     "stripe": "^11.9.0"
