@@ -64,6 +64,7 @@ router
     customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
+    customeMW.restoreMedicineStock,
     customeMW.medicineStockMangement,
     controller.editInvoice
   )
