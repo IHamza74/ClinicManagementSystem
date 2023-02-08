@@ -1,11 +1,13 @@
 const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/doctorModel");
-require("./../Models/sharedData");
 const multer = require("multer");
 
 const DoctorSchema = mongoose.model("doctor");
-const sharedData = mongoose.model("SharedData")
+require("./../Models/sharedData");
+
+const sharedMail = mongoose.model("SharedData")
+
 //creating img file
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -78,12 +80,16 @@ exports.addDoctor = (req, res, next) => {
     workingHours: req.body.workingHours,
     appointmentNo: req.body.appointmentNo,
     password: req.body.password,
-  })
+  });
+  newAppointment
     .save()
     .then((result) => {
       res.status(201).json(result);
     })
     .catch((error) => {
+      console.log("haal")
+      sharedMail.deleteOne({email:req.body.email}).then((data)=>{console.log("mail deleted from data shared")})
+      .catch(error=>next(error))
       next(error);
     });
 };

@@ -6,6 +6,7 @@ const { response } = require("express");
 const mongoose = require("mongoose");
 
 require("./../Models/sharedData");
+const sharedMail = mongoose.model("SharedData")
 
 const pendingSchema = mongoose.model("PendingAppointment");
 
@@ -77,6 +78,7 @@ exports.addPatient = (request, response, next) => {
       response.status(201).json(result);
     })
     .catch((error) => {
+      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
       next(error);
     });
 };

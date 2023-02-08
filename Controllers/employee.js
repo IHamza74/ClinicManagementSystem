@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 require("../Models/employeesModel");
 require("../Models/sharedData");
 const multer = require("multer");
+const sharedMail = mongoose.model("SharedData")
 
 const employeesSchema = mongoose.model("employees");
 
@@ -69,7 +70,10 @@ exports.addEmployee = (req, res, next) => {
     .then((data) => {
       res.status(201).json({ status: "employee added successfully" });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
+      next(error)}
+    );
 };
 
 exports.editEmployee = (req, res, next) => {
