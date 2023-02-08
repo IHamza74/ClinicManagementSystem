@@ -170,54 +170,55 @@ module.exports.doesPatientExist = async (request, response, next) => {
 
 //checking of prescription appointment wheather if it exists or not
 module.exports.doesAppointmentExist = async (request, response, next) => {
-  if (!request.body.appointmentId) {
-    let Prescription = await PrescriptionSchema.findOne({ _id: request.body.id });
-    if (Prescription == null) response.status(406).json({ meassge: "Wrong Prescription ID, process was cancelled" });
-    request.body.appointmentId = Prescription.appointmentID.toString();
-  }
-
-  try {
-    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
-    //fetching appointment
-    let appointmentStream = await fetch(`http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`, {
-      headers: { Authorization: "Bearer " + token },
-    });
-    // checking overall medcines status
-    let AppointmentResult = await appointmentStream.json();
-
-    //defining path to check existance of previous invoice or prescription
-    let fullPath = request.url.substring(1);
-    console.log(`${fullPath}`.bgCyan);
-
-    let path = fullPath.split("/")[0];
-    // let path = fullPath.substring(0, fullPath.indexOf("/"));
-    console.log(`${path}`.bgCyan);
-    console.log(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue);
-
-    // checking appointment if exist
-    if (AppointmentResult._id != request.body.appointmentId) {
-      return response.status(406).json({ message: "Appointment Id is not valid, process is cancelled" });
-    } else {
-      //checking existance of previous prescription or invoice
-      let prescORinvoiceRES = await fetch(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`, {
+  if (request.body.appointmentId) {
+    try {
+      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      //fetching appointment
+      let appointmentStream = await fetch(`http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`, {
         headers: { Authorization: "Bearer " + token },
       });
+      // checking overall medcines status
+      let AppointmentResult = await appointmentStream.json();
 
-      let prescORinvoice = await prescORinvoiceRES.json();
-      if (prescORinvoice.length == 0) next();
-      else {
-        if (request.body.id && request.body.id == prescORinvoice[0]._id) next();
-        // console.log(`path is ${path}`)
-        else
-          return response.status(406).json({
-            message: `this appointment id has a previous ${path},Process was cancelled`,
-          });
+      //defining path to check existance of previous invoice or prescription
+      let fullPath = request.url.substring(1);
+      console.log(`${fullPath}`.bgCyan);
+
+      let path = fullPath.split("/")[0];
+      // let path = fullPath.substring(0, fullPath.indexOf("/"));
+      console.log(`${path}`.bgCyan);
+      console.log(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue);
+
+      // checking appointment if exist
+      if (AppointmentResult._id != request.body.appointmentId) {
+        return response.status(406).json({ message: "Appointment Id is not valid, process is cancelled" });
+      } else {
+        //checking existance of previous prescription or invoice
+        let prescORinvoiceRES = await fetch(
+          `http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`,
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        );
+
+        let prescORinvoice = await prescORinvoiceRES.json();
+        if (prescORinvoice.length == 0) next();
+        else {
+          if (request.body.id && request.body.id == prescORinvoice[0]._id) next();
+          // console.log(`path is ${path}`)
+          else
+            return response.status(406).json({
+              message: `this appointment id has a previous ${path},Process was cancelled`,
+            });
+        }
       }
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
+  } else {
+    next();
   }
 };
 
@@ -251,39 +252,36 @@ module.exports.addAppointmentToPatientOrDoctor = async (request, response, next)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports.medicineStockMangement = async (request, response, next) => {
+  let price = 0;
   try {
     let medicine_array = request.body.medicine;
     for (let medicine of medicine_array) {
-      let quantity = medicine.quantity;
       let med = await medicineSchema
-        .findOneAndUpdate({ _id: medicine.medicineID }, { $inc: { Stock: -quantity } })
+        .findOneAndUpdate({ _id: medicine.medicineID }, { $inc: { Stock: -medicine.quantity } })
         .then()
         .catch((error) => {
           next(error);
         });
+      price += med.Price;
+      console.log(price + "\n");
       if (med.Stock < 1000) {
         console.log(`low stock of medicine ${med.Name}`.bgRed);
       }
     }
+    request.body.money = price;
     next();
   } catch (error) {
     next(error);
   }
 };
 
-/////////////////////  check the if   the doctor work at this clinic or not 
+/////////////////////  check the if   the doctor work at this clinic or not
 
 module.exports.doesDoctorWorkInClinic = async (request, response, next) => {
   const clinicData = await clinicSchema.findOne({ _id: request.body.clinicID });
- 
-  let flag = clinicData.doctorsID.includes(request.body.doctorID)
-  if(flag)
-  {
-    next()
-  }
-  else
-  next(new Error("this doctor doesn`t work at this clinic at this time "))
- 
+
+  let flag = clinicData.doctorsID.includes(request.body.doctorID);
+  if (flag) {
+    next();
+  } else next(new Error("this doctor doesn`t work at this clinic at this time "));
 };
-
-

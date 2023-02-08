@@ -10,8 +10,11 @@ const checkMail= (req,res,next)=>{
         email: req.body.email
     });
     addmail.save().then((result)=>next()).
-    catch((error) =>
-    res.status(200).json({ message: "this email exists" }))
+    catch((error) =>{
+        res.status(200).json({message:"this email exists"})
+next(error)    
+    });
+   
 }
 
 module.exports= checkMail;

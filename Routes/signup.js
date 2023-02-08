@@ -8,7 +8,7 @@ const validator = require("./../Middlewares/errorValidation");
 let validationArray = [
   body("Name").isString().withMessage("name should be String"),
   body("Age").isInt().withMessage("age should be integer"),
-  body("Address").isObject().withMessage("Address should be Object"),
+  body("address").isObject().withMessage("Address should be Object"),
   body("address.government").isString().withMessage("government should be String"),
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),

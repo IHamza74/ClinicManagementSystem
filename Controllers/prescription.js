@@ -4,7 +4,15 @@ const PrescriptionSchema = mongoose.model("Prescriptions");
 
 //get All Prescription
 exports.getAllPrescriptions = (request, response, next) => {
-  PrescriptionSchema.find()
+  //FILTERING DATA
+  const Obj = { ...request.query };
+  delete Obj["sort"]; //if user enter sort in query string
+  let ObjStr = JSON.stringify(Obj);
+  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
+  ObjStr = JSON.parse(ObjStr);
+
+  //OBJECT RESULTED FROM QUERY
+  let resultedObj = PrescriptionSchema.find(ObjStr)
     .populate({
       path: "appointmentID",
       populate: { path: "doctorID", select: { name: 1, _id: 0 } },
@@ -25,15 +33,6 @@ exports.getAllPrescriptions = (request, response, next) => {
       path: "medicine.medicineID",
       select: { _id: 0, Name: 1, Dose: 1 },
     });
-  //FILTERING DATA
-  const Obj = { ...request.query };
-  delete Obj["sort"]; //if user enter sort in query string
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
-
-  //OBJECT RESULTED FROM QUERY
-  let resultedObj = PrescriptionSchema.find(ObjStr);
 
   //IF SORTING DATA
   if (request.query.sort) {
@@ -81,8 +80,6 @@ exports.getPrescriptionsById = (request, response, next) => {
 //post Prescription
 exports.addPrescription = (req, res, next) => {
   let newPrescription = new PrescriptionSchema({
-    //_id: req.body.id,
-    // doctorId: req.body.doctorId,
     medicine: req.body.medicine,
     appointmentID: req.body.appointmentId,
   });
@@ -113,27 +110,11 @@ exports.editPrescription = (req, res, next) => {
 };
 
 //delete Prescription
-exports.deletePrescription = (req, res, next) => {
-  PrescriptionSchema.deleteOne({ _id: req.body.id })
+
+exports.deletePrescriptionById = (req, res, next) => {
+  PrescriptionSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(201).json({ status: "deleted", data });
+      res.status(201).json({ status: "Prescription is Deleted " });
     })
     .catch((error) => next(error));
-};
-
-/****DELETE DATA USING FILTER****/
-exports.deleteFilteredPrescription = (req, res, next) => {
-  const Obj = { ...req.query };
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
-
-  PrescriptionSchema.deleteMany(ObjStr)
-    .then((result) => {
-      if (result != null) res.status(200).json(result);
-      else next(new Error("Data is not found!"));
-    })
-    .catch((error) => {
-      next(error);
-    });
 };
