@@ -118,12 +118,13 @@ exports.patchPhoto = (req, res, next) => {
 };
 
 exports.deleteEmployee = (req, res, next) => {
-  employeesSchema
-    .deleteOne({
-      _id: req.body.id,
-    })
+  employeesSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(200).json({ status: "Employee deleted successfully" });
+      if (data != null)
+        res.status(200).json({ status: "Employee deleted successfully" });
+      else {
+        next(new Error("Employee not found, Process was cancelled"))
+      }
     })
     .catch((error) => next(error));
 };

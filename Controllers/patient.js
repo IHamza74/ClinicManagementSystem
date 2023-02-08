@@ -63,13 +63,13 @@ exports.getAllPatients = (request, response, next) => {
 
 exports.addPatient = (request, response, next) => {
   let addPatient = new patinetSchmea({
-    Name: request.body.Name,
-    Age: request.body.Age,
-    Address: request.body.Address,
-    Apointments: request.body.Apointments,
-    Section: request.body.Section,
-    Disease: request.body.Disease,
-    Password: request.body.Password,
+    Name: request.body.name,
+    Age: request.body.age,
+    Address: request.body.address,
+    Apointments: request.body.apointments,
+    Section: request.body.section,
+    Disease: request.body.disease,
+    Password: request.body.password,
     Email: request.body.email,
   })
 
@@ -92,13 +92,13 @@ exports.editPatient = (request, res, next) => {
       },
       {
         $set: {
-          Name: request.body.Name,
-          Age: request.body.Age,
-          Address: request.body.Address,
-          Apointments: request.body.Apointments,
-          Disease: request.body.Disease,
-          Password: request.body.Password,
-          Email: request.body.Email,
+          Name: request.body.name,
+          Age: request.body.age,
+          Address: request.body.address,
+          Apointments: request.body.apointments,
+          Disease: request.body.disease,
+          Password: request.body.password,
+          Email: request.body.email,
           photo: request.file.filename,
         },
       }
@@ -132,12 +132,22 @@ exports.patchPhoto = (req, res, next) => {
 
 exports.deletePatient = (request, response, next) => {
   patinetSchmea
-    .deleteOne({ Email: request.body.Email })
+    .deleteOne({ id: request.body.id })
     .then((result) => {
       response.status(201).json({ message: "patinet deleted" });
     })
     .catch((error) => next(error));
 };
+
+exports.deletePatientByID= (req, res, next) => {
+  
+  patinetSchmea.deleteOne({_id:req.params.id})
+  .then((result) => {
+    res.status(201).json({ message: "patinet deleted" });
+
+  })
+  .catch((error) => next(error));
+}
 
 /****DELETE DATA USING FILTER****/
 exports.deleteFilteredPatient = (req, res, next) => {

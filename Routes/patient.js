@@ -63,7 +63,6 @@ let validationArray = [
 ];
 
 let patchValidationArray = [
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("name").isString().withMessage("name should be String").optional(),
   body("age").isInt().withMessage("age should be integer").optional(),
   body("address").isObject().withMessage("Address should be Object").optional(),
@@ -131,7 +130,6 @@ router
     controller.addPatient
   )
   .patch(
-    whoIsValid("employee", "doctor"),
     validationArray,
     whoIsValid("employee", "doctor", "patient", "admin"),
     patchValidationArray,
@@ -143,11 +141,6 @@ router
     whoIsValid("employee", "admin", "doctor"),
     controller.deleteFilteredPatient
   );
-
-router
-  .route("/patient/uploadPhoto")
-  .patch(controller.uploadPatientImg, controller.patchPhoto);
-
 /*  reserve an appointment by patient */
 router
   .route("/patient/reserveappointment/:id")
