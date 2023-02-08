@@ -11,26 +11,26 @@ const checkmail = require("../Middlewares/checkMailExisits");
 const customeMiddlewares = require("../Middlewares/customeFunctionalities");
 
 let validationArray = [
-  body("Name").isString().withMessage("name should be String"),
-  body("Age").isInt().withMessage("age should be integer"),
-  body("Address").isObject().withMessage("Address should be Object"),
+  body("name").isString().withMessage("name should be String"),
+  body("age").isInt().withMessage("age should be integer"),
+  body("address").isObject().withMessage("Address should be Object"),
 
-  body("Address.government")
+  body("address.government")
     .isString()
     .withMessage("government should be String"),
-  body("Address.city").isString().withMessage("city should be String"),
-  body("Address.street").isString().withMessage("street should be String"),
-  body("Address.building").isString().withMessage("building should be String"),
+  body("address.city").isString().withMessage("city should be String"),
+  body("address.street").isString().withMessage("street should be String"),
+  body("address.building").isString().withMessage("building should be String"),
 
   body("address.government").isString().withMessage("government should be String"),
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),
   body("address.building").isString().withMessage("building should be String"),
 
-  body("appointmentNo").isArray().withMessage("appointmentNo should be Array"),
-  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID"),
-  body("Disease").isString().withMessage("Disease should be String"),
-  body("Section")
+  body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
+  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID").optional(),
+  body("disease").isString().withMessage("Disease should be String"),
+  body("section")
     .isString()
     .withMessage("speciality should be String")
     .isIn([
@@ -56,17 +56,17 @@ let validationArray = [
 
 let patchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
-  body("Name").isString().withMessage("name should be String").optional(),
-  body("Age").isInt().withMessage("age should be integer").optional(),
-  body("Address").isObject().withMessage("Address should be Object").optional(),
+  body("name").isString().withMessage("name should be String").optional(),
+  body("age").isInt().withMessage("age should be integer").optional(),
+  body("address").isObject().withMessage("Address should be Object").optional(),
   body("address.government").isString().withMessage("government should be String").optional(),
   body("address.city").isString().withMessage("city should be String").optional(),
-  body("address.street").isString().withMessage("street should be String").optional(),
+  body("address.street").isString().withMessage("street should be Stringx").optional(),
   body("address.building").isString().withMessage("building should be String").optional(),
   body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
   body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID"),
-  body("Disease").isString().withMessage("Disease should be String").optional(),
-  body("Section")
+  body("disease").isString().withMessage("Disease should be String").optional(),
+  body("section")
     .isString()
     .withMessage("speciality should be String")
     .isIn([

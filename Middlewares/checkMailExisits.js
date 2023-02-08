@@ -11,6 +11,7 @@ const checkMail= (req,res,next)=>{
     });
     addmail.save().then((result)=>next()).
     catch((error) =>{
+        res.status(200).json({message:"this email exists"})
 next(error)    
     });
    
