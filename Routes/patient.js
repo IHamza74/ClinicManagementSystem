@@ -139,8 +139,14 @@ router
   )
   .delete(
     whoIsValid("employee", "admin", "doctor"),
-    controller.deleteFilteredPatient
+    controller.deletePatient
   );
+  /**  upload image  */
+  router
+  .route("/patient/uploadPhoto")
+  .patch(controller.uploadPatientImg,controller.patchPhoto)
+
+
 /*  reserve an appointment by patient */
 router
   .route("/patient/reserveappointment/:id")

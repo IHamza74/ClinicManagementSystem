@@ -150,22 +150,7 @@ exports.deletePatientByID= (req, res, next) => {
 }
 
 /****DELETE DATA USING FILTER****/
-exports.deleteFilteredPatient = (req, res, next) => {
-  const Obj = { ...req.query };
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
 
-  patinetSchmea
-    .deleteMany(ObjStr)
-    .then((result) => {
-      if (result != null) res.status(200).json(result);
-      else next(new Error("Data is not found!"));
-    })
-    .catch((error) => {
-      next(error);
-    });
-};
 
 /* get patient profile  */
 exports.getpatientProfile = (req, res, next) => {
