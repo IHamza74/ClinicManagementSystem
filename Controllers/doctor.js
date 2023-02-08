@@ -2,15 +2,11 @@ const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/doctorModel");
 const multer = require("multer");
-
 const DoctorSchema = mongoose.model("doctor");
-
 require("./../Models/sharedData");
-
 const sharedMail = mongoose.model("SharedData")
-
 require("../Models/sharedData");
-const mailschema = mongoose.model("SharedData");
+
 //creating img file
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
