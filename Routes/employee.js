@@ -41,7 +41,7 @@ let patchValidationArray = [
     .isLength({ min: 8 })
     .withMessage("password sholuld be 8 characters or more")
     .optional(),
-  body("photo").isString().withMessage("photo should be String").optional(),
+  // body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
 router
@@ -50,4 +50,18 @@ router
   .post(whoIsValid("admin"), validationArray, validator, checkmail, controller.addEmployee)
   .patch(whoIsValid("admin"), patchValidationArray, validator, controller.uploadEmployeeImg, controller.editEmployee)
   .delete(whoIsValid("admin"), controller.deleteFilteredEmployee);
+
+router
+  .route("/employee/:id")
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    whoIsValid("admin"),
+    controller.deleteEmployee
+  );
+
+module.exports = router;
+
+
+
 module.exports = router;
