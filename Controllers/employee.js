@@ -87,7 +87,7 @@ exports.editEmployee = (req, res, next) => {
           password: req.body.password,
           age: req.body.age,
           address: req.body.address,
-          photo: req.file.filename,
+          photo: file.filename,
         },
       }
     )
