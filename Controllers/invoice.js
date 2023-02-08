@@ -46,6 +46,8 @@ exports.addInvoice = (req, res, next) => {
     appointmentID: req.body.appointmentId,
     paymentMethod: req.body.paymentMethod,
     patientID: req.body.patientID,
+    payment_status: req.body.payment_status,
+    discount_percentage: req.body.discount_percentage,
   });
   newInvoice
     .save()
@@ -65,6 +67,28 @@ exports.editInvoice = (req, res, next) => {
         appointmentID: req.body.appointmentId,
         paymentMethod: req.body.paymentMethod,
         patientID: req.body.patientID,
+        payment_status: req.body.payment_status,
+        discount_percentage: req.body.discount_percentage,
+      },
+    }
+  )
+    .then((data) => {
+      res.status(201).json({ data });
+    })
+    .catch((error) => next(error));
+};
+exports.editInvoiceById = (req, res, next) => {
+  InvoiceSchema.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        medicine: req.body.medicine,
+        money: req.body.money,
+        appointmentID: req.body.appointmentId,
+        paymentMethod: req.body.paymentMethod,
+        patientID: req.body.patientID,
+        payment_status: req.body.payment_status,
+        discount_percentage: req.body.discount_percentage,
       },
     }
   )

@@ -25,10 +25,11 @@ router
 
   // this routes handle the clinic doctor add or remove doctor from clinic
   router
-  .route("/clinic/:id")
+  .route("/clinic/adddoctor/:id")
   // this route add new doctor to the clinic
-  .patch(whoIsValid("admin"),controller.addDoctor)
+  .patch(whoIsValid("admin"),controller.addDoctor);
   // this route delete doctor from clinic
-  .put(whoIsValid("admin"),controller.deleteDoctor)
+router.route("/clinic/deldoctor/:id")
+  .patch(whoIsValid("admin"),controller.deleteDoctor)
 
 module.exports = router;

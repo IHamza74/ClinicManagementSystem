@@ -39,18 +39,22 @@ router
     CustomeMW.DoMedicineExist,
     CustomeMW.doesAppointmentExist,
     controller.editPrescription
-     )
-
-  .delete(whoIsValid("doctor", "admin"), controller.deleteFilteredPrescription);
+  );
 
 router
   .route("/prescription/:id")
   .get(
-    whoIsValid("admin","employee","doctor"),
+    whoIsValid("admin", "employee", "doctor"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     whoIsValid("doctor"),
     controller.getPrescriptionsById
+  )
+  .delete(
+    whoIsValid("doctor", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deletePrescriptionById
   );
 
 module.exports = router;

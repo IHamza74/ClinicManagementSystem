@@ -110,27 +110,11 @@ exports.editPrescription = (req, res, next) => {
 };
 
 //delete Prescription
-exports.deletePrescription = (req, res, next) => {
-  PrescriptionSchema.deleteOne({ _id: req.body.id })
+
+exports.deletePrescriptionById = (req, res, next) => {
+  PrescriptionSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(201).json({ status: "deleted", data });
+      res.status(201).json({ status: "Prescription is Deleted " });
     })
     .catch((error) => next(error));
-};
-
-/****DELETE DATA USING FILTER****/
-exports.deleteFilteredPrescription = (req, res, next) => {
-  const Obj = { ...req.query };
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
-
-  PrescriptionSchema.deleteMany(ObjStr)
-    .then((result) => {
-      if (result != null) res.status(200).json(result);
-      else next(new Error("Data is not found!"));
-    })
-    .catch((error) => {
-      next(error);
-    });
 };
