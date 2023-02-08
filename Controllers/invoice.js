@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 require("../Models/invoiceModel");
 const InvoiceSchema = mongoose.model("invoices");
+const customeMW = require("../Middlewares/customeFunctionalities");
 
 exports.getAllInvoices = (request, response, next) => {
   //FILTERING DATA
@@ -43,6 +44,7 @@ exports.getAllInvoices = (request, response, next) => {
 exports.addInvoice = (req, res, next) => {
   let newInvoice = new InvoiceSchema({
     medicine: req.body.medicine,
+    money: req.body.money,
     appointmentID: req.body.appointmentId,
     paymentMethod: req.body.paymentMethod,
     patientID: req.body.patientID,
@@ -54,7 +56,10 @@ exports.addInvoice = (req, res, next) => {
     .then((result) => {
       res.status(201).json({ status: "post done" });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      customeMW.resetMedicineStock(req, next);
+      next(error);
+    });
 };
 
 exports.editInvoice = (req, res, next) => {
@@ -75,7 +80,10 @@ exports.editInvoice = (req, res, next) => {
     .then((data) => {
       res.status(201).json({ data });
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      customeMW.resetMedicineStock(req, next);
+      next(error);
+    });
 };
 exports.editInvoiceById = (req, res, next) => {
   InvoiceSchema.updateOne(

@@ -13,7 +13,7 @@ let validationArray = [
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
   body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
-    .isAlpha()
+    .isString()
     .withMessage("paymentMethod should be Alpha")
     .isIn(["Cash", "Credit Card", "Insurance Card"])
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
@@ -54,9 +54,10 @@ router
     whoIsValid("employee", "admin"),
     patchValidationArray,
     validator,
-    // customeMW.doesPatientExist,
-    // customeMW.DoMedicineExist,
-    // customeMW.doesAppointmentExist,
+    customeMW.doesPatientExist,
+    customeMW.DoMedicineExist,
+    customeMW.doesAppointmentExist,
+    customeMW.restoreMedicineStock,
     customeMW.medicineStockMangement,
     controller.editInvoice
   )
