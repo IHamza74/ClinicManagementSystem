@@ -111,9 +111,9 @@ exports.editPrescription = (req, res, next) => {
 
 //delete Prescription
 exports.deletePrescription = (req, res, next) => {
-  PrescriptionSchema.deleteOne({ _id: req.body.id })
+  PrescriptionSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(201).json({ status: "deleted", data });
+      res.status(201).json({ status: "Prescription is Deleted " });
     })
     .catch((error) => next(error));
 };
