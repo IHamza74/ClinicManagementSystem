@@ -9,6 +9,7 @@ require("../Models/PatientModel");
 require("../Models/clinicModel");
 require("../Models/employeesModel");
 require("../Models/medecineModel");
+require("../Models/prescriptionModel");
 
 const medicineSchema = mongoose.model("Medicine");
 const employeeSchema = mongoose.model("employees");
@@ -16,6 +17,9 @@ const clinicSchema = mongoose.model("clinic");
 const patientSchema = mongoose.model("Patients");
 const doctorSchema = mongoose.model("doctor");
 const AppointmentSchema = mongoose.model("appointmentScheduler");
+const PrescriptionSchema = mongoose.model("Prescriptions");
+require("../Models/invoiceModel");
+const InvoiceSchema = mongoose.model("invoices");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//
@@ -152,19 +156,26 @@ module.exports.doesEmployeeExist = async (request, response, next) => {
 
 //checking existance of patient ID
 module.exports.doesPatientExist = async (request, response, next) => {
-  if (request.body.patientID) {
-    let patient = await patientSchema.findOne({ _id: request.body.patientID });
-    if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
-    else {
-      next();
-    }
-  } else {
+  if (!request.body.patientID) {
+    let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
+    request.body.patientID = invoice.patientID.toString();
+  }
+
+  let patient = await patientSchema.findOne({ _id: request.body.patientID });
+  if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
+  else {
     next();
   }
 };
 
 //checking of prescription appointment wheather if it exists or not
 module.exports.doesAppointmentExist = async (request, response, next) => {
+  if (!request.body.appointmentId) {
+    let Prescription = await PrescriptionSchema.findOne({ _id: request.body.id });
+    if (Prescription == null) response.status(406).json({ meassge: "Wrong Prescription ID, process was cancelled" });
+    request.body.appointmentId = Prescription.appointmentID.toString();
+  }
+
   try {
     let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
       expiresIn: "1h",
@@ -197,10 +208,12 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
       let prescORinvoice = await prescORinvoiceRES.json();
       if (prescORinvoice.length == 0) next();
       else {
+        if (request.body.id && request.body.id == prescORinvoice[0]._id) next();
         // console.log(`path is ${path}`)
-        return response.status(406).json({
-          message: `this appointment id has a previous ${path},Process was cancelled`,
-        });
+        else
+          return response.status(406).json({
+            message: `this appointment id has a previous ${path},Process was cancelled`,
+          });
       }
     }
   } catch (error) {

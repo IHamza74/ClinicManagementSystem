@@ -7,22 +7,20 @@ const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
 let validationArray = [
-  // id , name , address
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("name").isString().withMessage("name should be string"),
   body("address").isString().withMessage("address should be string"),
+];
+let PatchValidationArray = [
+  body("id").isMongoId().withMessage("id should be Mongo Id"),
+  body("name").isString().withMessage("name should be string").optional(),
+  body("address").isString().withMessage("address should be string").optional(),
 ];
 
 router
   .route("/clinic")
   .get(whoIsValid("admin"), controller.getAllClinics)
-  .post(
-    whoIsValid("admin"),
-    validationArray.slice(1),
-    validator,
-    controller.addClinic
-  )
-  .patch(whoIsValid("admin"), validationArray, validator, controller.editClinic)
+  .post(whoIsValid("admin"), validationArray, validator, controller.addClinic)
+  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic)
   .delete(whoIsValid("admin"), controller.deleteFilteredClinic);
 
 module.exports = router;

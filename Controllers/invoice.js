@@ -66,6 +66,7 @@ exports.editInvoice = (req, res, next) => {
         money: req.body.money,
         appointmentID: req.body.appointmentId,
         paymentMethod: req.body.paymentMethod,
+        patientID: req.body.patientID,
       },
     }
   )
