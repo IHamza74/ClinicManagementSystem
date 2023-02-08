@@ -10,22 +10,19 @@ const customeMW = require("../Middlewares/customeFunctionalities");
 let validationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("medicine").isArray().withMessage("Medicine should be Array"),
-  body("medicine.*.medicineID")
-    .isMongoId()
-    .withMessage("medicineID should be Mongo Id"),
+  body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
   body("money").isInt().withMessage("Money should be Integer"),
-  body("appointmentId")
-    .isMongoId()
-    .withMessage("appointmentID sholuld be Mongo ID"),
+  body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
     .isAlpha()
     .withMessage("paymentMethod should be Alpha")
     .isIn(["Cash", "Credit Card", "Insurance Card"])
-    .withMessage(
-      "Paymentmethod should be in (Cash,Credit Card,Insurance Card) "
-    ),
+    .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID"),
+  body("discount_percentage")
+    .isFloat()
+    .withMessage("discount_percentage sholuld be between (.1 to .3)"),
 ];
 router
   .route("/invoice")

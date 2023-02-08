@@ -3,8 +3,6 @@ const controller = require("./../Controllers/paymentController");
 const router = express.Router();
 const whoIsValid = require("../Middlewares/AuthorizeRole");
 
-router
-  .route("/checkout-session/:invoiceId")
-  .get(whoIsValid("employee"), controller.getCgeckoutSession);
+router.route("/checkout-session").get(whoIsValid("employee"), controller.getCheckoutSession);
 
 module.exports = router;
