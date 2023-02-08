@@ -20,7 +20,8 @@ let validationArray = [
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID"),
   body("discount_percentage")
     .isFloat()
-    .withMessage("discount_percentage sholuld be between (.1 to .3)"),
+    .withMessage("discount_percentage sholuld be between (.1 to .3)")
+    .optional(),
 ];
 
 let patchValidationArray = [
@@ -37,6 +38,10 @@ let patchValidationArray = [
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) ")
     .optional(),
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID").optional(),
+  body("discount_percentage")
+    .isFloat()
+    .withMessage("discount_percentage sholuld be between (.1 to .3)")
+    .optional(),
 ];
 
 router
@@ -59,6 +64,7 @@ router
     customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
+    customeMW.restoreMedicineStock,
     customeMW.medicineStockMangement,
     controller.editInvoice
   )

@@ -252,27 +252,76 @@ module.exports.addAppointmentToPatientOrDoctor = async (request, response, next)
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
 module.exports.medicineStockMangement = async (request, response, next) => {
-  let price = 0;
+  if (request.body.medicine) {
+    let price = 0;
+    try {
+      let medicine_array = request.body.medicine;
+      for (let medicine of medicine_array) {
+        let med = await medicineSchema.findOneAndUpdate(
+          { _id: medicine.medicineID },
+          { $inc: { Stock: -medicine.quantity } }
+        );
+        price += med.Price * medicine.quantity;
+        if (med.Stock < 1000) {
+          console.log(`low stock of medicine ${med.Name}`.bgRed);
+        }
+      }
+      request.body.money = price;
+      next();
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    next();
+  }
+};
+
+module.exports.resetMedicineStock = async (request, next) => {
+  if (request.body.medicine) {
+    try {
+      let medicine_array = request.body.medicine;
+      for (let medicine of medicine_array) {
+        let med = await medicineSchema.findOneAndUpdate(
+          { _id: medicine.medicineID },
+          { $inc: { Stock: +medicine.quantity } }
+        );
+        if (med.Stock < 1000) {
+          console.log(`low stock of medicine ${med.Name}`.bgRed);
+        }
+      }
+      next();
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    next();
+  }
+};
+
+module.exports.restoreMedicineStock = async (request, response, next) => {
+  // if (request.body.medicine) {
   try {
-    let medicine_array = request.body.medicine;
+    let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
+    console.log(invoice);
+    console.log(invoice.medicine);
+
+    let medicine_array = invoice.medicine;
     for (let medicine of medicine_array) {
-      let med = await medicineSchema
-        .findOneAndUpdate({ _id: medicine.medicineID }, { $inc: { Stock: -medicine.quantity } })
-        .then()
-        .catch((error) => {
-          next(error);
-        });
-      price += med.Price;
-      console.log(price + "\n");
+      let med = await medicineSchema.findOneAndUpdate(
+        { _id: medicine.medicineID },
+        { $inc: { Stock: +medicine.quantity } }
+      );
       if (med.Stock < 1000) {
         console.log(`low stock of medicine ${med.Name}`.bgRed);
       }
     }
-    request.body.money = price;
     next();
   } catch (error) {
     next(error);
   }
+  // } else {
+  //   next();
+  // }
 };
 
 /////////////////////  check the if   the doctor work at this clinic or not
