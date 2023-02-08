@@ -5,7 +5,7 @@ require("./../Models/sharedData");
 const multer = require("multer");
 
 const DoctorSchema = mongoose.model("doctor");
-
+const sharedData = mongoose.model("SharedData")
 //creating img file
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
