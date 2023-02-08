@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const checkmail = require("../Middlewares/checkMailExisits");
 const signup = require("../Controllers/signupController");
+const { body } = require("express-validator");
+const validator = require("./../Middlewares/errorValidation");
 
 let validationArray = [
   body("Name").isString().withMessage("name should be String"),
