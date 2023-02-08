@@ -55,7 +55,7 @@ let validationArray = [
 ];
 
 let patchValidationArray = [
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
+ 
   body("name").isString().withMessage("name should be String").optional(),
   body("age").isInt().withMessage("age should be integer").optional(),
   body("address").isObject().withMessage("Address should be Object").optional(),
@@ -97,7 +97,6 @@ router
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)
   .post(whoIsValid("employee", "admin", "doctor"), validationArray, validator, checkmail, controller.addPatient)
   .patch(
-    whoIsValid("employee", "doctor"),
     validationArray,
     whoIsValid("employee", "doctor", "patient", "admin"),
     patchValidationArray,
@@ -106,19 +105,26 @@ router
     controller.editPatient
   )
   .delete(whoIsValid("employee", "admin", "doctor"), controller.deleteFilteredPatient);
+
+  router
+  .route("/patient/:id")
+  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getpatientProfile)
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+     controller.deletePatientByID
+  )
+
 /*  reserve an appointment by patient */
 router
   .route("/patient/reserveappointment/:id")
   .post(
-    whoIsValid("patient"),
+     whoIsValid("patient"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     customeMiddlewares.doesClinicExist,
     controller.reserveAppointment
   );
 
-router
-  .route("/patient/:id")
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getpatientProfile);
 
 module.exports = router;
