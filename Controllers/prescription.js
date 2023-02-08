@@ -77,7 +77,6 @@ exports.getPrescriptionsById = (request, response, next) => {
     })
     .catch((error) => next(error));
 };
-
 //post Prescription
 exports.addPrescription = (req, res, next) => {
   let newPrescription = new PrescriptionSchema({
@@ -94,13 +93,16 @@ exports.addPrescription = (req, res, next) => {
 
 //update Prescription
 exports.editPrescription = (req, res, next) => {
-  PrescriptionSchema.updateOne({ _id: req.body.id }, req.body, {
-    $set: {
-      // doctorId: req.body.doctorId,
-      medicine: req.body.medicine,
-      appointmentID: req.body.appointmentId,
-    },
-  })
+  PrescriptionSchema.updateOne(
+    { _id: req.body.id },
+    {
+      $set: {
+        // doctorId: req.body.doctorId,
+        medicine: req.body.medicine,
+        appointmentID: req.body.appointmentId,
+      },
+    }
+  )
     .then((data) => {
       res.status(201).json({ status: "updated ", data });
     })

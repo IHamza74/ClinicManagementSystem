@@ -21,26 +21,38 @@ let validationArray = [
   body("date").isISO8601().toDate().withMessage("date should be date"),
 ];
 
+let patchValidationArray = [
+  // id , patientID , doctorID , clinicID , employeeID , date
+  body("id").isMongoId().withMessage("id should be Mongo Id"),
+  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
+  body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id").optional(),
+  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
+  body("employeeID").isMongoId().withMessage("employeeID should be Mongo Id").optional(),
+  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
+];
+
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
   .post(
     whoIsValid("admin", "employee"),
     validationArray.slice(1),
-    validator,
+       validator,
     customeMiddlewares.doesPatientExist,
     customeMiddlewares.doesDoctorExist,
-    customeMiddlewares.isDoctorAvailable,
     customeMiddlewares.doesClinicExist,
     customeMiddlewares.doesEmployeeExist,
+    customeMiddlewares.doesDoctorWorkInClinic,
+    customeMiddlewares.isDoctorAvailable,
+    
     sendEmail(),
     controller.addAppointment,
-    customeMiddlewares.addAppointmentToPatientOrDoctor,
+    customeMiddlewares.addAppointmentToPatientOrDoctor
   )
 
   .patch(
     whoIsValid("admin", "employee"),
-    validationArray,
+    patchValidationArray,
     validator,
     customeMiddlewares.doesPatientExist,
     customeMiddlewares.doesDoctorExist,
@@ -50,66 +62,42 @@ router
     controller.editAppointment
   )
 
-  .delete(
-    whoIsValid("admin", "employee"),
-    controller.deleteFilteredAppointment
-  );
+  .delete(whoIsValid("admin", "employee"), controller.deleteFilteredAppointment);
 /** appontments reports  */
-  router
+router
   .route("/appointmentScheduler/allreports")
-  .get(whoIsValid('admin', 'employee'), controller.AllAppointmentsReports);
+  .get(whoIsValid("admin", "employee"), controller.AllAppointmentsReports);
 
-  router
+router
   .route("/appointmentScheduler/dailyreports")
-  .get(whoIsValid('admin', 'employee'), controller.DailyAppointmentsReports);
+  .get(whoIsValid("admin", "employee"), controller.DailyAppointmentsReports);
 
 router
   .route("/appointmentScheduler/doctorreports")
-  .get(whoIsValid('admin', 'employee'), controller.DoctorAppointmentsReports);
-
+  .get(whoIsValid("admin", "employee"), controller.DoctorAppointmentsReports);
 
 router
   .route("/appointmentScheduler/patientreports")
-  .get(whoIsValid('admin', 'employee'), controller.PatientAppointmentsReports);
+  .get(whoIsValid("admin", "employee"), controller.PatientAppointmentsReports);
 
-  /**   pending appointments  */
+/**   pending appointments  */
 
-router 
-.route("/appointmentScheduler/pending")
-.post(
+router
+  .route("/appointmentScheduler/pending")
+  .post
   // whoIsValid("admin", "employee"),
   //  validator,
   // customeMiddlewares.isDoctorAvailable,
   // sendEmail(),
   // controller.addPendingToAppointment,
   // customeMiddlewares.addAppointmentToPatientOrDoctor,
-
-)
-.get(
-  whoIsValid("admin", "employee"),
-  controller.getAllPending
-)
-
-
+  ()
+  .get(whoIsValid("admin", "employee"), controller.getAllPending);
 
 router
   .route("/appointmentScheduler/:id")
 
-  .get(
-    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-    validator,
-    controller.getOneAppointment
-  )
-  .delete(
-    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-    validator,
-    controller.deleteAppointment
-  );
+  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getOneAppointment)
+  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteAppointment);
 
-
-  
 module.exports = router;
-
-
-
-

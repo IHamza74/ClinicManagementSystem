@@ -9,12 +9,17 @@ require("../Models/PatientModel");
 require("../Models/clinicModel");
 require("../Models/employeesModel");
 require("../Models/medecineModel");
+require("../Models/prescriptionModel");
 
 const medicineSchema = mongoose.model("Medicine");
 const employeeSchema = mongoose.model("employees");
 const clinicSchema = mongoose.model("clinic");
 const patientSchema = mongoose.model("Patients");
 const doctorSchema = mongoose.model("doctor");
+const AppointmentSchema = mongoose.model("appointmentScheduler");
+const PrescriptionSchema = mongoose.model("Prescriptions");
+require("../Models/invoiceModel");
+const InvoiceSchema = mongoose.model("invoices");
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //APPOINTMENTS Checking MWs//
@@ -29,7 +34,10 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
     if (currentDate > appointmentDate) {
       return response.status(406).json({ message: "You can not make an appointment in the past" });
     } else {
-      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, { expiresIn: "1h" });
+      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+        expiresIn: "1h",
+      });
+      console.log(request.body.doctorID);
       let appointsRes = await fetch(
         `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
         {
@@ -42,6 +50,9 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
       DrAppointments.forEach((appointment) => {
         if (Math.abs(new Date(appointment.date) - new Date(request.body.date)) < 30 * 60000) {
           flag = 1;
+          console.log(request.body.date + " date", request.body.doctorID + " Doctor");
+          console.log(appointment.date + " real date");
+
           return response.status(406).json({ message: "the doctor is busy at this time" });
         }
       });
@@ -57,44 +68,49 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
 //checking of medicine wheather if it exists
 module.exports.DoMedicineExist = async (request, response, next) => {
   try {
-    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+      expiresIn: "1h",
+    });
     let medicinesAsJson = await fetch(`http://localhost:3000/medicine`, {
       headers: { Authorization: "Bearer " + token },
     });
     let allDBMedicines = await medicinesAsJson.json();
-    let requestMedicines = request.body.medicine;
+    console.log(request.body.medicine);
+    if (request.body.medicine) {
+      let requestMedicines = request.body.medicine;
 
-    //getting All DB medicines ids
-    let allDBmedicinesIDS = []; // contains all medicines' ids in DB
-    let prescriptionMedicinesIDs = []; // contains all presicription's ids
-    let notFoundMedicines = []; //not found medicines
-    allDBMedicines.forEach((med) => {
-      allDBmedicinesIDS.push(med._id);
-    });
+      //getting All DB medicines ids
+      let allDBmedicinesIDS = []; // contains all medicines' ids in DB
+      let prescriptionMedicinesIDs = []; // contains all presicription's ids
+      let notFoundMedicines = []; //not found medicines
+      allDBMedicines.forEach((med) => {
+        allDBmedicinesIDS.push(med._id);
+      });
 
-    //getting presicription medicines id
-    requestMedicines.forEach((med) => {
-      prescriptionMedicinesIDs.push(med.medicineID);
-    });
+      //getting presicription medicines id
+      requestMedicines.forEach((med) => {
+        prescriptionMedicinesIDs.push(med.medicineID);
+      });
 
-    //checking existance of medicine in stock
-    prescriptionMedicinesIDs.forEach((medID) => {
-      let flag = allDBmedicinesIDS.indexOf(medID);
-      if (flag == -1) {
-        notFoundMedicines.push(medID);
-      }
-    });
+      //checking existance of medicine in stock
+      prescriptionMedicinesIDs.forEach((medID) => {
+        let flag = allDBmedicinesIDS.indexOf(medID);
+        if (flag == -1) {
+          notFoundMedicines.push(medID);
+        }
+      });
 
-    // checking overall medcines status
-    if (notFoundMedicines.length == 0) {
-      next();
-    } else {
-      return response
-        .status(406)
-        .json({
+      // checking overall medcines status
+      if (notFoundMedicines.length == 0) {
+        next();
+      } else {
+        return response.status(406).json({
           message: "some medicines are out of stock, prescription is cancelled",
           medicinesIDs: notFoundMedicines,
         });
+      }
+    } else {
+      next();
     }
   } catch (error) {
     next(error);
@@ -103,10 +119,24 @@ module.exports.DoMedicineExist = async (request, response, next) => {
 
 //checking existance of doctor
 module.exports.doesDoctorExist = async (request, response, next) => {
-  let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
-  if (doctor == null)
-    response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
-  else {
+  let appointment;
+  if (!request.body.doctorID || !request.body.date) {
+    appointment = await AppointmentSchema.findOne({ _id: request.body.id });
+    if (appointment == null)
+      response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
+  }
+  if (!request.body.date) {
+    request.body.date = appointment.date;
+  }
+  if (request.body.doctorID) {
+    let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
+    if (doctor == null)
+      response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
+    else {
+      next();
+    }
+  } else {
+    request.body.doctorID = appointment.doctorID.toString();
     next();
   }
 };
@@ -133,6 +163,11 @@ module.exports.doesEmployeeExist = async (request, response, next) => {
 
 //checking existance of patient ID
 module.exports.doesPatientExist = async (request, response, next) => {
+  if (!request.body.patientID) {
+    let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
+    request.body.patientID = invoice.patientID.toString();
+  }
+
   let patient = await patientSchema.findOne({ _id: request.body.patientID });
   if (patient == null)
     response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
@@ -143,8 +178,17 @@ module.exports.doesPatientExist = async (request, response, next) => {
 
 //checking of prescription appointment wheather if it exists or not
 module.exports.doesAppointmentExist = async (request, response, next) => {
+  if (!request.body.appointmentId) {
+    let Prescription = await PrescriptionSchema.findOne({ _id: request.body.id });
+    if (Prescription == null)
+      response.status(406).json({ meassge: "Wrong Prescription ID, process was cancelled" });
+    request.body.appointmentId = Prescription.appointmentID.toString();
+  }
+
   try {
-    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+      expiresIn: "1h",
+    });
     //fetching appointment
     let appointmentStream = await fetch(
       `http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`,
@@ -181,10 +225,12 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
       let prescORinvoice = await prescORinvoiceRES.json();
       if (prescORinvoice.length == 0) next();
       else {
+        if (request.body.id && request.body.id == prescORinvoice[0]._id) next();
         // console.log(`path is ${path}`)
-        return response
-          .status(406)
-          .json({ message: `this appointment id has a previous ${path},Process was cancelled` });
+        else
+          return response.status(406).json({
+            message: `this appointment id has a previous ${path},Process was cancelled`,
+          });
       }
     }
   } catch (error) {
@@ -246,4 +292,15 @@ module.exports.medicineStockMangement = async (request, response, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+/////////////////////  check the if   the doctor work at this clinic or not
+
+module.exports.doesDoctorWorkInClinic = async (request, response, next) => {
+  const clinicData = await clinicSchema.findOne({ _id: request.body.clinicID });
+
+  let flag = clinicData.doctorsID.includes(request.body.doctorID);
+  if (flag) {
+    next();
+  } else next(new Error("this doctor doesn`t work at this clinic at this time "));
 };

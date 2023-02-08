@@ -1,14 +1,40 @@
 require("../Models/PatientModel");
-require("../Models/pendingAppointment")
+require("../Models/pendingAppointment");
+const multer = require("multer");
 const { response } = require("express");
 
 const mongoose = require("mongoose");
 
 require("./../Models/sharedData");
+const sharedMail = mongoose.model("SharedData")
 
-const pendingSchema = mongoose.model("PendingAppointment")
+const pendingSchema = mongoose.model("PendingAppointment");
 
 const patinetSchmea = mongoose.model("Patients");
+
+//creating img file
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "img");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `patient-${req.body.id}-${Date.now()}.${ext}`);
+  },
+});
+
+//checking the uploaded file
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image!"), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+/**** UPLOAD IMAGE ****/
+exports.uploadPatientImg = upload.single("photo");
 
 exports.getAllPatients = (request, response, next) => {
   //FILTERING DATA
@@ -36,27 +62,25 @@ exports.getAllPatients = (request, response, next) => {
 };
 
 exports.addPatient = (request, response, next) => {
- 
-      let addPatient = new patinetSchmea({
-        Name: request.body.Name,
-        Age: request.body.Age,
-        Address: request.body.Address,
-        Apointments: request.body.Apointments,
-        Section: request.body.Section,
-        Disease: request.body.Disease,
-        Password: request.body.Password,
-        Email: request.body.email,
-      })
+  let addPatient = new patinetSchmea({
+    Name: request.body.Name,
+    Age: request.body.Age,
+    Address: request.body.Address,
+    Apointments: request.body.Apointments,
+    Section: request.body.Section,
+    Disease: request.body.Disease,
+    Password: request.body.Password,
+    Email: request.body.email,
+  })
 
-        .save()
-        .then((result) => {
-          response.status(201).json(result);
-        })
-        .catch((error) => {
-          next(error);
-        });
-    
-   
+    .save()
+    .then((result) => {
+      response.status(201).json(result);
+    })
+    .catch((error) => {
+      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
+      next(error);
+    });
 };
 
 exports.editPatient = (request, res, next) => {
@@ -75,6 +99,7 @@ exports.editPatient = (request, res, next) => {
           Disease: request.body.Disease,
           Password: request.body.Password,
           Email: request.body.Email,
+          photo: request.file.filename,
         },
       }
     )
@@ -111,33 +136,40 @@ exports.deleteFilteredPatient = (req, res, next) => {
     .catch((error) => {
       next(error);
     });
-
 };
 
- /* get patient profile  */
-exports.getpatientProfile = (req,res,next)=>{
-  patinetSchmea.findById(req.params.id).populate({path:"Apointments",
-populate:{path:"patientID",select:{_id: 0, Password: 0 }},
-populate:{path:"doctorID",select:{ _id: 0, appointmentNo: 0, workingHours: 0}},
-populate:{path:"clinicID",select:{_id: 0}}
-})
-  .then((result)=>{
-    if(result!=null)
-    res.status(201).json(result);
-    else
-     next(new Error("this patient doesnt exists"));
-  }).catch(error =>next(error))
-}
+/* get patient profile  */
+exports.getpatientProfile = (req, res, next) => {
+  patinetSchmea
+    .findById(req.params.id)
+    .populate({
+      path: "Apointments",
+      populate: { path: "patientID", select: { _id: 0, Password: 0 } },
+      populate: {
+        path: "doctorID",
+        select: { _id: 0, appointmentNo: 0, workingHours: 0 },
+      },
+      populate: { path: "clinicID", select: { _id: 0 } },
+    })
+    .then((result) => {
+      if (result != null) res.status(201).json(result);
+      else next(new Error("this patient doesnt exists"));
+    })
+    .catch((error) => next(error));
+};
 
 /**  request an appointment  */
-exports.reserveAppointment= (req,res,next)=>{
-  console.log(req.params.id)
- let addpending = new  pendingSchema({
-  patientID:req.params.id,
-  clinicID:req.body.clinicID,
-  date:req.body.date,
-  painDescription:req.body.painDescription
- }).save().then((data)=>{
-  res.status(201).json({message:"Reservation done successfuly "});
- }).catch(error=>next(error))
-}
+exports.reserveAppointment = (req, res, next) => {
+  console.log(req.params.id);
+  let addpending = new pendingSchema({
+    patientID: req.params.id,
+    clinicID: req.body.clinicID,
+    date: req.body.date,
+    painDescription: req.body.painDescription,
+  })
+    .save()
+    .then((data) => {
+      res.status(201).json({ message: "Reservation done successfuly " });
+    })
+    .catch((error) => next(error));
+};

@@ -1,11 +1,36 @@
 const mongoose = require("mongoose");
 require("../Models/employeesModel");
+require("../Models/sharedData");
+const multer = require("multer");
+const sharedMail = mongoose.model("SharedData")
 
 const employeesSchema = mongoose.model("employees");
 
-require("../Models/sharedData")
+//creating img file
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "img");
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split("/")[1];
+    cb(null, `employee-${req.body.id}-${Date.now()}.${ext}`);
+  },
+});
 
-const mailschema = mongoose.model("SharedData")
+//checking the uploaded file
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Not an image!"), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+/**** UPLOAD IMAGE ****/
+exports.uploadEmployeeImg = upload.single("photo");
+
+const mailschema = mongoose.model("SharedData");
 
 exports.getAllEmployees = (request, response, next) => {
   //FILTERING DATA
@@ -33,24 +58,22 @@ exports.getAllEmployees = (request, response, next) => {
 };
 
 exports.addEmployee = (req, res, next) => {
-
-    let newEmp = new employeesSchema({
-      _id: mongoose.Types.ObjectId(),
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      age: req.body.age,
-      address: req.body.address,
+  let newEmp = new employeesSchema({
+    _id: mongoose.Types.ObjectId(),
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    age: req.body.age,
+    address: req.body.address,
+  })
+    .save()
+    .then((data) => {
+      res.status(201).json({ status: "employee added successfully" });
     })
-      .save()
-      .then((data) => {
-        res.status(201).json({ status: "employee added successfully" });
-      })
-      .catch((error) => next(error));
- 
-
-
-
+    .catch((error) => {
+      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
+      next(error)}
+    );
 };
 
 exports.editEmployee = (req, res, next) => {
@@ -64,6 +87,7 @@ exports.editEmployee = (req, res, next) => {
           password: req.body.password,
           age: req.body.age,
           address: req.body.address,
+          photo: req.file.filename,
         },
       }
     )
@@ -101,4 +125,3 @@ exports.deleteFilteredEmployee = (req, res, next) => {
       next(error);
     });
 };
-

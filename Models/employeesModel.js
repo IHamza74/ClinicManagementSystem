@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
-const addressSchema = require("../Models/addressSchemaModel")
+const addressSchema = require("../Models/addressSchemaModel");
 const schema = mongoose.Schema;
 let employeeSchema = new schema({
   _id: schema.Types.ObjectId,
@@ -18,6 +18,10 @@ let employeeSchema = new schema({
   },
   age: {
     type: String,
+  },
+  photo: {
+    type: String,
+    default: "default.jpg",
   },
   address: {
     type: addressSchema,

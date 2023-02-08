@@ -29,6 +29,10 @@ const doctorSchema = new Schema({
     required: [true, "Please provide a password"],
     minlength: 8,
   },
+  photo: {
+    type: String,
+    default: "default.jpg",
+  },
   workingHours: { type: Number, default: 6 },
   appointmentNo: [{ type: Schema.Types.ObjectId, ref: "appointmentScheduler" }],
 });
