@@ -26,8 +26,8 @@ exports.getCheckoutSession = async (req, res, next) => {
   });
   console.log(paymentDetails);
   const paymentDescription = paymentDetails
-    .replace(/medicineID:|{|}|'/g, "")
-    .replace(/}{/g, " --- ");
+    .replace(/}{/g, " --- ")
+    .replace(/medicineID:|{|}|'/g, "");
 
   // 2) Create checkout session
   if (paymentMethod === "Credit Card" && payStatus === false) {

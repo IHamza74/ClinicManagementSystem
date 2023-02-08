@@ -13,12 +13,14 @@ let validationArray = [
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
   body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
-    .isAlpha()
+    .isString()
     .withMessage("paymentMethod should be Alpha")
     .isIn(["Cash", "Credit Card", "Insurance Card"])
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID"),
-  body("discount_percentage").isFloat().withMessage("discount_percentage sholuld be between (.1 to .3)"),
+  body("discount_percentage")
+    .isFloat()
+    .withMessage("discount_percentage sholuld be between (.1 to .3)"),
 ];
 
 let patchValidationArray = [
@@ -54,9 +56,9 @@ router
     whoIsValid("employee", "admin"),
     patchValidationArray,
     validator,
-    // customeMW.doesPatientExist,
-    // customeMW.DoMedicineExist,
-    // customeMW.doesAppointmentExist,
+    customeMW.doesPatientExist,
+    customeMW.DoMedicineExist,
+    customeMW.doesAppointmentExist,
     customeMW.medicineStockMangement,
     controller.editInvoice
   )
@@ -89,7 +91,11 @@ router
   .route("/invoice//dailyreports")
   .get(whoIsValid("admin"), controller.DailyInvoicesReports)
 
-  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteInvoice)
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteInvoice
+  )
   .get(
     whoIsValid("admin", "employee"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
@@ -99,7 +105,9 @@ router
 
 router.route("/invoice//allreports").get(whoIsValid("admin"), controller.AllInvoicesReports);
 
-router.route("/invoice//dailyreports").get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
+router
+  .route("/invoice//dailyreports")
+  .get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
 
 router
   .route("/invoice//patientreports/:id")
