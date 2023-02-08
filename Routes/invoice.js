@@ -8,7 +8,6 @@ const validator = require("./../Middlewares/errorValidation");
 const customeMW = require("../Middlewares/customeFunctionalities");
 
 let validationArray = [
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("medicine").isArray().withMessage("Medicine should be Array"),
   body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
@@ -43,7 +42,7 @@ router
   .get(whoIsValid("employee", "admin"), controller.getAllInvoices)
   .post(
     whoIsValid("employee", "admin"),
-    validationArray.slice(1),
+    validationArray,
     validator,
     customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
@@ -55,6 +54,7 @@ router
     whoIsValid("employee", "admin"),
     patchValidationArray,
     validator,
+    customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
     controller.editInvoice

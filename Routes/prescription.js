@@ -8,18 +8,17 @@ const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
 let validationArray = [
-  //id  ,doctorId ,medicine ,appointmentId , , ,
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
-  // body("doctorId").isMongoId().withMessage("doctorId should be Mongo Id"),
-
   body("medicine").isArray().withMessage("Medicine should be Array"),
-  body("medicine.*.medicineID")
-    .isMongoId()
-    .withMessage("medicineID should be Mongo Id"),
+  body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
-  body("appointmentId")
-    .isMongoId()
-    .withMessage("appointmentID sholuld be Mongo ID"),
+  body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
+];
+let patchValidationArray = [
+  body("id").isMongoId().withMessage("id should be Mongo Id"),
+  body("medicine").isArray().withMessage("Medicine should be Array").optional(),
+  body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
+  body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
+  body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID").optional(),
 ];
 
 router
@@ -27,7 +26,7 @@ router
   .get(whoIsValid("doctor", "admin"), controller.getAllPrescriptions)
   .post(
     whoIsValid("doctor", "admin"),
-    validationArray.slice(1),
+    validationArray,
     validator,
     CustomeMW.DoMedicineExist,
     CustomeMW.doesAppointmentExist,
@@ -35,8 +34,10 @@ router
   )
   .patch(
     whoIsValid("doctor", "admin"),
-    validationArray,
+    patchValidationArray,
     validator,
+    CustomeMW.DoMedicineExist,
+    CustomeMW.doesAppointmentExist,
     controller.editPrescription
      )
 
