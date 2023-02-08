@@ -54,7 +54,7 @@ router
     whoIsValid("doctor", "admin"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
-    controller.deletePrescription
+    controller.deletePrescriptionById
   );
 
 module.exports = router;
