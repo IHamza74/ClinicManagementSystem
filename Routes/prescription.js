@@ -47,7 +47,6 @@ router
     whoIsValid("admin", "employee", "doctor"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
-    whoIsValid("doctor"),
     controller.getPrescriptionsById
   )
   .delete(
