@@ -32,7 +32,7 @@ exports.addClinic = (req, res, next) => {
     // _id: req.body.id,
     clinicName: req.body.name,
     clinicAddress: req.body.address,
-    doctorsID:req.body.doctors
+    doctorsID: req.body.doctors
   })
     .save()
     .then((result) => {
@@ -50,7 +50,7 @@ exports.editClinic = (req, res, next) => {
           // _id: req.body.id,
           clinicName: req.body.name,
           clinicAddress: req.body.address,
-          doctorsID:req.body.doctors
+          doctorsID: req.body.doctors
         },
       }
     )
@@ -61,10 +61,13 @@ exports.editClinic = (req, res, next) => {
 };
 
 exports.deleteClinic = (req, res, next) => {
-  clinicSchema
-    .deleteOne({ _id: req.body.id })
+  clinicSchema.deleteOne({ _id: req.params.id })
     .then((result) => {
-      res.status(200).json({ status: "Clinic deleted successfully" });
+      if (result != null)
+        res.status(200).json({ status: "Clinic deleted successfully" });
+      else {
+        next(new Error("Wrong clinic ID, Process was cancelled."))
+      }
     })
     .catch((error) => next(error));
 };
@@ -88,15 +91,15 @@ exports.deleteFilteredClinic = (req, res, next) => {
 };
 
 /**  add doctor to  work at clinic */
-exports.addDoctor =(req,res,next)=>{
+exports.addDoctor = (req, res, next) => {
 
-  clinicSchema.updateOne({_id:req.params.id},{$addToSet:{"doctorsID":req.body.id}}).then((result)=>{
+  clinicSchema.updateOne({ _id: req.params.id }, { $addToSet: { "doctorsID": req.body.id } }).then((result) => {
     res.status(200).json(result);
-  }).catch(error=>next(error))
+  }).catch(error => next(error))
 }
 /** delete doctor from clinic */
-exports.deleteDoctor=(req,res,next)=>{
-  clinicSchema.updateOne({_id:req.params.id},{$pull:{"doctorsID":req.body.id}}).then((result)=>{
+exports.deleteDoctor = (req, res, next) => {
+  clinicSchema.updateOne({ _id: req.params.id }, { $pull: { "doctorsID": req.body.id } }).then((result) => {
     res.status(200).json(result);
-  }).catch(error=>next(error))
+  }).catch(error => next(error))
 }

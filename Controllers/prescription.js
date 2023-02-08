@@ -50,7 +50,7 @@ exports.getAllPrescriptions = (request, response, next) => {
 
 //get Prescription By Id
 exports.getPrescriptionsById = (request, response, next) => {
-  PrescriptionSchema.find({ _id: request.params.id })
+  PrescriptionSchema.findOne({ _id: request.params.id })
     .populate({
       path: "appointmentID",
       populate: { path: "doctorID", select: { name: 1, _id: 0 } },
@@ -73,7 +73,7 @@ exports.getPrescriptionsById = (request, response, next) => {
       select: { _id: 0, Name: 1, Dose: 1 },
     })
     .then((data) => {
-      response.status(200).json({ data });
+      response.status(200).json(data);
     })
     .catch((error) => next(error));
 };
