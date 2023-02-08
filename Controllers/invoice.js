@@ -42,9 +42,7 @@ exports.getAllInvoices = (request, response, next) => {
 
 exports.addInvoice = (req, res, next) => {
   let newInvoice = new InvoiceSchema({
-    // _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
     medicine: req.body.medicine,
-    money: req.body.money,
     appointmentID: req.body.appointmentId,
     paymentMethod: req.body.paymentMethod,
     patientID: req.body.patientID,

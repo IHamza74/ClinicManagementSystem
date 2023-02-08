@@ -11,7 +11,6 @@ let validationArray = [
   body("medicine").isArray().withMessage("Medicine should be Array"),
   body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
-  body("money").isInt().withMessage("Money should be Integer"),
   body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
     .isAlpha()
@@ -19,9 +18,7 @@ let validationArray = [
     .isIn(["Cash", "Credit Card", "Insurance Card"])
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID"),
-  body("discount_percentage")
-    .isFloat()
-    .withMessage("discount_percentage sholuld be between (.1 to .3)"),
+  body("discount_percentage").isFloat().withMessage("discount_percentage sholuld be between (.1 to .3)"),
 ];
 
 let patchValidationArray = [
@@ -57,29 +54,30 @@ router
     whoIsValid("employee", "admin"),
     patchValidationArray,
     validator,
-    customeMW.doesPatientExist,
-    customeMW.DoMedicineExist,
-    customeMW.doesAppointmentExist,
+    // customeMW.doesPatientExist,
+    // customeMW.DoMedicineExist,
+    // customeMW.doesAppointmentExist,
+    customeMW.medicineStockMangement,
     controller.editInvoice
   )
   .delete(whoIsValid("admin"), controller.deleteFilteredInvoice);
 
 router
   .route("/invoice/:id")
-  .delete(whoIsValid("admin"),
+  .delete(
+    whoIsValid("admin"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     controller.deleteInvoice
   )
-  .get(whoIsValid("admin", "employee"),
+  .get(
+    whoIsValid("admin", "employee"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     controller.getInvoicebyID
   );
 
-router
-  .route("/invoice//allreports")
-  .get(whoIsValid("admin"), controller.AllInvoicesReports);
+router.route("/invoice//allreports").get(whoIsValid("admin"), controller.AllInvoicesReports);
 
 router
   .route("/invoice//dailyreports")
