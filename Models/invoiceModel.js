@@ -57,5 +57,4 @@ schema.pre("save", function (next) {
   next();
 });
 
-schema.pre("save", function () {});
 mongoose.model("invoices", schema);
