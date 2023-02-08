@@ -111,6 +111,25 @@ exports.editPatient = (request, res, next) => {
     });
 };
 
+/****UPLOAD PHOTO ****/
+exports.patchPhoto = (req, res, next) => {
+  DoctorSchema.updateOne(
+    { _id: req.body.id },
+    {
+      $set: {
+        photo: req.file.filename,
+      },
+    }
+  )
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+
 exports.deletePatient = (request, response, next) => {
   patinetSchmea
     .deleteOne({ id: request.body.id })

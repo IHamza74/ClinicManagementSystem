@@ -20,16 +20,20 @@ router
   .route("/clinic")
   .get(whoIsValid("admin"), controller.getAllClinics)
   .post(whoIsValid("admin"), validationArray, validator, controller.addClinic)
-  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic)
+  .patch(
+    whoIsValid("admin"),
+    PatchValidationArray,
+    validator,
+    controller.editClinic
+  )
   .delete(whoIsValid("admin"), controller.deleteFilteredClinic);
 
-  // this routes handle the clinic doctor add or remove doctor from clinic
-  router
-  .route("/clinic/adddoctor/:id")
+// this routes handle the clinic doctor add or remove doctor from clinic
+router
+  .route("/clinic/:id")
   // this route add new doctor to the clinic
-  .patch(whoIsValid("admin"),controller.addDoctor);
+  .patch(whoIsValid("admin"), controller.addDoctor)
   // this route delete doctor from clinic
-router.route("/clinic/deldoctor/:id")
-  .patch(whoIsValid("admin"),controller.deleteDoctor)
+  .put(whoIsValid("admin"), controller.deleteDoctor);
 
 module.exports = router;

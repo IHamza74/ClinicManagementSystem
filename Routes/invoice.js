@@ -11,10 +11,9 @@ let validationArray = [
   body("medicine").isArray().withMessage("Medicine should be Array"),
   body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
-  body("money").isInt().withMessage("Money should be Integer"),
   body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID"),
   body("paymentMethod")
-    .isAlpha()
+    .isString()
     .withMessage("paymentMethod should be Alpha")
     .isIn(["Cash", "Credit Card", "Insurance Card"])
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
@@ -60,37 +59,55 @@ router
     customeMW.doesPatientExist,
     customeMW.DoMedicineExist,
     customeMW.doesAppointmentExist,
+    customeMW.medicineStockMangement,
     controller.editInvoice
   )
   .delete(whoIsValid("admin"), controller.deleteFilteredInvoice);
 
 router
   .route("/invoice/:id")
-  .delete(whoIsValid("admin"),
+  .delete(
+    whoIsValid("admin"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     controller.deleteInvoice
   )
-  .get(whoIsValid("admin", "employee"),
+  .patch(
+    whoIsValid("employee", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.editInvoiceById
+  )
+  .get(
+    whoIsValid("admin", "employee"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     controller.getInvoicebyID
   );
 
-router
-  .route("/invoice//allreports")
-  .get(whoIsValid("admin"), controller.AllInvoicesReports);
+router.route("/invoice//allreports").get(whoIsValid("admin"), controller.AllInvoicesReports);
 
 router
   .route("/invoice//dailyreports")
   .get(whoIsValid("admin"), controller.DailyInvoicesReports)
 
-  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteInvoice)
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getInvoicebyID);
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteInvoice
+  )
+  .get(
+    whoIsValid("admin", "employee"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getInvoicebyID
+  );
 
-router.route("/invoice//allreports").get(whoIsValid("admin", "employee"), controller.AllInvoicesReports);
+router.route("/invoice//allreports").get(whoIsValid("admin"), controller.AllInvoicesReports);
 
-router.route("/invoice//dailyreports").get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
+router
+  .route("/invoice//dailyreports")
+  .get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
 
 router
   .route("/invoice//patientreports/:id")

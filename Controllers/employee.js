@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require("../Models/employeesModel");
 require("../Models/sharedData");
 const multer = require("multer");
-const sharedMail = mongoose.model("SharedData")
+const sharedMail = mongoose.model("SharedData");
 
 const employeesSchema = mongoose.model("employees");
 
@@ -71,9 +71,11 @@ exports.addEmployee = (req, res, next) => {
       res.status(201).json({ status: "employee added successfully" });
     })
     .catch((error) => {
-      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
-      next(error)}
-    );
+      sharedMail.deleteOne({ email: request.body.email }).then((data) => {
+        console.log("mail deleted from data shared");
+      });
+      next(error);
+    });
 };
 
 exports.editEmployee = (req, res, next) => {
@@ -97,13 +99,32 @@ exports.editEmployee = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-exports.deleteEmployee = (req, res, next) => {
-  employeesSchema
-    .deleteOne({
-      _id: req.body.id,
+/****UPLOAD PHOTO ****/
+exports.patchPhoto = (req, res, next) => {
+  DoctorSchema.updateOne(
+    { _id: req.body.id },
+    {
+      $set: {
+        photo: req.file.filename,
+      },
+    }
+  )
+    .then((result) => {
+      res.status(200).json(result);
     })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+exports.deleteEmployee = (req, res, next) => {
+  employeesSchema.deleteOne({ _id: req.params.id })
     .then((data) => {
-      res.status(200).json({ status: "Employee deleted successfully" });
+      if (data != null)
+        res.status(200).json({ status: "Employee deleted successfully" });
+      else {
+        next(new Error("Employee not found, Process was cancelled"))
+      }
     })
     .catch((error) => next(error));
 };

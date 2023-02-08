@@ -4,7 +4,7 @@ require("./../Models/doctorModel");
 const multer = require("multer");
 const DoctorSchema = mongoose.model("doctor");
 require("./../Models/sharedData");
-const sharedMail = mongoose.model("SharedData")
+const sharedMail = mongoose.model("SharedData");
 require("../Models/sharedData");
 
 //creating img file
@@ -86,9 +86,13 @@ exports.addDoctor = (req, res, next) => {
       res.status(201).json(result);
     })
     .catch((error) => {
-      console.log("haal")
-      sharedMail.deleteOne({email:req.body.email}).then((data)=>{console.log("mail deleted from data shared")})
-      .catch(error=>next(error))
+      console.log("haal");
+      sharedMail
+        .deleteOne({ email: req.body.email })
+        .then((data) => {
+          console.log("mail deleted from data shared");
+        })
+        .catch((error) => next(error));
       next(error);
     });
 };
@@ -106,6 +110,23 @@ exports.editDoctor = (req, res, next) => {
         workingHours: req.body.workingHours,
         appointmentNo: req.body.appointmentNo,
         password: req.body.password,
+      },
+    }
+  )
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+
+/****UPLOAD PHOTO ****/
+exports.patchPhoto = (req, res, next) => {
+  DoctorSchema.updateOne(
+    { _id: req.body.id },
+    {
+      $set: {
         photo: req.file.filename,
       },
     }
@@ -136,13 +157,19 @@ exports.deleteFilteredDoctor = (req, res, next) => {
   let ObjStr = JSON.stringify(Obj);
   ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
   ObjStr = JSON.parse(ObjStr);
-
-  DoctorSchema.deleteMany(ObjStr)
-    .then((result) => {
-      if (result != null) res.status(200).json(result);
-      else next(new Error("Data is not found!"));
-    })
-    .catch((error) => {
-      next(error);
-    });
+  console.log(ObjStr);
+  console.log(DoctorSchema);
+  if (Object.keys(ObjStr).length != 0) {
+    DoctorSchema.findOne();
+    DoctorSchema.deleteMany(ObjStr)
+      .then((result) => {
+        if (result != null) res.status(200).json(result);
+        else next(new Error("Data is not found!"));
+      })
+      .catch((error) => {
+        next(error);
+      });
+  } else {
+    res.status(200).json({ data: "please specify any data to be deleted" });
+  }
 };
