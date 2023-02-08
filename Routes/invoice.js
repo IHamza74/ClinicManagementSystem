@@ -19,6 +19,9 @@ let validationArray = [
     .isIn(["Cash", "Credit Card", "Insurance Card"])
     .withMessage("Paymentmethod should be in (Cash,Credit Card,Insurance Card) "),
   body("patientID").isMongoId().withMessage("patientID sholuld be Mongo ID"),
+  body("discount_percentage")
+    .isFloat()
+    .withMessage("discount_percentage sholuld be between (.1 to .3)"),
 ];
 
 let patchValidationArray = [

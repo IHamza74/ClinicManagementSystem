@@ -5,28 +5,35 @@ const mongoose = require("mongoose");
 require("../Models/invoiceModel");
 const InvoiceSchema = mongoose.model("invoices");
 
-exports.getCgeckoutSession = async (req, res, next) => {
+exports.getCheckoutSession = async (req, res, next) => {
   // 1) Get invoice
-  const invoice = InvoiceSchema.findOne({ _id: req.params.invoiceId }, {});
+  const invoice = InvoiceSchema.findOne()
+    .sort("-date")
+    .populate({
+      path: "medicine.medicineID",
+      select: { _id: 0, Name: 1, Dose: 1 },
+    });
   const invoceDetails = await invoice.exec();
-  const money = await invoceDetails.money;
-  const paymentMethod = await invoceDetails.paymentMethod;
-  const medicine = await invoceDetails.medicine;
+  const id = invoceDetails._id.toString();
+  const money = invoceDetails.money;
+  const paymentMethod = invoceDetails.paymentMethod;
+  const medicine = invoceDetails.medicine;
+  const payStatus = invoceDetails.payment_status;
 
   let paymentDetails = "";
   medicine.forEach((el) => {
     paymentDetails += el;
   });
+  console.log(paymentDetails);
   const paymentDescription = paymentDetails
-    .replace("}{", " --- ")
-    .replace("{", "")
-    .replace("}", "");
+    .replace(/medicineID:|{|}|'/g, "")
+    .replace(/}{/g, " --- ");
 
   // 2) Create checkout session
-  if (paymentMethod === "Credit Card") {
+  if (paymentMethod === "Credit Card" && payStatus === false) {
     try {
       const session = await stripe.checkout.sessions.create({
-        client_reference_id: `${req.params.invoiceId}`,
+        client_reference_id: `${id}`,
         mode: "payment",
         payment_method_types: ["card"],
         line_items: [
@@ -36,7 +43,7 @@ exports.getCgeckoutSession = async (req, res, next) => {
               unit_amount: money * 100,
 
               product_data: {
-                name: `Invoce No: ${req.params.invoiceId}`,
+                name: `Invoce No: ${id}`,
                 description: `${paymentDescription}`,
               },
             },
@@ -44,7 +51,7 @@ exports.getCgeckoutSession = async (req, res, next) => {
           },
         ],
 
-        success_url: `${req.protocol}://${req.get("host")}/invoice/?id=${req.params.invoiceId}`,
+        success_url: `${req.protocol}://${req.get("host")}/invoice/?id=${id}`,
         cancel_url: `${req.protocol}://${req.get("host")}/invoice/`,
       });
 
