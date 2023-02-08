@@ -63,6 +63,25 @@ router
 
 router
   .route("/invoice/:id")
+  .delete(whoIsValid("admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteInvoice
+  )
+  .get(whoIsValid("admin", "employee"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getInvoicebyID
+  );
+
+router
+  .route("/invoice//allreports")
+  .get(whoIsValid("admin"), controller.AllInvoicesReports);
+
+router
+  .route("/invoice//dailyreports")
+  .get(whoIsValid("admin"), controller.DailyInvoicesReports)
+
   .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteInvoice)
   .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getInvoicebyID);
 
@@ -73,7 +92,7 @@ router.route("/invoice//dailyreports").get(whoIsValid("admin", "employee"), cont
 router
   .route("/invoice//patientreports/:id")
   .get(
-    whoIsValid("admin", "employee"),
+    whoIsValid("admin"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
     controller.PatientInvoicesReports

@@ -88,6 +88,8 @@ router
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)
   .post(whoIsValid("employee", "admin", "doctor"), validationArray, validator, checkmail, controller.addPatient)
   .patch(
+    whoIsValid("employee", "doctor"),
+    validationArray,
     whoIsValid("employee", "doctor", "patient", "admin"),
     patchValidationArray,
     validator,

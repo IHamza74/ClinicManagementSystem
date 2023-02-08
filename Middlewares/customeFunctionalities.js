@@ -270,3 +270,20 @@ module.exports.medicineStockMangement = async (request, response, next) => {
     next(error);
   }
 };
+
+/////////////////////  check the if   the doctor work at this clinic or not 
+
+module.exports.doesDoctorWorkInClinic = async (request, response, next) => {
+  const clinicData = await clinicSchema.findOne({ _id: request.body.clinicID });
+ 
+  let flag = clinicData.doctorsID.includes(request.body.doctorID)
+  if(flag)
+  {
+    next()
+  }
+  else
+  next(new Error("this doctor doesn`t work at this clinic at this time "))
+ 
+};
+
+

@@ -51,7 +51,7 @@ let patchValidationArray = [
 router
   .route("/doctor")
   .get(whoIsValid("admin", "employee"), controller.getAllDoctors)
-  .post(whoIsValid("admin", "employee"), validationArray, validator, checkmail, controller.addDoctor)
+  .post(whoIsValid("admin", "employee"), checkmail, validationArray.slice(1), validator, controller.addDoctor)
   .patch(
     whoIsValid("admin"),
     patchValidationArray,
