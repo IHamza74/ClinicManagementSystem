@@ -9,7 +9,7 @@ const employeeRouter = require("./Routes/employee");
 const invoiceRouter = require("./Routes/invoice");
 const medicineRouter = require("./Routes/medicine");
 const patientRouter = require("./Routes/patient");
-const signupRouter =require("./Routes/signup")
+const signupRouter = require("./Routes/signup");
 const prescriptionRouter = require("./Routes/prescription");
 const payment = require("./Routes/payment");
 const dotenv = require("dotenv");
@@ -35,12 +35,6 @@ mongoose
   .catch((error) => {
     console.log("DB Problem " + error);
   });
-
-/******First MW******/
-// server.use((req, res, next) => {
-//   console.log("hellow from First MW");
-//   next();
-// });
 
 /******Settings ******/
 server.use(express.json());

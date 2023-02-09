@@ -31,7 +31,6 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
     try {
       let appointmentDate = new Date(request.body.date).getTime();
       let currentDate = new Date().getTime();
-      // console.log(appointmentDate)
 
       if (currentDate > appointmentDate && request.method == "POST") {
         return response
@@ -39,9 +38,9 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
           .json({ message: "You can not make an appointment in the past" });
       } else {
         let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-          expiresIn: "1h",
+          expiresIn: process.env.TOKEN_DURAITION,
         });
-        console.log(request.body.doctorID);
+
         let appointsRes = await fetch(
           `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
           {
@@ -72,7 +71,9 @@ module.exports.isDoctorAvailablePost = async (request, response, next) => {
     if (currentDate > appointmentDate) {
       return response.status(406).json({ message: "You can not make an appointment in the past" });
     } else {
-      let token = jwt.sign({ role: "admin" }, "AhmedTurky", { expiresIn: "1h" });
+      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+        expiresIn: process.env.TOKEN_DURAITION,
+      });
       let appointsRes = await fetch(
         `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
         {
@@ -97,16 +98,16 @@ module.exports.isDoctorAvailablePost = async (request, response, next) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //checking of medicine wheather if it exists
 module.exports.DoMedicineExist = async (request, response, next) => {
-  if (request.body.medicineID != null)
+  if (request.body.medicine != null) {
     try {
       let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: process.env.TOKEN_DURAITION,
       });
       let medicinesAsJson = await fetch(`http://localhost:3000/medicine`, {
         headers: { Authorization: "Bearer " + token },
       });
       let allDBMedicines = await medicinesAsJson.json();
-      console.log(request.body.medicine);
+
       if (request.body.medicine) {
         let requestMedicines = request.body.medicine;
 
@@ -146,6 +147,7 @@ module.exports.DoMedicineExist = async (request, response, next) => {
     } catch (error) {
       next(error);
     }
+  } else next();
 };
 
 //checking existance of doctor
@@ -240,7 +242,7 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
   if (request.body.appointmentId) {
     try {
       let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: process.env.TOKEN_DURAITION,
       });
       //fetching appointment
       let appointmentStream = await fetch(
@@ -254,14 +256,9 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 
       //defining path to check existance of previous invoice or prescription
       let fullPath = request.url.substring(1);
-      console.log(`${fullPath}`.bgCyan);
 
       let path = fullPath.split("/")[0];
       // let path = fullPath.substring(0, fullPath.indexOf("/"));
-      console.log(`${path}`.bgCyan);
-      console.log(
-        `http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue
-      );
 
       // checking appointment if exist
       if (AppointmentResult._id != request.body.appointmentId) {
@@ -281,7 +278,6 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
         if (prescORinvoice.length == 0) next();
         else {
           if (request.body.id && request.body.id == prescORinvoice[0]._id) next();
-          // console.log(`path is ${path}`)
           else
             return response.status(406).json({
               message: `this appointment id has a previous ${path},Process was cancelled`,
@@ -396,9 +392,6 @@ module.exports.restoreMedicineStock = async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-  // } else {
-  //   next();
-  // }
 };
 
 /////////////////////  check the if   the doctor work at this clinic or not

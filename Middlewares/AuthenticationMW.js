@@ -3,9 +3,7 @@ const jwt = require("jsonwebtoken");
 exports.login = (req, res, next) => {
   try {
     let token = req.get("authorization").split(" ")[1];
-    let decodedToken = jwt.verify(token, "AhmedTurky");
-    // console.log(decodedToken);
-    // req.id = decodedToken.id;
+    let decodedToken = jwt.verify(token, process.env.SECRET_KEY);
     req.role = decodedToken.role;
   } catch (error) {
     error.status = 403;

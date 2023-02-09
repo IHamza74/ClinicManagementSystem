@@ -6,7 +6,7 @@ const { response } = require("express");
 const mongoose = require("mongoose");
 
 require("./../Models/sharedData");
-const sharedMail = mongoose.model("SharedData")
+const sharedMail = mongoose.model("SharedData");
 
 const pendingSchema = mongoose.model("PendingAppointment");
 
@@ -78,7 +78,9 @@ exports.addPatient = (request, response, next) => {
       response.status(201).json(result);
     })
     .catch((error) => {
-      sharedMail.deleteOne({email:request.body.email}).then((data)=>{console.log("mail deleted from data shared")})
+      sharedMail.deleteOne({ email: request.body.email }).then((data) => {
+        console.log("mail deleted from data shared");
+      });
       next(error);
     });
 };
@@ -99,7 +101,6 @@ exports.editPatient = (request, response, next) => {
           Disease: request.body.disease,
           Password: request.body.password,
           Email: request.body.email,
-        
         },
       }
     )
@@ -113,14 +114,15 @@ exports.editPatient = (request, response, next) => {
 
 /****UPLOAD PHOTO ****/
 exports.patchPhoto = (req, res, next) => {
-  DoctorSchema.updateOne(
-    { _id: req.body.id },
-    {
-      $set: {
-        photo: req.file.filename,
-      },
-    }
-  )
+  patinetSchmea
+    .updateOne(
+      { _id: req.body.id },
+      {
+        $set: {
+          photo: req.file.filename,
+        },
+      }
+    )
     .then((result) => {
       res.status(200).json(result);
     })
@@ -128,7 +130,6 @@ exports.patchPhoto = (req, res, next) => {
       next(error);
     });
 };
-
 
 exports.deletePatient = (request, response, next) => {
   patinetSchmea
@@ -139,18 +140,14 @@ exports.deletePatient = (request, response, next) => {
     .catch((error) => next(error));
 };
 
-exports.deletePatientByID= (req, res, next) => {
-  
-  patinetSchmea.deleteOne({_id:req.params.id})
-  .then((result) => {
-    res.status(201).json({ message: "patinet deleted" });
-
-  })
-  .catch((error) => next(error));
-}
-
-/****DELETE DATA USING FILTER****/
-
+exports.deletePatientByID = (req, res, next) => {
+  patinetSchmea
+    .deleteOne({ _id: req.params.id })
+    .then((result) => {
+      res.status(201).json({ message: "patinet deleted" });
+    })
+    .catch((error) => next(error));
+};
 
 /* get patient profile  */
 exports.getpatientProfile = (req, res, next) => {
@@ -174,7 +171,6 @@ exports.getpatientProfile = (req, res, next) => {
 
 /**  request an appointment  */
 exports.reserveAppointment = (req, res, next) => {
-  console.log(req.params.id);
   let addpending = new pendingSchema({
     patientID: req.params.id,
     clinicID: req.body.clinicID,

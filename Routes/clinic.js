@@ -9,8 +9,8 @@ const validator = require("./../Middlewares/errorValidation");
 let postValidationArray = [
   body("name").isString().withMessage("name should be string"),
   body("address").isString().withMessage("address should be string"),
-  body("doctors").isArray().withMessage("doctors should be Array"),
-  body("doctors.*").isMongoId().withMessage("doctors should contains Mongo IDs"),
+  body("doctors").isArray().withMessage("doctors should be Array").optional(),
+  body("doctors.*").isMongoId().withMessage("doctors should contains Mongo IDs").optional(),
 ];
 let PatchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
@@ -25,7 +25,6 @@ router
   .get(whoIsValid("admin"), controller.getAllClinics)
   .post(whoIsValid("admin"), postValidationArray, validator, controller.addClinic)
   .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic);
- 
 
 // this routes handle the clinic doctor add or remove doctor from clinic
 router
@@ -46,7 +45,5 @@ router
     validator,
     controller.deleteDoctor
   );
-router 
-.route("/clinic/:id")
-.delete(whoIsValid("admin"),controller.deleteClinic)
+router.route("/clinic/:id").delete(whoIsValid("admin"), controller.deleteClinic);
 module.exports = router;

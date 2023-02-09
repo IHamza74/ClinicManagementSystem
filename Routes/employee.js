@@ -21,11 +21,10 @@ let postValidationArray = [
     .withMessage("password sholuld be String")
     .isLength({ min: 8 })
     .withMessage("password sholuld be 8 characters or more"),
-  body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
 let patchValidationArray = [
-  // body("id").isMongoId().withMessage("id should be Mongo Id"),
+  body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("name").isString().withMessage("name should be String").optional(),
   body("age").isInt().withMessage("age should be integer").optional(),
   body("email").isEmail().withMessage("email should be a valid email").optional(),
@@ -40,7 +39,6 @@ let patchValidationArray = [
     .isLength({ min: 8 })
     .withMessage("password sholuld be 8 characters or more")
     .optional(),
-  // body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
 router.route("/employee/uploadPhoto").patch(controller.uploadEmployeeImg, controller.patchPhoto);
@@ -49,8 +47,8 @@ router
   .route("/employee")
   .get(whoIsValid("admin"), controller.getAllEmployees)
   .post(whoIsValid("admin"), postValidationArray, validator, checkmail, controller.addEmployee)
-  .patch(whoIsValid("admin"), patchValidationArray, validator, controller.editEmployee)
- 
+  .patch(whoIsValid("admin"), patchValidationArray, validator, controller.editEmployee);
+
 router
   .route("/employee/:id")
   .delete(

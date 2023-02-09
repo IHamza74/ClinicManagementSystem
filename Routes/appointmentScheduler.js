@@ -47,7 +47,7 @@ router
     customeMiddlewares.doesEmployeeExist,
     customeMiddlewares.doesDoctorWorkInClinic,
     customeMiddlewares.isDoctorAvailablePost,
-    //sendEmail(),
+    sendEmail(),
     controller.addAppointment,
     customeMiddlewares.addAppointmentToPatientOrDoctor
   )

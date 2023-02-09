@@ -97,20 +97,28 @@ router
     whoIsValid("employee", "doctor", "patient", "admin"),
     patchValidationArray,
     validator,
- checkmail,
+    checkmail,
     controller.editPatient
   )
-  .delete(
-    whoIsValid("employee", "admin", "doctor"),
-    controller.deletePatient
-  );
-  /**  upload image  */
-  router
+  .delete(whoIsValid("employee", "admin", "doctor"), controller.deletePatient);
+/**  upload image  */
+router
   .route("/patient/uploadPhoto")
-  .patch(controller.uploadPatientImg,controller.patchPhoto)
+  .patch(controller.uploadPatientImg, controller.patchPhoto)
 
-  .post(whoIsValid("employee", "admin", "doctor"), postValidationArray, validator, checkmail, controller.addPatient)
-  .patch(whoIsValid("employee", "doctor", "patient", "admin"), patchValidationArray, validator, controller.editPatient)
+  .post(
+    whoIsValid("employee", "admin", "doctor"),
+    postValidationArray,
+    validator,
+    checkmail,
+    controller.addPatient
+  )
+  .patch(
+    whoIsValid("employee", "doctor", "patient", "admin"),
+    patchValidationArray,
+    validator,
+    controller.editPatient
+  )
   .delete(whoIsValid("employee", "admin", "doctor"), controller.deletePatient);
 /**  upload image  */
 router.route("/patient/uploadPhoto").patch(controller.uploadPatientImg, controller.patchPhoto);
@@ -128,10 +136,14 @@ router
 
 router
   .route("/patient/:id")
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getpatientProfile)
-  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-  controller.deletePatientByID
-
+  .get(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getpatientProfile
   )
-  
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    controller.deletePatientByID
+  );
+
 module.exports = router;

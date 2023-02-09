@@ -24,7 +24,6 @@ exports.getCheckoutSession = async (req, res, next) => {
   medicine.forEach((el) => {
     paymentDetails += el;
   });
-  console.log(paymentDetails);
   const paymentDescription = paymentDetails
     .replace(/}{/g, " --- ")
     .replace(/medicineID:|{|}|'/g, "");
