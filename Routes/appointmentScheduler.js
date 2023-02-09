@@ -46,8 +46,8 @@ router
     customeMiddlewares.doesClinicExist,
     customeMiddlewares.doesEmployeeExist,
     customeMiddlewares.doesDoctorWorkInClinic,
-    customeMiddlewares.isDoctorAvailable,
-    sendEmail(),
+    customeMiddlewares.isDoctorAvailablePost,
+    //sendEmail(),
     controller.addAppointment,
     customeMiddlewares.addAppointmentToPatientOrDoctor
   )
@@ -100,7 +100,15 @@ router
 router
   .route("/appointmentScheduler/:id")
 
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getOneAppointment)
-  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteAppointment);
+  .get(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getOneAppointment
+  )
+  .delete(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteAppointment
+  );
 
 module.exports = router;

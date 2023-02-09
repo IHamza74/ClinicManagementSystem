@@ -27,96 +27,125 @@ const InvoiceSchema = mongoose.model("invoices");
 
 //preventing conflicts of appointments for one doctor
 module.exports.isDoctorAvailable = async (request, response, next) => {
-if(request.body.doctorID !=null)
-{
+  if (request.body.doctorID != null) {
+    try {
+      let appointmentDate = new Date(request.body.date).getTime();
+      let currentDate = new Date().getTime();
+      // console.log(appointmentDate)
 
+      if (currentDate > appointmentDate && request.method == "POST") {
+        return response
+          .status(406)
+          .json({ message: "You can not make an appointment in the past" });
+      } else {
+        let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+          expiresIn: "1h",
+        });
+        console.log(request.body.doctorID);
+        let appointsRes = await fetch(
+          `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        );
+
+        let DrAppointments = await appointsRes.json();
+        let flag = 0;
+        DrAppointments.forEach((appointment) => {
+          if (Math.abs(new Date(appointment.date) - new Date(request.body.date)) < 30 * 60000) {
+            flag = 1;
+            return response.status(406).json({ message: "the doctor is busy at this time" });
+          }
+        });
+        if (flag == 0) next();
+      }
+    } catch (error) {
+      next(error);
+    }
+  } else next();
+};
+
+module.exports.isDoctorAvailablePost = async (request, response, next) => {
   try {
-    let appointmentDate = new Date(request.body.date).getTime();
+    let appointmentDate = new Date(request.body.Date).getTime();
     let currentDate = new Date().getTime();
-    // console.log(appointmentDate)
-   
-    if (currentDate > appointmentDate && request.method=="POST") {
+    if (currentDate > appointmentDate) {
       return response.status(406).json({ message: "You can not make an appointment in the past" });
     } else {
-      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-        expiresIn: "1h",
-      });
-      console.log(request.body.doctorID);
-      let appointsRes = await fetch(`http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`, {
-        headers: { Authorization: "Bearer " + token },
-      });
+      let token = jwt.sign({ role: "admin" }, "AhmedTurky", { expiresIn: "1h" });
+      let appointsRes = await fetch(
+        `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
 
       let DrAppointments = await appointsRes.json();
-      let flag = 0;
       DrAppointments.forEach((appointment) => {
         if (Math.abs(new Date(appointment.date) - new Date(request.body.date)) < 30 * 60000) {
-          flag = 1;
           return response.status(406).json({ message: "the doctor is busy at this time" });
         }
       });
-      if (flag == 0) next();
+      next();
     }
   } catch (error) {
     next(error);
   }
-}
-next();
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //Prescription Checking MWs//
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //checking of medicine wheather if it exists
 module.exports.DoMedicineExist = async (request, response, next) => {
- if(request.body.medicineID !=null)
- 
-  try {
-    let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
-      expiresIn: "1h",
-    });
-    let medicinesAsJson = await fetch(`http://localhost:3000/medicine`, {
-      headers: { Authorization: "Bearer " + token },
-    });
-    let allDBMedicines = await medicinesAsJson.json();
-    console.log(request.body.medicine);
-    if (request.body.medicine) {
-      let requestMedicines = request.body.medicine;
-
-      //getting All DB medicines ids
-      let allDBmedicinesIDS = []; // contains all medicines' ids in DB
-      let prescriptionMedicinesIDs = []; // contains all presicription's ids
-      let notFoundMedicines = []; //not found medicines
-      allDBMedicines.forEach((med) => {
-        allDBmedicinesIDS.push(med._id);
+  if (request.body.medicineID != null)
+    try {
+      let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
+        expiresIn: "1h",
       });
-
-      //getting presicription medicines id
-      requestMedicines.forEach((med) => {
-        prescriptionMedicinesIDs.push(med.medicineID);
+      let medicinesAsJson = await fetch(`http://localhost:3000/medicine`, {
+        headers: { Authorization: "Bearer " + token },
       });
+      let allDBMedicines = await medicinesAsJson.json();
+      console.log(request.body.medicine);
+      if (request.body.medicine) {
+        let requestMedicines = request.body.medicine;
 
-      //checking existance of medicine in stock
-      prescriptionMedicinesIDs.forEach((medID) => {
-        let flag = allDBmedicinesIDS.indexOf(medID);
-        if (flag == -1) {
-          notFoundMedicines.push(medID);
-        }
-      });
-
-      // checking overall medcines status
-      if (notFoundMedicines.length == 0) {
-        next();
-      } else {
-        return response.status(406).json({
-          message: "some medicines are out of stock, prescription is cancelled",
-          medicinesIDs: notFoundMedicines,
+        //getting All DB medicines ids
+        let allDBmedicinesIDS = []; // contains all medicines' ids in DB
+        let prescriptionMedicinesIDs = []; // contains all presicription's ids
+        let notFoundMedicines = []; //not found medicines
+        allDBMedicines.forEach((med) => {
+          allDBmedicinesIDS.push(med._id);
         });
+
+        //getting presicription medicines id
+        requestMedicines.forEach((med) => {
+          prescriptionMedicinesIDs.push(med.medicineID);
+        });
+
+        //checking existance of medicine in stock
+        prescriptionMedicinesIDs.forEach((medID) => {
+          let flag = allDBmedicinesIDS.indexOf(medID);
+          if (flag == -1) {
+            notFoundMedicines.push(medID);
+          }
+        });
+
+        // checking overall medcines status
+        if (notFoundMedicines.length == 0) {
+          next();
+        } else {
+          return response.status(406).json({
+            message: "some medicines are out of stock, prescription is cancelled",
+            medicinesIDs: notFoundMedicines,
+          });
+        }
+      } else {
+        next();
       }
-    } else {
-      next();
+    } catch (error) {
+      next(error);
     }
-  } catch (error) {
-    next(error);
-  }
 };
 
 //checking existance of doctor
@@ -145,7 +174,8 @@ module.exports.doesDoctorExist = async (request, response, next) => {
     let appointment;
     if (!request.body.doctorID || !request.body.date) {
       appointment = await AppointmentSchema.findOne({ _id: request.body.id });
-      if (appointment == null) response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
+      if (appointment == null)
+        response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
     }
     // if (!request.body.date) {
     //   request.body.date = appointment.date;
@@ -155,7 +185,8 @@ module.exports.doesDoctorExist = async (request, response, next) => {
     }
   }
   let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
-  if (doctor == null) response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
+  if (doctor == null)
+    response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
   else {
     next();
   }
@@ -163,26 +194,23 @@ module.exports.doesDoctorExist = async (request, response, next) => {
 
 //checking existance of clinic
 module.exports.doesClinicExist = async (request, response, next) => {
-  if(request.body.clinicID!=null)
-  {
+  if (request.body.clinicID != null) {
     let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
-    if (clinic == null) response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
+    if (clinic == null)
+      response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
     else {
       next();
     }
-
   }
   next();
 };
 
 //checking existance of employee ID
 module.exports.doesEmployeeExist = async (request, response, next) => {
-
-  if(request.body.employeeID!=null)
-  {
-
+  if (request.body.employeeID != null) {
     let employee = await employeeSchema.findOne({ _id: request.body.employeeID });
-    if (employee == null) response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
+    if (employee == null)
+      response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
     else {
       next();
     }
@@ -192,22 +220,19 @@ module.exports.doesEmployeeExist = async (request, response, next) => {
 
 //checking existance of patient ID
 module.exports.doesPatientExist = async (request, response, next) => {
- 
-  if(request.body.patientID !=null)
-  {
-    
+  if (request.body.patientID != null) {
     if (!request.body.patientID) {
       let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
       request.body.patientID = invoice.patientID.toString();
     }
-  
+
     let patient = await patientSchema.findOne({ _id: request.body.patientID });
-    if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
+    if (patient == null)
+      response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
     else {
       next();
     }
-  }
-  next();
+  } else next();
 };
 
 //checking of prescription appointment wheather if it exists or not
@@ -218,9 +243,12 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
         expiresIn: "1h",
       });
       //fetching appointment
-      let appointmentStream = await fetch(`http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`, {
-        headers: { Authorization: "Bearer " + token },
-      });
+      let appointmentStream = await fetch(
+        `http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`,
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      );
       // checking overall medcines status
       let AppointmentResult = await appointmentStream.json();
 
@@ -231,11 +259,15 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
       let path = fullPath.split("/")[0];
       // let path = fullPath.substring(0, fullPath.indexOf("/"));
       console.log(`${path}`.bgCyan);
-      console.log(`http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue);
+      console.log(
+        `http://localhost:3000/${path}?appointmentID=${request.body.appointmentId}`.bgBlue
+      );
 
       // checking appointment if exist
       if (AppointmentResult._id != request.body.appointmentId) {
-        return response.status(406).json({ message: "Appointment Id is not valid, process is cancelled" });
+        return response
+          .status(406)
+          .json({ message: "Appointment Id is not valid, process is cancelled" });
       } else {
         //checking existance of previous prescription or invoice
         let prescORinvoiceRES = await fetch(
@@ -267,7 +299,10 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 module.exports.addAppointmentToPatientOrDoctor = async (request, response, next) => {
   try {
     await doctorSchema
-      .findOneAndUpdate({ _id: request.body.doctorID }, { $push: { appointmentNo: request.body.appID } })
+      .findOneAndUpdate(
+        { _id: request.body.doctorID },
+        { $push: { appointmentNo: request.body.appID } }
+      )
       .then((result) => {
         console.log("appointment ID was added to Doctor successfully");
       })
@@ -275,7 +310,10 @@ module.exports.addAppointmentToPatientOrDoctor = async (request, response, next)
         next(err);
       });
     await patientSchema
-      .findOneAndUpdate({ _id: request.body.patientID }, { $push: { Apointments: request.body.appID } })
+      .findOneAndUpdate(
+        { _id: request.body.patientID },
+        { $push: { Apointments: request.body.appID } }
+      )
       .then((result) => {
         console.log("appointment ID was added to patient successfully");
       })

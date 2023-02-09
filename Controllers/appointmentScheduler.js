@@ -1,8 +1,8 @@
 const { json } = require("express");
 const mongoose = require("mongoose");
 require("./../Models/appointmentModel");
-require("../Models/pendingAppointment")
-const pendingSchema = mongoose.model("PendingAppointment")
+require("../Models/pendingAppointment");
+const pendingSchema = mongoose.model("PendingAppointment");
 
 const AppointmentSchema = mongoose.model("appointmentScheduler");
 
@@ -34,10 +34,6 @@ exports.getAllAppointments = (request, response, next) => {
     .catch((error) => next(error));
 };
 
-
-
-
-
 /****GET ONE DATA****/
 exports.getOneAppointment = (req, res, next) => {
   AppointmentSchema.findOne({ _id: req.params.id })
@@ -64,8 +60,8 @@ exports.addAppointment = (req, res, next) => {
   newAppointment
     .save()
     .then((result) => {
-      req.body.appID = newAppointment._id;
-      next();
+      //req.body.appID = newAppointment._id;
+      res.status(200).json({ result });
     })
     .catch((error) => {
       next(error);
@@ -106,7 +102,6 @@ exports.deleteAppointment = (req, res, next) => {
     });
 };
 
-
 /****DELETE DATA USING FILTER****/
 exports.deleteFilteredAppointment = (req, res, next) => {
   const Obj = { ...req.query };
@@ -143,11 +138,14 @@ exports.AllAppointmentsReports = (req, res, next) => {
 
 exports.DailyAppointmentsReports = (req, res, next) => {
   let date = new Date();
-  date.setHours(0, 0, 0)
+  date.setHours(0, 0, 0);
   let day = 60 * 60 * 24 * 1000;
-  let nextday = new Date(date.getTime() + day)
+  let nextday = new Date(date.getTime() + day);
 
-  AppointmentSchema.find().where("date").gt(date).lt(nextday)
+  AppointmentSchema.find()
+    .where("date")
+    .gt(date)
+    .lt(nextday)
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
@@ -201,7 +199,7 @@ exports.PatientAppointmentsReports = (req, res, next) => {
 //     clinicID: req.body.clinicID,
 //     employeeID: req.params.id,
 //     date: req.body.date,
-   
+
 //   });
 
 //   newAppointment
@@ -216,13 +214,12 @@ exports.PatientAppointmentsReports = (req, res, next) => {
 //     });
 // };
 
-exports.getAllPending=(req, res, next) => { 
-   pendingSchema.find()
-   .populate({path:"patientID"})
-   .then((data)=>{
-    res.status(200).json(data);
-   }).catch(error=>next(error))
-
-}
-
-
+exports.getAllPending = (req, res, next) => {
+  pendingSchema
+    .find()
+    .populate({ path: "patientID" })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
+};
