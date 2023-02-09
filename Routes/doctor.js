@@ -17,7 +17,7 @@ let postValidationArray = [
   body("email").isEmail().withMessage("email should be a valid email"),
   body("workingHours").isInt().withMessage("workingHours sholuld be Integer"),
   body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
-  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID"),
+  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should contain Mongo IDs"),
   body("password")
     .isString()
     .withMessage("password sholuld be String")
@@ -56,7 +56,7 @@ router
     whoIsValid("admin"),
     patchValidationArray,
     validator,
-    // checkmail,
+    //  checkmail,
     controller.editDoctor
   )
   .delete(whoIsValid("admin"), controller.deleteFilteredDoctor);

@@ -16,7 +16,6 @@ let postValidationArray = [
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),
   body("address.building").isString().withMessage("building should be String"),
-
   body("password")
     .isString()
     .withMessage("password sholuld be String")

@@ -302,9 +302,6 @@ module.exports.restoreMedicineStock = async (request, response, next) => {
   // if (request.body.medicine) {
   try {
     let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
-    console.log(invoice);
-    console.log(invoice.medicine);
-
     let medicine_array = invoice.medicine;
     for (let medicine of medicine_array) {
       let med = await medicineSchema.findOneAndUpdate(

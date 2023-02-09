@@ -14,17 +14,10 @@ let postValidationArray = [
   body("name").isString().withMessage("name should be String"),
   body("age").isInt().withMessage("age should be integer"),
   body("address").isObject().withMessage("Address should be Object"),
-
   body("address.government").isString().withMessage("government should be String"),
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),
   body("address.building").isString().withMessage("building should be String"),
-
-  body("address.government").isString().withMessage("government should be String"),
-  body("address.city").isString().withMessage("city should be String"),
-  body("address.street").isString().withMessage("street should be String"),
-  body("address.building").isString().withMessage("building should be String"),
-
   body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
   body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID").optional(),
   body("disease").isString().withMessage("Disease should be String"),
@@ -53,6 +46,7 @@ let postValidationArray = [
 ];
 
 let patchValidationArray = [
+  body("id").isString().withMessage("id should be Mongo ID"),
   body("name").isString().withMessage("name should be String").optional(),
   body("age").isInt().withMessage("age should be integer").optional(),
   body("address").isObject().withMessage("Address should be Object").optional(),
@@ -61,7 +55,7 @@ let patchValidationArray = [
   body("address.street").isString().withMessage("street should be Stringx").optional(),
   body("address.building").isString().withMessage("building should be String").optional(),
   body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
-  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID"),
+  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should contain Mongo IDs"),
   body("disease").isString().withMessage("Disease should be String").optional(),
   body("section")
     .isString()

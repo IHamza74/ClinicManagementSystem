@@ -28,6 +28,12 @@ let patchValidationArray = [
   body("date").isISO8601().toDate().withMessage("date should be date").optional(),
 ];
 
+let pendingValidationArray = [
+  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
+  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
+  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
+];
+
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
@@ -83,6 +89,7 @@ router
   .route("/appointmentScheduler/pending")
   .post
   // whoIsValid("admin", "employee"),
+  // pendingValidationArray,
   //  validator,
   // customeMiddlewares.isDoctorAvailable,
   // sendEmail(),

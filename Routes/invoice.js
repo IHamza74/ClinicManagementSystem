@@ -26,7 +26,6 @@ let patchValidationArray = [
   body("medicine").isArray().withMessage("Medicine should be Array").optional(),
   body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
-  body("money").isInt().withMessage("Money should be Integer").optional(),
   body("appointmentId").isMongoId().withMessage("appointmentID sholuld be Mongo ID").optional(),
   body("paymentMethod")
     .isString()
@@ -45,9 +44,9 @@ router
     whoIsValid("employee", "admin"),
     postValidationArray,
     validator,
-    customeMW.doesPatientExist,
-    customeMW.DoMedicineExist,
-    customeMW.doesAppointmentExist,
+    // customeMW.doesPatientExist,
+    // customeMW.DoMedicineExist,
+    // customeMW.doesAppointmentExist,
     customeMW.medicineStockMangement,
     controller.addInvoice
   )
@@ -55,9 +54,9 @@ router
     whoIsValid("employee", "admin"),
     patchValidationArray,
     validator,
-    customeMW.doesPatientExist,
-    customeMW.DoMedicineExist,
-    customeMW.doesAppointmentExist,
+    // customeMW.doesPatientExist,
+    // customeMW.DoMedicineExist,
+    // customeMW.doesAppointmentExist,
     customeMW.restoreMedicineStock,
     customeMW.medicineStockMangement,
     controller.editInvoice

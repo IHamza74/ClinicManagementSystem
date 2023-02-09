@@ -9,11 +9,15 @@ const validator = require("./../Middlewares/errorValidation");
 let postValidationArray = [
   body("name").isString().withMessage("name should be string"),
   body("address").isString().withMessage("address should be string"),
+  body("doctors").isArray().withMessage("doctors should be Array"),
+  body("doctors.*").isMongoId().withMessage("doctors should contains Mongo IDs"),
 ];
 let PatchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("name").isString().withMessage("name should be string").optional(),
   body("address").isString().withMessage("address should be string").optional(),
+  body("doctors").isArray().withMessage("doctors should be Array").optional(),
+  body("doctors.*").isMongoId().withMessage("doctors should contains Mongo IDs"),
 ];
 
 router
