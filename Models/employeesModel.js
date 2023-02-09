@@ -17,7 +17,7 @@ let employeeSchema = new schema({
     required: [true, "You must enter a password"],
   },
   age: {
-    type: String,
+    type: Number,
   },
   photo: {
     type: String,

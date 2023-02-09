@@ -11,9 +11,7 @@ const customeMiddlewares = require("../Middlewares/customeFunctionalities");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
-let validationArray = [
-  // id , patientID , doctorID , clinicID , employeeID , date
-  body("id").isMongoId().withMessage("id should be Mongo Id"),
+let postValidationArray = [
   body("patientID").isMongoId().withMessage("patientID should be Mongo Id"),
   body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id"),
   body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id"),
@@ -22,7 +20,6 @@ let validationArray = [
 ];
 
 let patchValidationArray = [
-  // id , patientID , doctorID , clinicID , employeeID , date
   body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
   body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id").optional(),
@@ -31,20 +28,26 @@ let patchValidationArray = [
   body("date").isISO8601().toDate().withMessage("date should be date").optional(),
 ];
 
+let pendingValidationArray = [
+  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
+  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
+  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
+];
+
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
   .post(
     whoIsValid("admin", "employee"),
-    validationArray.slice(1),
-       validator,
+    postValidationArray,
+    validator,
     customeMiddlewares.doesPatientExist,
     customeMiddlewares.doesDoctorExist,
     customeMiddlewares.doesClinicExist,
     customeMiddlewares.doesEmployeeExist,
     customeMiddlewares.doesDoctorWorkInClinic,
     customeMiddlewares.isDoctorAvailable,
-    
+
     sendEmail(),
     controller.addAppointment,
     customeMiddlewares.addAppointmentToPatientOrDoctor
@@ -86,6 +89,7 @@ router
   .route("/appointmentScheduler/pending")
   .post
   // whoIsValid("admin", "employee"),
+  // pendingValidationArray,
   //  validator,
   // customeMiddlewares.isDoctorAvailable,
   // sendEmail(),

@@ -97,7 +97,6 @@ exports.editPrescription = (req, res, next) => {
     { _id: req.body.id },
     {
       $set: {
-        // doctorId: req.body.doctorId,
         medicine: req.body.medicine,
         appointmentID: req.body.appointmentId,
       },

@@ -1,15 +1,5 @@
 const mongoose = require("mongoose");
 const medicineSchema = require("./medicineSchema");
-// const medicineModel = mongoose.model("Medicine");
-// let medicineSchema = new mongoose.Schema(
-//   {
-//     medicineID: { type: mongoose.Schema.Types.ObjectId, ref: "Medicine" },
-//     quantity: { type: Number },
-//   },
-//   {
-//     _id: false,
-//   }
-// );
 
 const schema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
@@ -56,31 +46,5 @@ schema.pre("save", function (next) {
   } else if (this.paymentMethod === "Cash") this.payment_status = true;
   next();
 });
-// schema.pre("save", async function (next) {
-//   console.log(this.medicine);
-//   if (this.medicine) {
-//     let price = 0;
-//     try {
-//       let medicine_array = this.medicine;
-//       for (let medicine of medicine_array) {
-//         console.log(medicine.quantity);
-//         let med = await medicineModel
-//           .findOneAndUpdate({ _id: medicine.medicineID }, { $inc: { Stock: -medicine.quantity } })
-//           .then()
-//           .catch((error) => {
-//             // next(error);
-//           });
-//         price += med.Price * medicine.quantity;
-//         console.log(price + "\n");
-//         if (med.Stock < 1000) {
-//           console.log(`low stock of medicine ${med.Name}`.bgRed);
-//         }
-//       }
-//       this.money = price;
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   }
-// });
 
 mongoose.model("invoices", schema);

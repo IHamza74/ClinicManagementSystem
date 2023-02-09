@@ -6,7 +6,7 @@ const whoIsValid = require("../Middlewares/AuthorizeRole");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
-let validationArray = [
+let postValidationArray = [
   body("name").isString().withMessage("Name should be String"),
   body("dose").isFloat().withMessage("Dose should be float"),
   body("price").isFloat().withMessage("Price should be float"),
@@ -23,18 +23,23 @@ let patchValidationArray = [
 router
   .route("/medicine")
   .get(whoIsValid("employee", "doctor", "admin"), controller.getAllMedicines)
-  .post(whoIsValid("employee", "doctor", "admin"), validationArray, validator, controller.addMedicine)
+  .post(whoIsValid("employee", "doctor", "admin"), postValidationArray, validator, controller.addMedicine)
   .patch(whoIsValid("employee", "doctor", "admin"), patchValidationArray, validator, controller.editMedicine)
   .delete(whoIsValid("doctor", "admin"), controller.deleteFilteredMedicine);
 
-  router
+router
   .route("/medicine/:id")
-  .get(whoIsValid("employee", "doctor", "admin"),
-  controller.getMedicine
+  .get(
+    whoIsValid("employee", "doctor", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getMedicine
   )
   .delete(
     whoIsValid("doctor", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
     controller.deleteMedicineByid
-  )
+  );
 
 module.exports = router;

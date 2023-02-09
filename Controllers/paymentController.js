@@ -51,7 +51,7 @@ exports.getCheckoutSession = async (req, res, next) => {
           },
         ],
 
-        success_url: `${req.protocol}://${req.get("host")}/invoice/?id=${id}`,
+        success_url: `${req.protocol}://${req.get("host")}/invoice/${id}`,
         cancel_url: `${req.protocol}://${req.get("host")}/invoice/`,
       });
 
@@ -64,6 +64,8 @@ exports.getCheckoutSession = async (req, res, next) => {
       next(error);
     }
   } else {
-    res.status(400).json({ status: "Fail", message: "That's not Credit Card Payment" });
+    res
+      .status(400)
+      .json({ status: "Fail", message: "That's not Credit Card Payment Or it's already paid" });
   }
 };

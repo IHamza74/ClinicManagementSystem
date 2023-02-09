@@ -7,7 +7,7 @@ const CustomeMW = require("../Middlewares/customeFunctionalities");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
-let validationArray = [
+let postValidationArray = [
   body("medicine").isArray().withMessage("Medicine should be Array"),
   body("medicine.*.medicineID").isMongoId().withMessage("medicineID should be Mongo Id"),
   body("medicine.*.quantity").isInt().withMessage("quantity should be Integer"),
@@ -26,7 +26,7 @@ router
   .get(whoIsValid("doctor", "admin"), controller.getAllPrescriptions)
   .post(
     whoIsValid("doctor", "admin"),
-    validationArray,
+    postValidationArray,
     validator,
     CustomeMW.DoMedicineExist,
     CustomeMW.doesAppointmentExist,
@@ -47,7 +47,6 @@ router
     whoIsValid("admin", "employee", "doctor"),
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,
-    whoIsValid("doctor"),
     controller.getPrescriptionsById
   )
   .delete(
