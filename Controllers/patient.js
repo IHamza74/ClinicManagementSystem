@@ -83,7 +83,7 @@ exports.addPatient = (request, response, next) => {
     });
 };
 
-exports.editPatient = (request, res, next) => {
+exports.editPatient = (request, response, next) => {
   patinetSchmea
     .updateOne(
       {
@@ -99,12 +99,12 @@ exports.editPatient = (request, res, next) => {
           Disease: request.body.disease,
           Password: request.body.password,
           Email: request.body.email,
-          photo: request.file.filename,
+        
         },
       }
     )
     .then((result) => {
-      res.status(201).json(result);
+      response.status(201).json(result);
     })
     .catch((error) => {
       next(error);

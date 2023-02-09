@@ -130,11 +130,10 @@ router
     controller.addPatient
   )
   .patch(
-    validationArray,
     whoIsValid("employee", "doctor", "patient", "admin"),
     patchValidationArray,
     validator,
-
+ checkmail,
     controller.editPatient
   )
   .delete(
