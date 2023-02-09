@@ -86,10 +86,9 @@ let patchValidationArray = [
 router
   .route("/patient")
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)
-<<<<<<< HEAD
   .post(
     whoIsValid("employee", "admin", "doctor"),
-    validationArray,
+    postValidationArray,
     validator,
     checkmail,
     controller.addPatient
@@ -110,13 +109,11 @@ router
   .route("/patient/uploadPhoto")
   .patch(controller.uploadPatientImg,controller.patchPhoto)
 
-=======
   .post(whoIsValid("employee", "admin", "doctor"), postValidationArray, validator, checkmail, controller.addPatient)
   .patch(whoIsValid("employee", "doctor", "patient", "admin"), patchValidationArray, validator, controller.editPatient)
   .delete(whoIsValid("employee", "admin", "doctor"), controller.deletePatient);
 /**  upload image  */
 router.route("/patient/uploadPhoto").patch(controller.uploadPatientImg, controller.patchPhoto);
->>>>>>> 48d6373b2c9211396a36e1c1e59a4bf39a300044
 
 /*  reserve an appointment by patient */
 router
@@ -131,6 +128,10 @@ router
 
 router
   .route("/patient/:id")
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getpatientProfile);
+  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getpatientProfile)
+  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+  controller.deletePatientByID
 
+  )
+  
 module.exports = router;

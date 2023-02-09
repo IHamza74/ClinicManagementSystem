@@ -24,8 +24,8 @@ router
   .route("/clinic")
   .get(whoIsValid("admin"), controller.getAllClinics)
   .post(whoIsValid("admin"), postValidationArray, validator, controller.addClinic)
-  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic)
-  .delete(whoIsValid("admin"), controller.deleteFilteredClinic);
+  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic);
+ 
 
 // this routes handle the clinic doctor add or remove doctor from clinic
 router
@@ -46,5 +46,7 @@ router
     validator,
     controller.deleteDoctor
   );
-
+router 
+.route("/clinic/:id")
+.delete(whoIsValid("admin"),controller.deleteClinic)
 module.exports = router;

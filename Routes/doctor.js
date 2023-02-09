@@ -59,7 +59,7 @@ router
     //  checkmail,
     controller.editDoctor
   )
-  .delete(whoIsValid("admin"), controller.deleteFilteredDoctor);
+ 
 
 router.route("/doctor/uploadPhoto").patch(controller.uploadDoctorImg, controller.patchPhoto);
 

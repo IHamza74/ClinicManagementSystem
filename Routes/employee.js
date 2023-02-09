@@ -50,8 +50,7 @@ router
   .get(whoIsValid("admin"), controller.getAllEmployees)
   .post(whoIsValid("admin"), postValidationArray, validator, checkmail, controller.addEmployee)
   .patch(whoIsValid("admin"), patchValidationArray, validator, controller.editEmployee)
-  .delete(whoIsValid("admin"), controller.deleteFilteredEmployee);
-
+ 
 router
   .route("/employee/:id")
   .delete(

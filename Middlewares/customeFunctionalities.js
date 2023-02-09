@@ -27,11 +27,15 @@ const InvoiceSchema = mongoose.model("invoices");
 
 //preventing conflicts of appointments for one doctor
 module.exports.isDoctorAvailable = async (request, response, next) => {
+if(request.body.doctorID !=null)
+{
+
   try {
     let appointmentDate = new Date(request.body.date).getTime();
     let currentDate = new Date().getTime();
     // console.log(appointmentDate)
-    if (currentDate > appointmentDate) {
+   
+    if (currentDate > appointmentDate && request.method=="POST") {
       return response.status(406).json({ message: "You can not make an appointment in the past" });
     } else {
       let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
@@ -47,9 +51,6 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
       DrAppointments.forEach((appointment) => {
         if (Math.abs(new Date(appointment.date) - new Date(request.body.date)) < 30 * 60000) {
           flag = 1;
-          console.log(request.body.date + " date", request.body.doctorID + " Doctor");
-          console.log(appointment.date + " real date");
-
           return response.status(406).json({ message: "the doctor is busy at this time" });
         }
       });
@@ -58,12 +59,16 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
   } catch (error) {
     next(error);
   }
+}
+next();
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //Prescription Checking MWs//
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //checking of medicine wheather if it exists
 module.exports.DoMedicineExist = async (request, response, next) => {
+ if(request.body.medicineID !=null)
+ 
   try {
     let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
       expiresIn: "1h",
@@ -115,57 +120,94 @@ module.exports.DoMedicineExist = async (request, response, next) => {
 };
 
 //checking existance of doctor
+// module.exports.doesDoctorExist = async (request, response, next) => {
+//   let appointment;
+//   if (!request.body.doctorID || !request.body.date) {
+//     appointment = await AppointmentSchema.findOne({ _id: request.body.id });
+//     if (appointment == null) response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
+//   }
+//   if (!request.body.date) {
+//     request.body.date = appointment.date;
+//   }
+//   if (request.body.doctorID) {
+//     let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
+//     if (doctor == null) response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
+//     else {
+//       next();
+//     }
+//   } else {
+//     request.body.doctorID = appointment.doctorID.toString();
+//     next();
+//   }
+// };
 module.exports.doesDoctorExist = async (request, response, next) => {
-  let appointment;
-  if (!request.body.doctorID || !request.body.date) {
-    appointment = await AppointmentSchema.findOne({ _id: request.body.id });
-    if (appointment == null) response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
-  }
-  if (!request.body.date) {
-    request.body.date = appointment.date;
-  }
-  if (request.body.doctorID) {
-    let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
-    if (doctor == null) response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
-    else {
-      next();
+  if (request.method == "PATCH") {
+    let appointment;
+    if (!request.body.doctorID || !request.body.date) {
+      appointment = await AppointmentSchema.findOne({ _id: request.body.id });
+      if (appointment == null) response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
     }
-  } else {
-    request.body.doctorID = appointment.doctorID.toString();
+    // if (!request.body.date) {
+    //   request.body.date = appointment.date;
+    // }
+    if (!request.body.doctorID) {
+      request.body.doctorID = appointment.doctorID.toString();
+    }
+  }
+  let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
+  if (doctor == null) response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
+  else {
     next();
   }
 };
 
 //checking existance of clinic
 module.exports.doesClinicExist = async (request, response, next) => {
-  let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
-  if (clinic == null) response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
-  else {
-    next();
+  if(request.body.clinicID!=null)
+  {
+    let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
+    if (clinic == null) response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
+    else {
+      next();
+    }
+
   }
+  next();
 };
 
 //checking existance of employee ID
 module.exports.doesEmployeeExist = async (request, response, next) => {
-  let employee = await employeeSchema.findOne({ _id: request.body.employeeID });
-  if (employee == null) response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
-  else {
-    next();
+
+  if(request.body.employeeID!=null)
+  {
+
+    let employee = await employeeSchema.findOne({ _id: request.body.employeeID });
+    if (employee == null) response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
+    else {
+      next();
+    }
   }
+  next();
 };
 
 //checking existance of patient ID
 module.exports.doesPatientExist = async (request, response, next) => {
-  if (!request.body.patientID) {
-    let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
-    request.body.patientID = invoice.patientID.toString();
+ 
+  if(request.body.patientID !=null)
+  {
+    
+    if (!request.body.patientID) {
+      let invoice = await InvoiceSchema.findOne({ _id: request.body.id });
+      request.body.patientID = invoice.patientID.toString();
+    }
+  
+    let patient = await patientSchema.findOne({ _id: request.body.patientID });
+    if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
+    else {
+      next();
+    }
   }
-
-  let patient = await patientSchema.findOne({ _id: request.body.patientID });
-  if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
-  else {
-    next();
-  }
+  next();
 };
 
 //checking of prescription appointment wheather if it exists or not

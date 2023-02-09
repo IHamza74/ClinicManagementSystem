@@ -25,7 +25,6 @@ router
   .get(whoIsValid("employee", "doctor", "admin"), controller.getAllMedicines)
   .post(whoIsValid("employee", "doctor", "admin"), postValidationArray, validator, controller.addMedicine)
   .patch(whoIsValid("employee", "doctor", "admin"), patchValidationArray, validator, controller.editMedicine)
-  .delete(whoIsValid("doctor", "admin"), controller.deleteFilteredMedicine);
 
 router
   .route("/medicine/:id")

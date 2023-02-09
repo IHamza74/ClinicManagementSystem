@@ -61,7 +61,6 @@ router
     customeMW.medicineStockMangement,
     controller.editInvoice
   )
-  .delete(whoIsValid("admin"), controller.deleteFilteredInvoice);
 
 router
   .route("/invoice/:id")
