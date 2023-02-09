@@ -29,10 +29,22 @@ router
 
 // this routes handle the clinic doctor add or remove doctor from clinic
 router
-  .route("/clinic/:id")
+  .route("/clinic/adddoctor/:id")
   // this route add new doctor to the clinic
-  .patch(whoIsValid("admin"), controller.addDoctor)
-  // this route delete doctor from clinic
-  .put(whoIsValid("admin"), controller.deleteDoctor);
+  .patch(
+    whoIsValid("admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.addDoctor
+  );
+// this route delete doctor from clinic
+router
+  .route("/clinic/deldoctor/:id")
+  .patch(
+    whoIsValid("admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteDoctor
+  );
 
 module.exports = router;

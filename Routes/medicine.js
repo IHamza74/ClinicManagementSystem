@@ -29,7 +29,17 @@ router
 
 router
   .route("/medicine/:id")
-  .get(whoIsValid("employee", "doctor", "admin"), controller.getMedicine)
-  .delete(whoIsValid("doctor", "admin"), controller.deleteMedicineByid);
+  .get(
+    whoIsValid("employee", "doctor", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getMedicine
+  )
+  .delete(
+    whoIsValid("doctor", "admin"),
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.deleteMedicineByid
+  );
 
 module.exports = router;
