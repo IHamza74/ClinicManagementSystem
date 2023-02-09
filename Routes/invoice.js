@@ -91,8 +91,6 @@ router
 
 router.route("/invoice/allreports").get(whoIsValid("admin"), controller.AllInvoicesReports);
 
-router.route("/invoice/dailyreports").get(whoIsValid("admin"), controller.DailyInvoicesReports);
-
 router
   .route("/invoice/dailyreports")
   .get(whoIsValid("admin", "employee"), controller.DailyInvoicesReports);
