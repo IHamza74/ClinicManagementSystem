@@ -6,7 +6,7 @@ const whoIsValid = require("../Middlewares/AuthorizeRole");
 const { body, param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
-let validationArray = [
+let postValidationArray = [
   body("name").isString().withMessage("name should be string"),
   body("address").isString().withMessage("address should be string"),
 ];
@@ -19,13 +19,8 @@ let PatchValidationArray = [
 router
   .route("/clinic")
   .get(whoIsValid("admin"), controller.getAllClinics)
-  .post(whoIsValid("admin"), validationArray, validator, controller.addClinic)
-  .patch(
-    whoIsValid("admin"),
-    PatchValidationArray,
-    validator,
-    controller.editClinic
-  )
+  .post(whoIsValid("admin"), postValidationArray, validator, controller.addClinic)
+  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic)
   .delete(whoIsValid("admin"), controller.deleteFilteredClinic);
 
 // this routes handle the clinic doctor add or remove doctor from clinic
