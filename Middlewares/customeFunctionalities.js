@@ -67,7 +67,7 @@ next();
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //checking of medicine wheather if it exists
 module.exports.DoMedicineExist = async (request, response, next) => {
- if(request.body.medicineID !=null)
+ 
  
   try {
     let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {

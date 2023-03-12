@@ -49,7 +49,7 @@ router
     customeMiddlewares.isDoctorAvailable,
     sendEmail(),
     controller.addAppointment,
-    customeMiddlewares.addAppointmentToPatientOrDoctor
+   // customeMiddlewares.addAppointmentToPatientOrDoctor
   )
 
   .patch(

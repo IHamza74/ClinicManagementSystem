@@ -64,8 +64,11 @@ exports.addAppointment = (req, res, next) => {
   newAppointment
     .save()
     .then((result) => {
-      req.body.appID = newAppointment._id;
-      next();
+      console.log("allah")
+    
+      res.status(201).json({message:"appontment added"});
+    //  req.body.appID = newAppointment._id;
+    // next();
     })
     .catch((error) => {
       next(error);
@@ -87,6 +90,7 @@ exports.editAppointment = (req, res, next) => {
     }
   )
     .then((result) => {
+      
       res.status(200).json(result);
     })
     .catch((error) => {

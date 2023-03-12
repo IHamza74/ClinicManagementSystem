@@ -104,14 +104,8 @@ router
     whoIsValid("employee", "admin", "doctor"),
     controller.deletePatient
   );
-  /**  upload image  */
-  router
-  .route("/patient/uploadPhoto")
-  .patch(controller.uploadPatientImg,controller.patchPhoto)
+  
 
-  .post(whoIsValid("employee", "admin", "doctor"), postValidationArray, validator, checkmail, controller.addPatient)
-  .patch(whoIsValid("employee", "doctor", "patient", "admin"), patchValidationArray, validator, controller.editPatient)
-  .delete(whoIsValid("employee", "admin", "doctor"), controller.deletePatient);
 /**  upload image  */
 router.route("/patient/uploadPhoto").patch(controller.uploadPatientImg, controller.patchPhoto);
 
