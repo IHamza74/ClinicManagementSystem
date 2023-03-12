@@ -39,13 +39,21 @@ mongoose
 /******Settings ******/
 server.use(express.json());
 
+// Very IMPORTANT
+server.use((request, response, next) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+  response.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+});
+
 /******ROUTES******/
 
 //0)Login
 server.use(loginRouter);
 server.use(signupRouter);
 //server.use(authenticationMW
-server.use(authenticationMW.login);
+//server.use(authenticationMW.login);
 
 // server.use(authenticationMW.login);
 //1)Appointment Scheduler

@@ -33,20 +33,15 @@ module.exports.isDoctorAvailable = async (request, response, next) => {
       let currentDate = new Date().getTime();
 
       if (currentDate > appointmentDate && request.method == "POST") {
-        return response
-          .status(406)
-          .json({ message: "You can not make an appointment in the past" });
+        return response.status(406).json({ message: "You can not make an appointment in the past" });
       } else {
         let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
           expiresIn: process.env.TOKEN_DURAITION,
         });
 
-        let appointsRes = await fetch(
-          `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
-          {
-            headers: { Authorization: "Bearer " + token },
-          }
-        );
+        let appointsRes = await fetch(`http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`, {
+          headers: { Authorization: "Bearer " + token },
+        });
 
         let DrAppointments = await appointsRes.json();
         let flag = 0;
@@ -74,12 +69,9 @@ module.exports.isDoctorAvailablePost = async (request, response, next) => {
       let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
         expiresIn: process.env.TOKEN_DURAITION,
       });
-      let appointsRes = await fetch(
-        `http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`,
-        {
-          headers: { Authorization: "Bearer " + token },
-        }
-      );
+      let appointsRes = await fetch(`http://localhost:3000/appointmentScheduler?doctorID=${request.body.doctorID}`, {
+        headers: { Authorization: "Bearer " + token },
+      });
 
       let DrAppointments = await appointsRes.json();
       DrAppointments.forEach((appointment) => {
@@ -176,8 +168,7 @@ module.exports.doesDoctorExist = async (request, response, next) => {
     let appointment;
     if (!request.body.doctorID || !request.body.date) {
       appointment = await AppointmentSchema.findOne({ _id: request.body.id });
-      if (appointment == null)
-        response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
+      if (appointment == null) response.status(406).json({ meassge: "Wrong appointmentID ID, process was cancelled" });
     }
     // if (!request.body.date) {
     //   request.body.date = appointment.date;
@@ -187,8 +178,7 @@ module.exports.doesDoctorExist = async (request, response, next) => {
     }
   }
   let doctor = await doctorSchema.findOne({ _id: request.body.doctorID });
-  if (doctor == null)
-    response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
+  if (doctor == null) response.status(406).json({ meassge: "Wrong doctorID ID, process was cancelled" });
   else {
     next();
   }
@@ -198,8 +188,7 @@ module.exports.doesDoctorExist = async (request, response, next) => {
 module.exports.doesClinicExist = async (request, response, next) => {
   if (request.body.clinicID != null) {
     let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
-    if (clinic == null)
-      response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
+    if (clinic == null) response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
     else {
       next();
     }
@@ -211,8 +200,7 @@ module.exports.doesClinicExist = async (request, response, next) => {
 module.exports.doesEmployeeExist = async (request, response, next) => {
   if (request.body.employeeID != null) {
     let employee = await employeeSchema.findOne({ _id: request.body.employeeID });
-    if (employee == null)
-      response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
+    if (employee == null) response.status(406).json({ meassge: "Wrong employee ID, process was cancelled" });
     else {
       next();
     }
@@ -229,8 +217,7 @@ module.exports.doesPatientExist = async (request, response, next) => {
     }
 
     let patient = await patientSchema.findOne({ _id: request.body.patientID });
-    if (patient == null)
-      response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
+    if (patient == null) response.status(406).json({ meassge: "Wrong patient ID, process was cancelled" });
     else {
       next();
     }
@@ -245,12 +232,9 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
         expiresIn: process.env.TOKEN_DURAITION,
       });
       //fetching appointment
-      let appointmentStream = await fetch(
-        `http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`,
-        {
-          headers: { Authorization: "Bearer " + token },
-        }
-      );
+      let appointmentStream = await fetch(`http://localhost:3000/appointmentScheduler/${request.body.appointmentId}`, {
+        headers: { Authorization: "Bearer " + token },
+      });
       // checking overall medcines status
       let AppointmentResult = await appointmentStream.json();
 
@@ -262,9 +246,7 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 
       // checking appointment if exist
       if (AppointmentResult._id != request.body.appointmentId) {
-        return response
-          .status(406)
-          .json({ message: "Appointment Id is not valid, process is cancelled" });
+        return response.status(406).json({ message: "Appointment Id is not valid, process is cancelled" });
       } else {
         //checking existance of previous prescription or invoice
         let prescORinvoiceRES = await fetch(
@@ -295,10 +277,7 @@ module.exports.doesAppointmentExist = async (request, response, next) => {
 module.exports.addAppointmentToPatientOrDoctor = async (request, response, next) => {
   try {
     await doctorSchema
-      .findOneAndUpdate(
-        { _id: request.body.doctorID },
-        { $push: { appointmentNo: request.body.appID } }
-      )
+      .findOneAndUpdate({ _id: request.body.doctorID }, { $push: { appointmentNo: request.body.appID } })
       .then((result) => {
         console.log("appointment ID was added to Doctor successfully");
       })
@@ -306,10 +285,7 @@ module.exports.addAppointmentToPatientOrDoctor = async (request, response, next)
         next(err);
       });
     await patientSchema
-      .findOneAndUpdate(
-        { _id: request.body.patientID },
-        { $push: { Apointments: request.body.appID } }
-      )
+      .findOneAndUpdate({ _id: request.body.patientID }, { $push: { Apointments: request.body.appID } })
       .then((result) => {
         console.log("appointment ID was added to patient successfully");
       })
