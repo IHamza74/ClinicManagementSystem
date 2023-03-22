@@ -129,3 +129,12 @@ exports.deleteEmployee = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.getById = (req, res, next) => {
+  employeesSchema
+    .findOne({ _id: req.params.id })
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((error) => next(error));
+};
