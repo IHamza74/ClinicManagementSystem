@@ -4,9 +4,9 @@ require("../Models/sharedData");
 const mailschema = mongoose.model("SharedData");
 
 const checkMail = (req, res, next) => {
-  if (req.body.email != null) {
+  if (req.body.Email != null) {
     let addmail = new mailschema({
-      email: req.body.email,
+      email: req.body.Email,
     });
     addmail
       .save()

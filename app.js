@@ -21,7 +21,10 @@ dotenv.config({ path: "./config.env" });
 server.use(morgan("combined"));
 /* SETTING DB CONNECTION */
 const port = process.env.PORT || 3000;
-const DB = process.env.DATABASE.replace("<password>", process.env.DATABASE_PASSWORD);
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
 
 mongoose.set("strictQuery", true);
 mongoose
@@ -42,7 +45,10 @@ server.use(express.json());
 // Very IMPORTANT
 server.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
-  response.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+  response.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,DELETE,PUT,OPTIONS,PATCH"
+  );
   response.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
   next();
 });

@@ -31,10 +31,10 @@ exports.getAllMedicines = (request, response, next) => {
 
 exports.addMedicine = (req, res, next) => {
   let addmedicine = new medicineSchema({
-    Name: req.body.name,
-    Dose: req.body.dose,
-    Price: req.body.price,
-    Stock: req.body.stock,
+    Name: req.body.Name,
+    Dose: req.body.Dose,
+    Price: req.body.Price,
+    Stock: req.body.Stock,
   });
   addmedicine
     .save()
@@ -49,7 +49,7 @@ exports.addMedicine = (req, res, next) => {
 exports.editMedicine = (req, res, next) => {
   medicineSchema
     .updateOne(
-      { _id: req.body.id },
+      { _id: req.body._id },
       {
         $set: {
           Name: req.body.Name,
@@ -65,17 +65,23 @@ exports.editMedicine = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-exports.getMedicine= (req, res, next) => {
-  medicineSchema.findById(req.params.id).then((data)=>{
-    res.status("201").json(data);
-  }).catch(error=>next(error))
-}
+exports.getMedicine = (req, res, next) => {
+  medicineSchema
+    .findById(req.params.id)
+    .then((data) => {
+      res.status("201").json(data);
+    })
+    .catch((error) => next(error));
+};
 
-exports.deleteMedicineByid= (req, res, next) => {
-  medicineSchema.findByIdAndDelete(req.params.id).then((result)=>{
-    res.status("201").json({message:"medicine has deleted"});
-  }).catch(error=>next(error))
-}
+exports.deleteMedicineByid = (req, res, next) => {
+  medicineSchema
+    .findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status("201").json({ message: "medicine has deleted" });
+    })
+    .catch((error) => next(error));
+};
 
 exports.deleteMedicine = (req, res, next) => {
   medicineSchema
