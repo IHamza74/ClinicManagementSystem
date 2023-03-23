@@ -16,9 +16,7 @@ const schema = new mongoose.Schema({
   },
   Address: { type: addressSchema, required: [true, "enter valid address"] },
   Apointments: {
-    type: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "appointmentScheduler" },
-    ],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "appointmentScheduler" }],
   },
   Disease: {
     type: String,
@@ -41,10 +39,7 @@ const schema = new mongoose.Schema({
   Email: {
     type: String,
     required: [true, "enter valid mail"],
-    match: [
-      /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/,
-      "Please fill a valid email address",
-    ],
+    match: [/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/, "Please fill a valid email address"],
     unique: true,
   },
 });

@@ -15,11 +15,12 @@ const patinetSchmea = mongoose.model("Patients");
 //creating img file
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "img");
+    cb(null, process.env.IMAGE_PATH);
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
-    cb(null, `patient-${req.body.id}-${Date.now()}.${ext}`);
+    // cb(null, `patient-${req.body.id}-${Date.now()}.${ext}`);
+    cb(null, `patient-${req.body.id}.${ext}`);
   },
 });
 
