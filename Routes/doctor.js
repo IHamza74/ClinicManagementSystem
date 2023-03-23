@@ -54,8 +54,8 @@ router
   .post(whoIsValid("admin", "employee"), checkmail, postValidationArray, validator, controller.addDoctor)
   .patch(
     whoIsValid("admin"),
-    patchValidationArray,
-    validator,
+    // patchValidationArray,
+    // validator,
     //  checkmail,
     controller.editDoctor
   )

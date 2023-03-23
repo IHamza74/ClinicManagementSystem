@@ -9,14 +9,14 @@ const mailschema = mongoose.model("SharedData");
 exports.addPatient = (request, response, next) => {
    
         let addPatient = new patinetSchmea({
-          Name: request.body.Name,
-          Age: request.body.Age,
-          Address: request.body.Address,
-          Apointments: request.body.Apointments,
-          Section: request.body.Section,
-          Disease: request.body.Disease,
-          Password: request.body.Password,
-          Email: request.body.Email,
+          Name: request.body.name,
+          Age: request.body.age,
+          Address: request.body.address,
+          Apointments: request.body.apointments,
+          Section: request.body.section,
+          Disease: request.body.disease,
+          Password: request.body.password,
+          Email: request.body.email,
         })
   
           .save()
