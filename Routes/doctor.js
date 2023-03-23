@@ -13,7 +13,9 @@ let postValidationArray = [
     .isString()
     .withMessage("speciality should be String")
     .isIn(["Internist", "Optometrist", "orthopedist", "Dentist", "Urologist", "Surgeon"])
-    .withMessage("speciality should be in (Internist,Optometrist,orthopedist,Dentist,Urologist,Surgeon) "),
+    .withMessage(
+      "speciality should be in (Internist,Optometrist,orthopedist,Dentist,Urologist,Surgeon) "
+    ),
   body("email").isEmail().withMessage("email should be a valid email"),
   body("workingHours").isInt().withMessage("workingHours sholuld be Integer"),
   body("appointmentNo").isArray().withMessage("appointmentNo should be Array").optional(),
@@ -33,7 +35,9 @@ let patchValidationArray = [
     .isString()
     .withMessage("speciality should be String")
     .isIn(["Internist", "Optometrist", "orthopedist", "Dentist", "Urologist", "Surgeon"])
-    .withMessage("speciality should be in (Internist,Optometrist,orthopedist,Dentist,Urologist,Surgeon) ")
+    .withMessage(
+      "speciality should be in (Internist,Optometrist,orthopedist,Dentist,Urologist,Surgeon) "
+    )
     .optional(),
   body("email").isEmail().withMessage("email should be a valid email").optional(),
   body("workingHours").isInt().withMessage("workingHours sholuld be Integer").optional(),
@@ -51,21 +55,30 @@ let patchValidationArray = [
 router
   .route("/doctor")
   .get(whoIsValid("admin", "employee"), controller.getAllDoctors)
-  .post(whoIsValid("admin", "employee"), checkmail, postValidationArray, validator, controller.addDoctor)
+  .post(
+    whoIsValid("admin", "employee"),
+    checkmail,
+    postValidationArray,
+    validator,
+    controller.addDoctor
+  )
   .patch(
     whoIsValid("admin"),
     patchValidationArray,
     validator,
     //  checkmail,
     controller.editDoctor
-  )
- 
+  );
 
 router.route("/doctor/uploadPhoto").patch(controller.uploadDoctorImg, controller.patchPhoto);
 
 router
   .route("/doctor/:id")
-  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getOneDoctor)
+  .get(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    controller.getOneDoctor
+  )
   .delete(
     param("id").isMongoId().withMessage("ID should be an Mongo ID"),
     validator,

@@ -342,7 +342,7 @@ module.exports.medicineStockMangement = async (request, response, next) => {
           console.log(`low stock of medicine ${med.Name}`.bgRed);
         }
       }
-      request.body.money = price;
+      //request.body.money = price;
       next();
     } catch (error) {
       next(error);
