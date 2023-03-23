@@ -9,14 +9,18 @@ let validationArray = [
   body("name").isString().withMessage("name should be String"),
   body("age").isInt().withMessage("age should be integer"),
   body("address").isObject().withMessage("Address should be Object"),
-  body("address.government").isString().withMessage("government should be String"),
+  body("address.government")
+    .isString()
+    .withMessage("government should be String"),
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),
   body("address.building").isString().withMessage("building should be String"),
-  body("apointments").isArray().withMessage("appointmentNo should be Array"),
-  body("appointmentNo.*").isMongoId().withMessage("appointmentNo should be Mongo ID"),
-  body("disease").isString().withMessage("Disease should be String"),
-  body("section")
+  body("appointmentNo").isArray().withMessage("appointmentNo should be Array"),
+  body("appointmentNo.*")
+    .isMongoId()
+    .withMessage("appointmentNo should be Mongo ID"),
+  body("Disease").isString().withMessage("Disease should be String"),
+  body("Section")
     .isString()
     .withMessage("speciality should be String")
     .isIn([
@@ -40,6 +44,11 @@ let validationArray = [
   body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
-router.route("/signup").post(validationArray, validator, checkmail, signup.addPatient);
+router.route("/signup").post(
+  // validationArray,
+  validator,
+  checkmail,
+  signup.addPatient
+);
 
 module.exports = router;

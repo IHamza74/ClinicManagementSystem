@@ -65,17 +65,23 @@ exports.editMedicine = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-exports.getMedicine= (req, res, next) => {
-  medicineSchema.findById(req.params.id).then((data)=>{
-    res.status("201").json(data);
-  }).catch(error=>next(error))
-}
+exports.getMedicine = (req, res, next) => {
+  medicineSchema
+    .findById(req.params.id)
+    .then((data) => {
+      res.status("201").json(data);
+    })
+    .catch((error) => next(error));
+};
 
-exports.deleteMedicineByid= (req, res, next) => {
-  medicineSchema.findByIdAndDelete(req.params.id).then((result)=>{
-    res.status("201").json({message:"medicine has deleted"});
-  }).catch(error=>next(error))
-}
+exports.deleteMedicineByid = (req, res, next) => {
+  medicineSchema
+    .findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status("201").json({ message: "medicine has deleted" });
+    })
+    .catch((error) => next(error));
+};
 
 exports.deleteMedicine = (req, res, next) => {
   medicineSchema
