@@ -9,15 +9,14 @@ const schema = new mongoose.Schema({
   },
   Name: { type: String, required: [true, "enter valid name"] },
   Age: { type: Number, required: [true, "enter valid age"] },
+
   photo: {
     type: String,
     default: "default.jpg",
   },
   Address: { type: addressSchema, required: [true, "enter valid address"] },
   Apointments: {
-    type: [
-      { type: mongoose.Schema.Types.ObjectId, ref: "appointmentScheduler" },
-    ],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "appointmentScheduler" }],
   },
   Disease: {
     type: String,
@@ -40,10 +39,7 @@ const schema = new mongoose.Schema({
   Email: {
     type: String,
     required: [true, "enter valid mail"],
-    match: [
-      /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/,
-      "Please fill a valid email address",
-    ],
+    match: [/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/, "Please fill a valid email address"],
     unique: true,
   },
 });
@@ -51,7 +47,7 @@ const schema = new mongoose.Schema({
 schema.pre("save", async function (next) {
   if (!this.isModified("Password")) return next();
 
-  this.password = await bcrypt.hash(this.Password, 12);
+  this.Password = await bcrypt.hash(this.Password, 12);
   next();
 });
 

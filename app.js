@@ -39,6 +39,7 @@ mongoose
 /******Settings ******/
 server.use(express.json());
 
+// Very IMPORTANT
 server.use((request, response, next) => {
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS,PATCH");

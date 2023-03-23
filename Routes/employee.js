@@ -42,6 +42,7 @@ let patchValidationArray = [
 ];
 
 router.route("/employee/uploadPhoto").patch(controller.uploadEmployeeImg, controller.patchPhoto);
+//router.route("/employee/uploadPhoto").post(controller.uploadEmployeeImg, controller.patchPhoto);
 
 router
   .route("/employee")
@@ -56,6 +57,12 @@ router
     validator,
     whoIsValid("admin"),
     controller.deleteEmployee
+  )
+  .get(
+    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
+    validator,
+    whoIsValid("admin"),
+    controller.getById
   );
 
 module.exports = router;

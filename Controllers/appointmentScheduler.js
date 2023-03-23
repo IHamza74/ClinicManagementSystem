@@ -83,6 +83,7 @@ exports.editAppointment = (req, res, next) => {
     }
   )
     .then((result) => {
+      
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -177,6 +178,7 @@ exports.DoctorAppointmentsReports = (req, res, next) => {
 /*  patient appointments */
 
 exports.PatientAppointmentsReports = (req, res, next) => {
+  
   AppointmentSchema.find({ patientID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({

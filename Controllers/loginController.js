@@ -23,9 +23,13 @@ exports.login = (req, res, next) => {
     }).then((employee) => {
       //checking if login user is employee
       if (employee != null) {
-        let token = jwt.sign({ role: "employee" }, process.env.SECRET_KEY, {
-          expiresIn: process.env.TOKEN_DURAITION,
-        });
+        let token = jwt.sign(
+          { role: "employee", id: employee._id },
+          process.env.SECRET_KEY,
+          {
+            expiresIn: process.env.TOKEN_DURAITION,
+          }
+        );
         checkAuthintication(employee, req, res, token);
       } //end of employee check
       else {
@@ -33,9 +37,13 @@ exports.login = (req, res, next) => {
 
         DoctorSchema.findOne({ email: req.body.email }).then((doctor) => {
           if (doctor != null) {
-            let token = jwt.sign({ role: "doctor" }, process.env.SECRET_KEY, {
-              expiresIn: process.env.TOKEN_DURAITION,
-            });
+            let token = jwt.sign(
+              { role: "doctor", id: doctor._id },
+              process.env.SECRET_KEY,
+              {
+                expiresIn: process.env.TOKEN_DURAITION,
+              }
+            );
 
             checkAuthintication(doctor, req, res, token);
           } //end of doctor check
@@ -44,13 +52,23 @@ exports.login = (req, res, next) => {
 
             PatientSchmea.findOne({ Email: req.body.email }).then((patient) => {
               if (patient != null) {
-                let token = jwt.sign({ role: "patient" }, process.env.SECRET_KEY, {
-                  expiresIn: process.env.TOKEN_DURAITION,
-                });
-                bcrypt.compare(req.body.password.toString(), patient.Password).then((result) => {
-                  if (result) res.status(200).json({ data: "Authorized", token });
-                  else res.status(200).json({ data: "please provide correct password" });
-                });
+                let token = jwt.sign(
+                  { role: "patient", id: patient._id },
+                  process.env.SECRET_KEY,
+                  {
+                    expiresIn: process.env.TOKEN_DURAITION,
+                  }
+                );
+                bcrypt
+                  .compare(req.body.password.toString(), patient.Password)
+                  .then((result) => {
+                    if (result)
+                      res.status(200).json({ data: "Authorized", token });
+                    else
+                      res
+                        .status(200)
+                        .json({ data: "please provide correct password" });
+                  });
               } else {
                 res.status(200).json({ data: "not authorized" });
               }

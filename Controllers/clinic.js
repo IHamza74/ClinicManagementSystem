@@ -30,34 +30,41 @@ exports.getAllClinics = (request, response, next) => {
 exports.addClinic = (req, res, next) => {
   let newClinic = new clinicSchema({
     // _id: req.body.id,
-    clinicName: req.body.name,
-    clinicAddress: req.body.address,
-    doctorsID: req.body.doctors
+    clinicName: req.body.clinicName,
+    clinicAddress: req.body.clinicAddress,
+    doctorsID: req.body.doctorsID
+    
   })
     .save()
     .then((result) => {
       res.status(201).json({ status: "clinic added successfully" });
     })
-    .catch((err) => next(err));
+    .catch((err) => {
+      console.log(err)
+      next(err);
+    });
 };
 
 exports.editClinic = (req, res, next) => {
   clinicSchema
     .updateOne(
-      { _id: req.body.id },
+      { _id: req.body._id },
       {
         $set: {
           // _id: req.body.id,
-          clinicName: req.body.name,
-          clinicAddress: req.body.address,
-          doctorsID: req.body.doctors
+          clinicName: req.body.clinicName,
+          clinicAddress: req.body.clinicAddress,
+        //  doctorsID: req.body.doctors
         },
       }
     )
     .then((result) => {
-      res.status(200).json({ status: "Clinic updated successfully" });
+      res.status(200).json({ status: result });
     })
-    .catch((error) => next(error));
+    .catch((error) =>{
+      console.log(error)
+      next(error)
+    } );
 };
 
 exports.deleteClinic = (req, res, next) => {
