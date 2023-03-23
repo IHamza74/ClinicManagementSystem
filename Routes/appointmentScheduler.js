@@ -21,17 +21,43 @@ let postValidationArray = [
 
 let patchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
-  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
-  body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id").optional(),
-  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
-  body("employeeID").isMongoId().withMessage("employeeID should be Mongo Id").optional(),
-  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
+  body("patientID")
+    .isMongoId()
+    .withMessage("patientID should be Mongo Id")
+    .optional(),
+  body("doctorID")
+    .isMongoId()
+    .withMessage("doctorID should be Mongo Id")
+    .optional(),
+  body("clinicID")
+    .isMongoId()
+    .withMessage("clinicID should be Mongo Id")
+    .optional(),
+  body("employeeID")
+    .isMongoId()
+    .withMessage("employeeID should be Mongo Id")
+    .optional(),
+  body("date")
+    .isISO8601()
+    .toDate()
+    .withMessage("date should be date")
+    .optional(),
 ];
 
 let pendingValidationArray = [
-  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
-  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
-  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
+  body("patientID")
+    .isMongoId()
+    .withMessage("patientID should be Mongo Id")
+    .optional(),
+  body("clinicID")
+    .isMongoId()
+    .withMessage("clinicID should be Mongo Id")
+    .optional(),
+  body("date")
+    .isISO8601()
+    .toDate()
+    .withMessage("date should be date")
+    .optional(),
 ];
 
 router
@@ -64,7 +90,10 @@ router
     controller.editAppointment
   )
 
-  .delete(whoIsValid("admin", "employee"), controller.deleteFilteredAppointment);
+  .delete(
+    whoIsValid("admin", "employee"),
+    controller.deleteFilteredAppointment
+  );
 /** appontments reports  */
 router
   .route("/appointmentScheduler/allreports")

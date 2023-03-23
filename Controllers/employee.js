@@ -9,11 +9,12 @@ const employeesSchema = mongoose.model("employees");
 //creating img file
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "img");
+    cb(null, process.env.IMAGE_PATH);
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split("/")[1];
     cb(null, `employee-${req.body.id}-${Date.now()}.${ext}`);
+    cb(null, `employee-${req.body.id}.${ext}`);
   },
 });
 
