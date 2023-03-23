@@ -90,7 +90,6 @@ exports.editEmployee = (req, res, next) => {
           password: req.body.password,
           age: req.body.age,
           address: req.body.address,
-          photo: file.filename,
         },
       }
     )
@@ -102,14 +101,15 @@ exports.editEmployee = (req, res, next) => {
 
 /****UPLOAD PHOTO ****/
 exports.patchPhoto = (req, res, next) => {
-  DoctorSchema.updateOne(
-    { _id: req.body.id },
-    {
-      $set: {
-        photo: req.file.filename,
-      },
-    }
-  )
+  employeesSchema
+    .updateOne(
+      { _id: req.body.id },
+      {
+        $set: {
+          photo: req.file.filename,
+        },
+      }
+    )
     .then((result) => {
       res.status(200).json(result);
     })
@@ -119,31 +119,13 @@ exports.patchPhoto = (req, res, next) => {
 };
 
 exports.deleteEmployee = (req, res, next) => {
-  employeesSchema.deleteOne({ _id: req.params.id })
+  employeesSchema
+    .deleteOne({ _id: req.params.id })
     .then((data) => {
-      if (data != null)
-        res.status(200).json({ status: "Employee deleted successfully" });
+      if (data != null) res.status(200).json({ status: "Employee deleted successfully" });
       else {
-        next(new Error("Employee not found, Process was cancelled"))
+        next(new Error("Employee not found, Process was cancelled"));
       }
     })
     .catch((error) => next(error));
-};
-
-/****DELETE DATA USING FILTER****/
-exports.deleteFilteredEmployee = (req, res, next) => {
-  const Obj = { ...req.query };
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
-
-  employeesSchema
-    .deleteMany(ObjStr)
-    .then((result) => {
-      if (result != null) res.status(200).json(result);
-      else next(new Error("Data is not found!"));
-    })
-    .catch((error) => {
-      next(error);
-    });
 };

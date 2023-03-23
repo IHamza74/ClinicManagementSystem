@@ -9,7 +9,7 @@ const employeeRouter = require("./Routes/employee");
 const invoiceRouter = require("./Routes/invoice");
 const medicineRouter = require("./Routes/medicine");
 const patientRouter = require("./Routes/patient");
-const signupRouter =require("./Routes/signup")
+const signupRouter = require("./Routes/signup");
 const prescriptionRouter = require("./Routes/prescription");
 const payment = require("./Routes/payment");
 const dotenv = require("dotenv");
@@ -36,14 +36,16 @@ mongoose
     console.log("DB Problem " + error);
   });
 
-/******First MW******/
-// server.use((req, res, next) => {
-//   console.log("hellow from First MW");
-//   next();
-// });
-
 /******Settings ******/
 server.use(express.json());
+
+// Very IMPORTANT
+server.use((request, response, next) => {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Methods", "GET,POST,DELETE,PUT,OPTIONS");
+  response.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  next();
+});
 
 /******ROUTES******/
 
@@ -51,7 +53,7 @@ server.use(express.json());
 server.use(loginRouter);
 server.use(signupRouter);
 //server.use(authenticationMW
-server.use(authenticationMW.login);
+//server.use(authenticationMW.login);
 
 // server.use(authenticationMW.login);
 //1)Appointment Scheduler

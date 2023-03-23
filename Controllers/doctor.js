@@ -83,15 +83,12 @@ exports.addDoctor = (req, res, next) => {
   newAppointment
     .save()
     .then((result) => {
-      res.status(201).json(result);
+      res.status(201).json({ message: "doctor added" });
     })
     .catch((error) => {
-      console.log("haal");
       sharedMail
         .deleteOne({ email: req.body.email })
-        .then((data) => {
-          console.log("mail deleted from data shared");
-        })
+        .then((data) => {})
         .catch((error) => next(error));
       next(error);
     });
@@ -114,7 +111,7 @@ exports.editDoctor = (req, res, next) => {
     }
   )
     .then((result) => {
-      res.status(200).json(result);
+      res.status(200).json({ message: "doctor updated" });
     })
     .catch((error) => {
       next(error);
@@ -149,27 +146,4 @@ exports.deleteDoctor = (req, res, next) => {
     .catch((error) => {
       next(error);
     });
-};
-
-/****DELETE DATA USING FILTER****/
-exports.deleteFilteredDoctor = (req, res, next) => {
-  const Obj = { ...req.query };
-  let ObjStr = JSON.stringify(Obj);
-  ObjStr = ObjStr.replace(/\b(gte|gt|lte|lt)\b/g, (matched) => `$${matched}`);
-  ObjStr = JSON.parse(ObjStr);
-  console.log(ObjStr);
-  console.log(DoctorSchema);
-  if (Object.keys(ObjStr).length != 0) {
-    DoctorSchema.findOne();
-    DoctorSchema.deleteMany(ObjStr)
-      .then((result) => {
-        if (result != null) res.status(200).json(result);
-        else next(new Error("Data is not found!"));
-      })
-      .catch((error) => {
-        next(error);
-      });
-  } else {
-    res.status(200).json({ data: "please specify any data to be deleted" });
-  }
 };

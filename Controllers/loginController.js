@@ -11,7 +11,7 @@ const DoctorSchema = mongoose.model("doctor");
 const PatientSchmea = mongoose.model("Patients");
 
 exports.login = (req, res, next) => {
-  if (req.body.email == "turky@gmail.com" && req.body.password == "123") {
+  if (req.body.email == "admin@gmail.com" && req.body.password == "123456789") {
     let token = jwt.sign({ role: "admin" }, process.env.SECRET_KEY, {
       expiresIn: process.env.TOKEN_DURAITION,
     });
@@ -23,7 +23,6 @@ exports.login = (req, res, next) => {
     }).then((employee) => {
       //checking if login user is employee
       if (employee != null) {
-        console.log("i'm employee");
         let token = jwt.sign({ role: "employee" }, process.env.SECRET_KEY, {
           expiresIn: process.env.TOKEN_DURAITION,
         });
@@ -34,7 +33,6 @@ exports.login = (req, res, next) => {
 
         DoctorSchema.findOne({ email: req.body.email }).then((doctor) => {
           if (doctor != null) {
-            console.log("i'm doctor");
             let token = jwt.sign({ role: "doctor" }, process.env.SECRET_KEY, {
               expiresIn: process.env.TOKEN_DURAITION,
             });
@@ -46,24 +44,13 @@ exports.login = (req, res, next) => {
 
             PatientSchmea.findOne({ Email: req.body.email }).then((patient) => {
               if (patient != null) {
-                console.log("i'm patient");
-                let token = jwt.sign(
-                  { role: "patient" },
-                  process.env.SECRET_KEY,
-                  {
-                    expiresIn: process.env.TOKEN_DURAITION,
-                  }
-                );
-                bcrypt
-                  .compare(req.body.password.toString(), patient.Password)
-                  .then((result) => {
-                    if (result)
-                      res.status(200).json({ data: "Authorized", token });
-                    else
-                      res
-                        .status(200)
-                        .json({ data: "please provide correct password" });
-                  });
+                let token = jwt.sign({ role: "patient" }, process.env.SECRET_KEY, {
+                  expiresIn: process.env.TOKEN_DURAITION,
+                });
+                bcrypt.compare(req.body.password.toString(), patient.Password).then((result) => {
+                  if (result) res.status(200).json({ data: "Authorized", token });
+                  else res.status(200).json({ data: "please provide correct password" });
+                });
               } else {
                 res.status(200).json({ data: "not authorized" });
               }
