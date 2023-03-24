@@ -6,7 +6,9 @@ const { param } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
 router
-  .route("/checkout-session")
+  .route("/checkout-session/")
+
   .get(whoIsValid("employee"), validator, controller.getCheckoutSession);
 
+router.route("/checking/").get(whoIsValid("employee"), validator, controller.getCheckPayment);
 module.exports = router;

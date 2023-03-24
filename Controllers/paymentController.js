@@ -50,21 +50,38 @@ exports.getCheckoutSession = async (req, res, next) => {
           },
         ],
 
-        success_url: `${req.protocol}://${req.get("host")}/invoice/${id}`,
-        cancel_url: `${req.protocol}://${req.get("host")}/invoice/`,
+        success_url: `http://localhost:4200/invoice/${id}`,
+        cancel_url: `http://localhost:4200/invoice/faild/${id}`,
       });
 
       // 3) Create session as response
       res.status(200).json({
         status: "success",
         session,
+        invoceDetails,
       });
     } catch (error) {
       next(error);
     }
   } else {
-    res
-      .status(400)
-      .json({ status: "Fail", message: "That's not Credit Card Payment Or it's already paid" });
+    res.status(400).json({
+      status: "Fail",
+      message: "That's not Credit Card Payment Or it's already paid",
+      invoceDetails,
+    });
   }
+};
+
+exports.getCheckPayment = (req, res, next) => {
+  let id = req.params.id;
+  stripe.charges.list({ limit: 100 }, function (err, charges) {
+    if (err) {
+      console.log(err);
+    } else {
+      let lastPaid = charges.data.shift();
+      if (lastPaid.paid === true && lastPaid.refunded === false) {
+        res.status(200).json({ lastPaid });
+      }
+    }
+  });
 };

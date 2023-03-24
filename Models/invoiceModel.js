@@ -4,7 +4,7 @@ const medicineSchema = require("./medicineSchema");
 const schema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
   medicine: [medicineSchema],
-  money: { type: Number, required: [true, "Please enter the invoice total money!"] },
+  money: { type: Number, default: 200, required: [true, "Please enter the invoice total money!"] },
   appointmentID: {
     type: mongoose.Schema.Types.ObjectId,
     required: [true, "Please enter appointment ID!"],
