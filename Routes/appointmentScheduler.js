@@ -66,14 +66,14 @@ router
   .post(
     whoIsValid("admin", "employee"),
     postValidationArray,
-    validator,
-    customeMiddlewares.doesPatientExist,
-    customeMiddlewares.doesDoctorExist,
-    customeMiddlewares.doesClinicExist,
-    customeMiddlewares.doesEmployeeExist,
-    customeMiddlewares.doesDoctorWorkInClinic,
-    customeMiddlewares.isDoctorAvailablePost,
-    sendEmail(),
+   validator,
+   customeMiddlewares.doesPatientExist,
+   customeMiddlewares.doesDoctorExist,
+   customeMiddlewares.doesClinicExist,
+   customeMiddlewares.doesEmployeeExist,
+ //  customeMiddlewares.doesDoctorWorkInClinic,
+   customeMiddlewares.isDoctorAvailablePost,
+   sendEmail(),
     controller.addAppointment,
    // customeMiddlewares.addAppointmentToPatientOrDoctor
   )

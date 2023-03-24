@@ -64,6 +64,7 @@ exports.addAppointment = (req, res, next) => {
       res.status(200).json({ result });
     })
     .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
@@ -122,7 +123,8 @@ exports.deleteFilteredAppointment = (req, res, next) => {
 
 /* apointments Reports */
 exports.AllAppointmentsReports = (req, res, next) => {
-  AppointmentSchema.find()
+  const today =new Date();
+  AppointmentSchema.find({date:{$gt:new Date()}})
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
@@ -132,7 +134,10 @@ exports.AllAppointmentsReports = (req, res, next) => {
     .then((data) => {
       res.status(200).json(data);
     })
-    .catch((error) => next(error));
+    .catch((error) =>{
+      console.log(error);
+      next(error);
+    });
 };
 
 /* Dialy apointments reports  */
