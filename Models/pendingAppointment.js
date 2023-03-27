@@ -14,7 +14,7 @@ const pendingAppointmentSchema = new Schema({
         type: Date,
         default: Date.now(),
     },
-    painDescription: { type: String, required: [true, "please descripe what you suffer from "] }
+    painDescription: { type: String, required: [false, "please descripe what you suffer from "] }
 });
 
 mongoose.model("PendingAppointment", pendingAppointmentSchema);

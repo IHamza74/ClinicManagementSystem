@@ -197,34 +197,42 @@ exports.PatientAppointmentsReports = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-/** add pending appointment to appointment scheduler */
-// exports.addPendingToAppointment = (req, res, next) => {
-//   let newAppointment = new AppointmentSchema({
-//     _id: mongoose.Types.ObjectId(),
-//     patientID: req.body.patientID,
-//     doctorID: req.body.doctorID,
-//     clinicID: req.body.clinicID,
-//     employeeID: req.params.id,
-//     date: req.body.date,
+// add pending appointment to appointment scheduler */
 
-//   });
+exports.addPendingToAppointment = (req, res, next) => {
+  let newPendingAppointment = new pendingSchema({
+    _id: mongoose.Types.ObjectId(),
+    patientID: req.body.patientID,
+    doctorID: req.body.doctorID,
+    clinicID: req.body.clinicID,
+     date: req.body.date,
+     painDescription:""
 
-//   newAppointment
-//     .save()
-//     .then((result) => {
+  });
 
-//       req.body.appID = newAppointment._id;
-//       next();
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// };
+  newPendingAppointment
+    .save()
+    .then((result) => {
+      res.status(200).json(result);
+       
+    //  req.body.appID = newAppointment._id;
+      next();
+    })
+    .catch((error) => {
+      console.log(error)
+      next(error);
+    });
+ };
 
 exports.getAllPending = (req, res, next) => {
   pendingSchema
     .find()
-    .populate({ path: "patientID" })
+    .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
+    .populate({
+      path: "doctorID",
+      select: { _id: 0, appointmentNo: 0, workingHours: 0 },
+    })
+    .populate({ path: "clinicID", select: { _id: 0 } })
     .then((data) => {
       res.status(200).json(data);
     })

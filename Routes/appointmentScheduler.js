@@ -115,16 +115,20 @@ router
 
 router
   .route("/appointmentScheduler/pending")
-  .post
-  // whoIsValid("admin", "employee"),
-  // pendingValidationArray,
-  //  validator,
-  // customeMiddlewares.isDoctorAvailable,
-  // sendEmail(),
-  // controller.addPendingToAppointment,
-  // customeMiddlewares.addAppointmentToPatientOrDoctor,
-  ()
-  .get(whoIsValid("admin", "employee"), controller.getAllPending);
+  .post(
+
+   // whoIsValid("admin", "employee"),
+    // pendingValidationArray,
+    //  validator,
+    // customeMiddlewares.isDoctorAvailable,
+    // sendEmail(),
+    controller.addPendingToAppointment,
+   // customeMiddlewares.addAppointmentToPatientOrDoctor
+  )
+  
+  .get(
+  //  whoIsValid("admin", "employee"), 
+    controller.getAllPending);
 
 router
   .route("/appointmentScheduler/:id")
