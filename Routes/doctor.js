@@ -51,6 +51,10 @@ let patchValidationArray = [
     .optional(),
   // body("photo").isString().withMessage("photo should be String").optional(),
 ];
+router
+  .route("/doctor/count")
+  .get(controller.getDoctorsCount)
+
 
 router
   .route("/doctor")
@@ -66,7 +70,7 @@ router
     whoIsValid("admin"),
     // patchValidationArray,
     // validator,
-    //  checkmail,
+    //checkmail,
     controller.editDoctor
   );
 

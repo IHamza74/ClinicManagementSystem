@@ -12,7 +12,9 @@ let postValidationArray = [
   body("age").isInt().withMessage("age should be integer"),
   body("email").isEmail().withMessage("email should be a valid email"),
   body("address").isObject().withMessage("address should be Object"),
-  body("address.government").isString().withMessage("government should be String"),
+  body("address.government")
+    .isString()
+    .withMessage("government should be String"),
   body("address.city").isString().withMessage("city should be String"),
   body("address.street").isString().withMessage("street should be String"),
   body("address.building").isString().withMessage("building should be String"),
@@ -27,12 +29,27 @@ let patchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
   body("name").isString().withMessage("name should be String").optional(),
   body("age").isInt().withMessage("age should be integer").optional(),
-  body("email").isEmail().withMessage("email should be a valid email").optional(),
+  body("email")
+    .isEmail()
+    .withMessage("email should be a valid email")
+    .optional(),
   body("address").isObject().withMessage("address should be Object").optional(),
-  body("address.government").isString().withMessage("government should be String").optional(),
-  body("address.city").isString().withMessage("city should be String").optional(),
-  body("address.street").isString().withMessage("street should be String").optional(),
-  body("address.building").isString().withMessage("building should be String").optional(),
+  body("address.government")
+    .isString()
+    .withMessage("government should be String")
+    .optional(),
+  body("address.city")
+    .isString()
+    .withMessage("city should be String")
+    .optional(),
+  body("address.street")
+    .isString()
+    .withMessage("street should be String")
+    .optional(),
+  body("address.building")
+    .isString()
+    .withMessage("building should be String")
+    .optional(),
   body("password")
     .isString()
     .withMessage("password sholuld be String")
@@ -41,14 +58,27 @@ let patchValidationArray = [
     .optional(),
 ];
 
-router.route("/employee/uploadPhoto").patch(controller.uploadEmployeeImg, controller.patchPhoto);
+router
+  .route("/employee/uploadPhoto")
+  .patch(controller.uploadEmployeeImg, controller.patchPhoto);
 //router.route("/employee/uploadPhoto").post(controller.uploadEmployeeImg, controller.patchPhoto);
 
 router
   .route("/employee")
   .get(whoIsValid("admin"), controller.getAllEmployees)
-  .post(whoIsValid("admin"), postValidationArray, validator, checkmail, controller.addEmployee)
-  .patch(whoIsValid("admin"), patchValidationArray, validator, controller.editEmployee);
+  .post(
+    whoIsValid("admin"),
+    postValidationArray,
+    validator,
+    checkmail,
+    controller.addEmployee
+  )
+  .patch(
+    whoIsValid("admin"),
+    patchValidationArray,
+    validator,
+    controller.editEmployee
+  );
 
 router
   .route("/employee/:id")
