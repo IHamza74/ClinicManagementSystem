@@ -84,7 +84,6 @@ exports.editAppointment = (req, res, next) => {
     }
   )
     .then((result) => {
-
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -183,7 +182,6 @@ exports.DoctorAppointmentsReports = (req, res, next) => {
 /*  patient appointments */
 
 exports.PatientAppointmentsReports = (req, res, next) => {
-
   AppointmentSchema.find({ patientID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
@@ -205,9 +203,8 @@ exports.addPendingToAppointment = (req, res, next) => {
     patientID: req.body.patientID,
     doctorID: req.body.doctorID,
     clinicID: req.body.clinicID,
-     date: req.body.date,
-     painDescription:req.body.painDescription
-
+    date: req.body.date,
+    painDescription: req.body.painDescription,
   });
 
   newPendingAppointment
@@ -219,32 +216,30 @@ exports.addPendingToAppointment = (req, res, next) => {
       next();
     })
     .catch((error) => {
-      console.log(error)
+      console.log(error);
       next(error);
     });
 };
 
-
-exports.deletePending=(req,res,next)=>{
-
-  pendingSchema.findByIdAndDelete(req.params.id)
-  .then((result)=>{
-
-    res.status(201).json({ message: "pending deleted" });
-  })
-  .catch((error)=>{
-    console.log(error)
-    next(error);
-  })
-}
+exports.deletePending = (req, res, next) => {
+  pendingSchema
+    .findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(201).json({ message: "pending deleted" });
+    })
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
+};
 
 exports.getAllPending = (req, res, next) => {
   pendingSchema
     .find()
     .populate({ path: "patientID" })
     .populate({
-      path: "doctorID"
-         })
+      path: "doctorID",
+    })
     .populate({ path: "clinicID" })
     .then((data) => {
       res.status(200).json(data);
@@ -253,10 +248,11 @@ exports.getAllPending = (req, res, next) => {
 };
 
 exports.getAppointmentsCount = (req, res, next) => {
-  AppointmentSchema.countDocuments({}).then((data) => {
-    res.status(200).json(data);
-
-  }).catch((err) => {
-    console.log(err);
-  })
-}
+  AppointmentSchema.countDocuments({})
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

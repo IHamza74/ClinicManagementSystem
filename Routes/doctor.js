@@ -70,7 +70,7 @@ router
     whoIsValid("admin"),
     // patchValidationArray,
     // validator,
-    //  checkmail,
+    //checkmail,
     controller.editDoctor
   );
 
