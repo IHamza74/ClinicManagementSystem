@@ -64,6 +64,7 @@ exports.addAppointment = (req, res, next) => {
       res.status(200).json({ result });
     })
     .catch((error) => {
+      console.log(error);
       next(error);
     });
 };
@@ -83,6 +84,7 @@ exports.editAppointment = (req, res, next) => {
     }
   )
     .then((result) => {
+
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -121,7 +123,8 @@ exports.deleteFilteredAppointment = (req, res, next) => {
 
 /* apointments Reports */
 exports.AllAppointmentsReports = (req, res, next) => {
-  AppointmentSchema.find()
+  const today = new Date();
+  AppointmentSchema.find({ date: { $gt: new Date() } })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
@@ -131,7 +134,10 @@ exports.AllAppointmentsReports = (req, res, next) => {
     .then((data) => {
       res.status(200).json(data);
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      console.log(error);
+      next(error);
+    });
 };
 
 /* Dialy apointments reports  */
@@ -177,6 +183,7 @@ exports.DoctorAppointmentsReports = (req, res, next) => {
 /*  patient appointments */
 
 exports.PatientAppointmentsReports = (req, res, next) => {
+
   AppointmentSchema.find({ patientID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
@@ -190,36 +197,66 @@ exports.PatientAppointmentsReports = (req, res, next) => {
     .catch((error) => next(error));
 };
 
-/** add pending appointment to appointment scheduler */
-// exports.addPendingToAppointment = (req, res, next) => {
-//   let newAppointment = new AppointmentSchema({
-//     _id: mongoose.Types.ObjectId(),
-//     patientID: req.body.patientID,
-//     doctorID: req.body.doctorID,
-//     clinicID: req.body.clinicID,
-//     employeeID: req.params.id,
-//     date: req.body.date,
+// add pending appointment to appointment scheduler */
 
-//   });
+exports.addPendingToAppointment = (req, res, next) => {
+  let newPendingAppointment = new pendingSchema({
+    _id: mongoose.Types.ObjectId(),
+    patientID: req.body.patientID,
+    doctorID: req.body.doctorID,
+    clinicID: req.body.clinicID,
+     date: req.body.date,
+     painDescription:req.body.painDescription
 
-//   newAppointment
-//     .save()
-//     .then((result) => {
+  });
 
-//       req.body.appID = newAppointment._id;
-//       next();
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// };
+  newPendingAppointment
+    .save()
+    .then((result) => {
+      res.status(200).json(result);
+
+      //  req.body.appID = newAppointment._id;
+      next();
+    })
+    .catch((error) => {
+      console.log(error)
+      next(error);
+    });
+};
+
+
+exports.deletePending=(req,res,next)=>{
+
+  pendingSchema.findByIdAndDelete(req.params.id)
+  .then((result)=>{
+
+    res.status(201).json({ message: "pending deleted" });
+  })
+  .catch((error)=>{
+    console.log(error)
+    next(error);
+  })
+}
 
 exports.getAllPending = (req, res, next) => {
   pendingSchema
     .find()
     .populate({ path: "patientID" })
+    .populate({
+      path: "doctorID"
+         })
+    .populate({ path: "clinicID" })
     .then((data) => {
       res.status(200).json(data);
     })
     .catch((error) => next(error));
 };
+
+exports.getAppointmentsCount = (req, res, next) => {
+  AppointmentSchema.countDocuments({}).then((data) => {
+    res.status(200).json(data);
+
+  }).catch((err) => {
+    console.log(err);
+  })
+}

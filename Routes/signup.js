@@ -6,8 +6,8 @@ const { body } = require("express-validator");
 const validator = require("./../Middlewares/errorValidation");
 
 let validationArray = [
-  body("Name").isString().withMessage("name should be String"),
-  body("Age").isInt().withMessage("age should be integer"),
+  body("name").isString().withMessage("name should be String"),
+  body("age").isInt().withMessage("age should be integer"),
   body("address").isObject().withMessage("Address should be Object"),
   body("address.government")
     .isString()

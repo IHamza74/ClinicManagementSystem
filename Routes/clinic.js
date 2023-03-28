@@ -22,9 +22,14 @@ let PatchValidationArray = [
 
 router
   .route("/clinic")
-  .get(whoIsValid("admin"), controller.getAllClinics)
-  .post(whoIsValid("admin"), postValidationArray, validator, controller.addClinic)
-  .patch(whoIsValid("admin"), PatchValidationArray, validator, controller.editClinic);
+  .get(/*whoIsValid("admin"),*/ controller.getAllClinics)
+  .post(/*whoIsValid("admin") postValidationArray, validator,*/ controller.addClinic)
+  .patch(/*whoIsValid("admin"), PatchValidationArray, validator,*/ controller.editClinic)
+
+
+router
+  .route("/clinic/count")
+  .get(controller.getClinicsCount)
 
 // this routes handle the clinic doctor add or remove doctor from clinic
 router
@@ -45,5 +50,5 @@ router
     validator,
     controller.deleteDoctor
   );
-router.route("/clinic/:id").delete(whoIsValid("admin"), controller.deleteClinic);
+router.route("/clinic/:id").delete(controller.deleteClinic);
 module.exports = router;

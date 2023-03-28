@@ -83,6 +83,12 @@ let patchValidationArray = [
   body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
+
+router
+  .route("/patient/count")
+  .get(controller.getPatientsCount)
+
+
 router
   .route("/patient")
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)
@@ -94,10 +100,10 @@ router
     controller.addPatient
   )
   .patch(
-    whoIsValid("employee", "doctor", "patient", "admin"),
-    patchValidationArray,
-    validator,
-    checkmail,
+    // whoIsValid("employee", "doctor", "patient", "admin"),
+    // patchValidationArray,
+    // validator,
+    // checkmail,
     controller.editPatient
   )
   .delete(whoIsValid("employee", "admin", "doctor"), controller.deletePatient);
