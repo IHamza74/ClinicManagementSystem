@@ -65,14 +65,14 @@ router
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
   .post(
     whoIsValid("admin", "employee"),
-    postValidationArray,
-   validator,
-   customeMiddlewares.doesPatientExist,
-   customeMiddlewares.doesDoctorExist,
-   customeMiddlewares.doesClinicExist,
-   customeMiddlewares.doesEmployeeExist,
+   // postValidationArray,
+ //  validator,
+ //  customeMiddlewares.doesPatientExist,
+ //  customeMiddlewares.doesDoctorExist,
+ //  customeMiddlewares.doesClinicExist,
+//   customeMiddlewares.doesEmployeeExist,
  //  customeMiddlewares.doesDoctorWorkInClinic,
-   customeMiddlewares.isDoctorAvailablePost,
+ //  customeMiddlewares.isDoctorAvailablePost,
    sendEmail(),
     controller.addAppointment,
    // customeMiddlewares.addAppointmentToPatientOrDoctor
@@ -129,6 +129,14 @@ router
   .get(
   //  whoIsValid("admin", "employee"), 
     controller.getAllPending);
+   
+    
+    router
+  .route("/appointmentScheduler/pending/:id")
+  .delete(
+    whoIsValid("admin", "employee"), 
+    controller.deletePending
+  )
 
 router
   .route("/appointmentScheduler/:id")

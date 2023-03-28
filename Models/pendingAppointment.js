@@ -7,7 +7,7 @@ const pendingAppointmentSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         auto: true,
     },
-
+    doctorID: { type: Schema.Types.ObjectId, ref: "doctor", required: [true, "Please enter doctor ID!"] },
     patientID: { type: Schema.Types.ObjectId, ref: "Patients", required: [true, "not valid Patient ID!"] },
     clinicID: { type: Schema.Types.ObjectId, ref: "clinic" },
     date: {
