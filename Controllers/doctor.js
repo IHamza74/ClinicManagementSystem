@@ -89,7 +89,7 @@ exports.addDoctor = (req, res, next) => {
     .catch((error) => {
       sharedMail
         .deleteOne({ email: req.body.email })
-        .then((data) => {})
+        .then((data) => { })
         .catch((error) => next(error));
       next(error);
     });
@@ -148,3 +148,13 @@ exports.deleteDoctor = (req, res, next) => {
       next(error);
     });
 };
+
+exports.getDoctorsCount = (req, res, next) => {
+  DoctorSchema.countDocuments({}).then((data) => {
+    res.status(200).json(data);
+
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
