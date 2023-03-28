@@ -13,7 +13,7 @@ const checkMail = (req, res, next) => {
       .then((result) => next())
 
       .catch((error) => {
-        res.status(201).json({ message: "this email exists" });
+        res.status(201).json({ data: "this email exists" });
         next(error);
       });
   } else next();
