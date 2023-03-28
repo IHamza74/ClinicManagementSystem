@@ -184,3 +184,11 @@ exports.reserveAppointment = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.getPatientsCount = (req, res, next) => {
+  patinetSchmea.countDocuments({}).then((data) => {
+    res.status(200).json(data);
+  }).catch((err) => {
+    console.log(err);
+  })
+}

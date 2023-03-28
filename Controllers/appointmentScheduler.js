@@ -84,7 +84,7 @@ exports.editAppointment = (req, res, next) => {
     }
   )
     .then((result) => {
-      
+
       res.status(200).json(result);
     })
     .catch((error) => {
@@ -123,8 +123,8 @@ exports.deleteFilteredAppointment = (req, res, next) => {
 
 /* apointments Reports */
 exports.AllAppointmentsReports = (req, res, next) => {
-  const today =new Date();
-  AppointmentSchema.find({date:{$gt:new Date()}})
+  const today = new Date();
+  AppointmentSchema.find({ date: { $gt: new Date() } })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
       path: "doctorID",
@@ -134,7 +134,7 @@ exports.AllAppointmentsReports = (req, res, next) => {
     .then((data) => {
       res.status(200).json(data);
     })
-    .catch((error) =>{
+    .catch((error) => {
       console.log(error);
       next(error);
     });
@@ -183,7 +183,7 @@ exports.DoctorAppointmentsReports = (req, res, next) => {
 /*  patient appointments */
 
 exports.PatientAppointmentsReports = (req, res, next) => {
-  
+
   AppointmentSchema.find({ patientID: req.params.id })
     .populate({ path: "patientID", select: { _id: 0, Password: 0 } })
     .populate({
@@ -214,15 +214,15 @@ exports.addPendingToAppointment = (req, res, next) => {
     .save()
     .then((result) => {
       res.status(200).json(result);
-       
-    //  req.body.appID = newAppointment._id;
+
+      //  req.body.appID = newAppointment._id;
       next();
     })
     .catch((error) => {
       console.log(error)
       next(error);
     });
- };
+};
 
 
 exports.deletePending=(req,res,next)=>{
@@ -251,3 +251,12 @@ exports.getAllPending = (req, res, next) => {
     })
     .catch((error) => next(error));
 };
+
+exports.getAppointmentsCount = (req, res, next) => {
+  AppointmentSchema.countDocuments({}).then((data) => {
+    res.status(200).json(data);
+
+  }).catch((err) => {
+    console.log(err);
+  })
+}
