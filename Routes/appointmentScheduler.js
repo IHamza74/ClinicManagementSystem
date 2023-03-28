@@ -59,6 +59,10 @@ let pendingValidationArray = [
     .withMessage("date should be date")
     .optional(),
 ];
+router
+  .route("/appointmentScheduler/count")
+  .get(controller.getAppointmentsCount)
+
 
 router
   .route("/appointmentScheduler")
@@ -66,16 +70,16 @@ router
   .post(
     whoIsValid("admin", "employee"),
     postValidationArray,
-   validator,
-   customeMiddlewares.doesPatientExist,
-   customeMiddlewares.doesDoctorExist,
-   customeMiddlewares.doesClinicExist,
-   customeMiddlewares.doesEmployeeExist,
- //  customeMiddlewares.doesDoctorWorkInClinic,
-   customeMiddlewares.isDoctorAvailablePost,
-   sendEmail(),
+    validator,
+    customeMiddlewares.doesPatientExist,
+    customeMiddlewares.doesDoctorExist,
+    customeMiddlewares.doesClinicExist,
+    customeMiddlewares.doesEmployeeExist,
+    //  customeMiddlewares.doesDoctorWorkInClinic,
+    customeMiddlewares.isDoctorAvailablePost,
+    sendEmail(),
     controller.addAppointment,
-   // customeMiddlewares.addAppointmentToPatientOrDoctor
+    // customeMiddlewares.addAppointmentToPatientOrDoctor
   )
 
   .patch(
@@ -117,17 +121,17 @@ router
   .route("/appointmentScheduler/pending")
   .post(
 
-   // whoIsValid("admin", "employee"),
+    // whoIsValid("admin", "employee"),
     // pendingValidationArray,
     //  validator,
     // customeMiddlewares.isDoctorAvailable,
     // sendEmail(),
     controller.addPendingToAppointment,
-   // customeMiddlewares.addAppointmentToPatientOrDoctor
+    // customeMiddlewares.addAppointmentToPatientOrDoctor
   )
-  
+
   .get(
-  //  whoIsValid("admin", "employee"), 
+    //  whoIsValid("admin", "employee"), 
     controller.getAllPending);
 
 router

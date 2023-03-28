@@ -33,7 +33,7 @@ exports.addClinic = (req, res, next) => {
     clinicName: req.body.clinicName,
     clinicAddress: req.body.clinicAddress,
     doctorsID: req.body.doctorsID
-    
+
   })
     .save()
     .then((result) => {
@@ -54,17 +54,17 @@ exports.editClinic = (req, res, next) => {
           // _id: req.body.id,
           clinicName: req.body.clinicName,
           clinicAddress: req.body.clinicAddress,
-        //  doctorsID: req.body.doctors
+          //  doctorsID: req.body.doctors
         },
       }
     )
     .then((result) => {
       res.status(200).json({ status: result });
     })
-    .catch((error) =>{
+    .catch((error) => {
       console.log(error)
       next(error)
-    } );
+    });
 };
 
 exports.deleteClinic = (req, res, next) => {
@@ -110,3 +110,14 @@ exports.deleteDoctor = (req, res, next) => {
     res.status(200).json(result);
   }).catch(error => next(error))
 }
+
+exports.getClinicsCount = (req, res, next) => {
+  clinicSchema.countDocuments({}).then((data) => {
+    res.status(200).json(data);
+
+  }).catch((err) => {
+    console.log(err);
+  })
+}
+
+

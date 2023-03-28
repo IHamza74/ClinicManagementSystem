@@ -83,6 +83,12 @@ let patchValidationArray = [
   body("photo").isString().withMessage("photo should be String").optional(),
 ];
 
+
+router
+  .route("/patient/count")
+  .get(controller.getPatientsCount)
+
+
 router
   .route("/patient")
   .get(whoIsValid("employee", "admin", "doctor"), controller.getAllPatients)

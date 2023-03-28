@@ -25,7 +25,11 @@ router
   .get(/*whoIsValid("admin"),*/ controller.getAllClinics)
   .post(/*whoIsValid("admin") postValidationArray, validator,*/ controller.addClinic)
   .patch(/*whoIsValid("admin"), PatchValidationArray, validator,*/ controller.editClinic)
- 
+
+
+router
+  .route("/clinic/count")
+  .get(controller.getClinicsCount)
 
 // this routes handle the clinic doctor add or remove doctor from clinic
 router
