@@ -187,13 +187,15 @@ module.exports.doesDoctorExist = async (request, response, next) => {
 //checking existance of clinic
 module.exports.doesClinicExist = async (request, response, next) => {
   if (request.body.clinicID != null) {
+
     let clinic = await clinicSchema.findOne({ _id: request.body.clinicID });
-    if (clinic == null) response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
+    if (clinic == null)
+     response.status(406).json({ meassge: "Wrong clinic ID, process was cancelled" });
     else {
       next();
     }
   }
-  next();
+ 
 };
 
 //checking existance of employee ID

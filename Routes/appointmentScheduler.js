@@ -33,7 +33,6 @@ let pendingValidationArray = [
   body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
   body("date").isISO8601().toDate().withMessage("date should be date").optional(),
 ];
-router.route("/appointmentScheduler/count").get(controller.getAppointmentsCount);
 
 router
   .route("/appointmentScheduler")
@@ -44,9 +43,9 @@ router
     validator,
     customeMiddlewares.doesPatientExist,
     customeMiddlewares.doesDoctorExist,
-    //  customeMiddlewares.doesClinicExist,
+    customeMiddlewares.doesClinicExist,
     customeMiddlewares.doesEmployeeExist,
-    customeMiddlewares.doesDoctorWorkInClinic,
+    //  customeMiddlewares.doesDoctorWorkInClinic,
     customeMiddlewares.isDoctorAvailablePost,
     sendEmail(),
     controller.addAppointment
@@ -66,6 +65,8 @@ router
   )
 
   .delete(whoIsValid("admin", "employee"), controller.deleteFilteredAppointment);
+router.route("/appointmentScheduler/count").get(controller.getAppointmentsCount);
+
 /** appontments reports  */
 router
   .route("/appointmentScheduler/allreports")
