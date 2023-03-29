@@ -60,7 +60,6 @@ exports.addAppointment = (req, res, next) => {
   newAppointment
     .save()
     .then((result) => {
-      //req.body.appID = newAppointment._id;
       res.status(200).json({ result });
     })
     .catch((error) => {

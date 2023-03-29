@@ -21,64 +21,35 @@ let postValidationArray = [
 
 let patchValidationArray = [
   body("id").isMongoId().withMessage("id should be Mongo Id"),
-  body("patientID")
-    .isMongoId()
-    .withMessage("patientID should be Mongo Id")
-    .optional(),
-  body("doctorID")
-    .isMongoId()
-    .withMessage("doctorID should be Mongo Id")
-    .optional(),
-  body("clinicID")
-    .isMongoId()
-    .withMessage("clinicID should be Mongo Id")
-    .optional(),
-  body("employeeID")
-    .isMongoId()
-    .withMessage("employeeID should be Mongo Id")
-    .optional(),
-  body("date")
-    .isISO8601()
-    .toDate()
-    .withMessage("date should be date")
-    .optional(),
+  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
+  body("doctorID").isMongoId().withMessage("doctorID should be Mongo Id").optional(),
+  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
+  body("employeeID").isMongoId().withMessage("employeeID should be Mongo Id").optional(),
+  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
 ];
 
 let pendingValidationArray = [
-  body("patientID")
-    .isMongoId()
-    .withMessage("patientID should be Mongo Id")
-    .optional(),
-  body("clinicID")
-    .isMongoId()
-    .withMessage("clinicID should be Mongo Id")
-    .optional(),
-  body("date")
-    .isISO8601()
-    .toDate()
-    .withMessage("date should be date")
-    .optional(),
+  body("patientID").isMongoId().withMessage("patientID should be Mongo Id").optional(),
+  body("clinicID").isMongoId().withMessage("clinicID should be Mongo Id").optional(),
+  body("date").isISO8601().toDate().withMessage("date should be date").optional(),
 ];
-router
-  .route("/appointmentScheduler/count")
-  .get(controller.getAppointmentsCount)
-
+router.route("/appointmentScheduler/count").get(controller.getAppointmentsCount);
 
 router
   .route("/appointmentScheduler")
   .get(whoIsValid("admin", "employee"), controller.getAllAppointments)
   .post(
     whoIsValid("admin", "employee"),
-   postValidationArray,
-  validator,
-  customeMiddlewares.doesPatientExist,
-  customeMiddlewares.doesDoctorExist,
-  customeMiddlewares.doesClinicExist,
-  customeMiddlewares.doesEmployeeExist,
-  customeMiddlewares.doesDoctorWorkInClinic,
-  customeMiddlewares.isDoctorAvailablePost,
-   sendEmail(),
-    controller.addAppointment,
+    postValidationArray,
+    validator,
+    customeMiddlewares.doesPatientExist,
+    customeMiddlewares.doesDoctorExist,
+    //  customeMiddlewares.doesClinicExist,
+    customeMiddlewares.doesEmployeeExist,
+    customeMiddlewares.doesDoctorWorkInClinic,
+    customeMiddlewares.isDoctorAvailablePost,
+    sendEmail(),
+    controller.addAppointment
     // customeMiddlewares.addAppointmentToPatientOrDoctor
   )
 
@@ -94,10 +65,7 @@ router
     controller.editAppointment
   )
 
-  .delete(
-    whoIsValid("admin", "employee"),
-    controller.deleteFilteredAppointment
-  );
+  .delete(whoIsValid("admin", "employee"), controller.deleteFilteredAppointment);
 /** appontments reports  */
 router
   .route("/appointmentScheduler/allreports")
@@ -120,40 +88,26 @@ router
 router
   .route("/appointmentScheduler/pending")
   .post(
-
     // whoIsValid("admin", "employee"),
     // pendingValidationArray,
     //  validator,
     // customeMiddlewares.isDoctorAvailable,
     // sendEmail(),
-    controller.addPendingToAppointment,
+    controller.addPendingToAppointment
     // customeMiddlewares.addAppointmentToPatientOrDoctor
   )
 
   .get(
-    //  whoIsValid("admin", "employee"), 
-    controller.getAllPending);
-   
-    
-    router
-  .route("/appointmentScheduler/pending/:id")
-  .delete(
-    whoIsValid("admin", "employee"), 
-    controller.deletePending
-  )
+    //  whoIsValid("admin", "employee"),
+    controller.getAllPending
+  );
+
+router.route("/appointmentScheduler/pending/:id").delete(whoIsValid("admin", "employee"), controller.deletePending);
 
 router
   .route("/appointmentScheduler/:id")
 
-  .get(
-    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-    validator,
-    controller.getOneAppointment
-  )
-  .delete(
-    param("id").isMongoId().withMessage("ID should be an Mongo ID"),
-    validator,
-    controller.deleteAppointment
-  );
+  .get(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.getOneAppointment)
+  .delete(param("id").isMongoId().withMessage("ID should be an Mongo ID"), validator, controller.deleteAppointment);
 
 module.exports = router;
